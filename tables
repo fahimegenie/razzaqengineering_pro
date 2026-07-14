@@ -1,0 +1,333 @@
+Schema::create('users', function (Blueprint $table) {
+            $table->id();
+            $table->string('name');
+            $table->string('email')->unique();
+            $table->timestamp('email_verified_at')->nullable();
+            $table->string('password');
+            $table->rememberToken();
+            $table->timestamps();
+        });
+
+
+        Schema::create('settings', function (Blueprint $table) {
+            $table->id();
+            $table->string('logo')->nullable();
+            $table->string('favicon')->nullable();
+            $table->string('mobile_phone_1')->nullable();
+            $table->string('mobile_phone_2')->nullable();
+            $table->longText('address_1')->nullable();
+            $table->longText('address_2')->nullable();
+            $table->longText('address_3')->nullable();
+            $table->longText('xml_script')->nullable();
+            $table->longText('footer_aboutus')->nullable();
+            $table->longText('footer_description')->nullable();
+            $table->string('facebook_url')->nullable();
+            $table->string('twitter_url')->nullable();
+            $table->string('instagram_url')->nullable();
+            $table->string('linkedin_url')->nullable();
+            $table->string('youtube_url')->nullable();
+            $table->string('whatsapp_number')->nullable();
+            $table->string('email_primary')->nullable();
+            $table->string('email_secondary')->nullable();
+            $table->string('working_hours')->nullable();
+            $table->string('google_map_embed')->nullable();
+            $table->boolean('status')->default(true);
+            $table->timestamps();
+        });
+
+        Schema::create('aboutus', function (Blueprint $table) {
+            $table->id();
+            $table->string('about_title');
+            $table->text('about_description_1');
+            $table->text('about_description_2');
+            $table->string('a_image')->nullable();
+            $table->string('mission_title')->nullable();
+            $table->text('mission_description')->nullable();
+            $table->string('vision_title')->nullable();
+            $table->text('vision_description')->nullable();
+            $table->string('values_title')->nullable();
+            $table->text('values_description')->nullable();
+            $table->integer('years_experience')->default(0);
+            $table->integer('projects_completed')->default(0);
+            $table->integer('happy_clients')->default(0);
+            $table->string('meta_title')->nullable();
+            $table->text('meta_description')->nullable();
+            $table->string('meta_keywords')->nullable();
+            $table->timestamps();
+        });
+
+Schema::create('contact_address', function (Blueprint $table) {
+            $table->id();
+            $table->string('ca_address');
+            $table->string('ca_email');
+            $table->string('ca_phone');
+            $table->string('footer_phone')->nullable();
+            $table->string('whatsapp')->nullable();
+            $table->string('office_hours')->nullable();
+            $table->string('google_map')->nullable();
+            $table->string('facebook')->nullable();
+            $table->string('instagram')->nullable();
+            $table->string('linkedin')->nullable();
+            $table->string('youtube')->nullable();
+            $table->timestamps();
+        });
+
+    Schema::create('contact_us', function (Blueprint $table) {
+            $table->id();
+            $table->string('cs_title');
+            $table->text('cs_description');
+            $table->text('map_address');
+            $table->string('form_title')->nullable();
+            $table->text('form_description')->nullable();
+            $table->string('banner_image')->nullable();
+            $table->string('meta_title')->nullable();
+            $table->text('meta_description')->nullable();
+            $table->string('meta_keywords')->nullable();
+            $table->timestamps();
+        });
+
+    Schema::create('faq', function (Blueprint $table) {
+            $table->id();
+            $table->text('faq_question');
+            $table->text('faq_answer');
+            $table->string('faq_category')->nullable();
+            $table->integer('sort_order')->default(0);
+            $table->boolean('is_active')->default(true);
+            $table->timestamps();
+        });
+
+    Schema::create('our_company', function (Blueprint $table) {
+            $table->id();
+            $table->string('oc_title');
+            $table->text('oc_description');
+            $table->string('oc_image1')->nullable();
+            $table->string('oc_image2')->nullable();
+            $table->string('oc_image3')->nullable();
+            $table->string('oc_image4')->nullable();
+            $table->string('ceo_name')->nullable();
+            $table->string('ceo_image')->nullable();
+            $table->text('ceo_message')->nullable();
+            $table->string('established_year')->nullable();
+            $table->string('company_type')->nullable();
+            $table->timestamps();
+        });
+
+    Schema::create('our_service', function (Blueprint $table) {
+            $table->id();
+            $table->string('os_name');
+            $table->string('os_slug')->unique();
+            $table->string('os_icon')->nullable();
+            $table->string('os_image')->nullable();
+            $table->text('os_description');
+            $table->text('os_short_description')->nullable();
+            $table->string('os_banner')->nullable();
+            $table->boolean('is_active')->default(true);
+            $table->boolean('is_featured')->default(false);
+            $table->integer('sort_order')->default(0);
+            $table->string('meta_title')->nullable();
+            $table->text('meta_description')->nullable();
+            $table->string('meta_keywords')->nullable();
+            $table->timestamps();
+        });
+
+
+
+Schema::create('our_team', function (Blueprint $table) {
+            $table->id();
+            $table->string('ot_name');
+            $table->string('ot_image')->nullable();
+            $table->string('ot_designation');
+            $table->string('ot_phone')->nullable();
+            $table->string('ot_email')->nullable();
+            $table->string('ot_fb')->nullable();
+            $table->string('ot_gm')->nullable();
+            $table->string('ot_inst')->nullable();
+            $table->string('ot_twitter')->nullable();
+            $table->string('ot_linkedin')->nullable();
+            $table->text('ot_description');
+            $table->integer('ot_experience')->nullable();
+            $table->text('ot_skills')->nullable();
+            $table->boolean('is_active')->default(true);
+            $table->integer('sort_order')->default(0);
+            $table->timestamps();
+        });
+
+    Schema::create('service_advantage', function (Blueprint $table) {
+            $table->id();
+            $table->unsignedBigInteger('sa_st_id');
+            $table->string('sa_title');
+            $table->text('sa_description');
+            $table->string('sa_image')->nullable();
+            $table->string('sa_t1')->nullable();
+            $table->string('sa_t2')->nullable();
+            $table->string('sa_t3')->nullable();
+            $table->string('sa_t4')->nullable();
+            $table->integer('sort_order')->default(0);
+            $table->timestamps();
+        });
+
+
+Schema::create('service_detail', function (Blueprint $table) {
+            $table->id();
+            $table->unsignedBigInteger('os_id');
+            $table->string('sd_title');
+            $table->text('sd_description');
+            $table->string('sd_t1')->nullable();
+            $table->string('sd_t2')->nullable();
+            $table->string('sd_t3')->nullable();
+            $table->string('sd_image1')->nullable();
+            $table->string('sd_image2')->nullable();
+            $table->text('sd_features')->nullable();
+            $table->integer('sort_order')->default(0);
+            $table->timestamps();
+        });
+
+Schema::create('product_category', function (Blueprint $table) {
+            $table->id();
+            $table->string('pc_name');
+            $table->string('pc_slug')->unique();
+            $table->text('pc_description')->nullable();
+            $table->string('pc_image')->nullable();
+            $table->boolean('is_active')->default(true);
+            $table->integer('sort_order')->default(0);
+            $table->timestamps();
+        });
+
+Schema::create('product', function (Blueprint $table) {
+            $table->id();
+            $table->string('p_name');
+            $table->string('p_slug')->unique();
+            $table->text('p_description');
+            $table->text('p_short_description')->nullable();
+            $table->string('p_image')->nullable();
+            $table->string('p_price');
+            $table->string('p_contact');
+            $table->string('pc_type');
+            $table->unsignedBigInteger('product_category_id')->nullable();
+            $table->json('p_gallery')->nullable();
+            $table->text('p_specifications')->nullable();
+            $table->boolean('in_stock')->default(true);
+            $table->boolean('is_active')->default(true);
+            $table->boolean('is_featured')->default(false);
+            $table->integer('sort_order')->default(0);
+            $table->timestamps();
+        });
+
+Schema::create('project_category', function (Blueprint $table) {
+            $table->id();
+            $table->string('pc_name');
+            $table->string('pc_slug')->unique();
+            $table->text('pc_description')->nullable();
+            $table->string('pc_image')->nullable();
+            $table->boolean('is_active')->default(true);
+            $table->integer('sort_order')->default(0);
+            $table->timestamps();
+        });
+
+Schema::create('projects', function (Blueprint $table) {
+            $table->id();
+            $table->string('p_title');
+            $table->string('p_slug')->unique();
+            $table->string('p_image')->nullable();
+            $table->text('p_description');
+            $table->text('p_short_description')->nullable();
+            $table->string('p_category')->nullable();
+            $table->unsignedBigInteger('pc_id')->nullable();
+            $table->string('p_location')->nullable();
+            $table->string('p_client')->nullable();
+            $table->date('p_start_date')->nullable();
+            $table->date('p_end_date')->nullable();
+            $table->string('p_status')->default('completed');
+            $table->json('p_gallery')->nullable();
+            $table->boolean('is_active')->default(true);
+            $table->boolean('is_featured')->default(false);
+            $table->integer('sort_order')->default(0);
+            $table->timestamps();
+        });
+
+Schema::create('slider', function (Blueprint $table) {
+            $table->id();
+            $table->string('s_image');
+            $table->string('s_title');
+            $table->text('s_description');
+            $table->string('s_t1')->nullable();
+            $table->string('s_t2')->nullable();
+            $table->string('s_t3')->nullable();
+            $table->string('button_text')->nullable();
+            $table->string('button_link')->nullable();
+            $table->boolean('is_active')->default(true);
+            $table->integer('sort_order')->default(0);
+            $table->timestamps();
+        });
+
+
+Schema::create('seo_data', function (Blueprint $table) {
+            $table->id();
+            // Basic SEO
+            $table->string('seo_main_title')->nullable();
+            $table->string('seo_title')->nullable();
+            $table->text('seo_description')->nullable();
+            $table->text('seo_keywords')->nullable();
+            $table->string('seo_canonical')->nullable();
+            // Page information
+            $table->string('seo_page_type')->default('website');
+            $table->string('seo_page_url')->nullable();
+            $table->string('seo_slug')->nullable();
+            // Robots
+            $table->string('seo_robots')->default('index,follow');
+            // Open Graph (Facebook, LinkedIn)
+            $table->string('seo_og_title')->nullable();
+            $table->text('seo_og_description')->nullable();
+            $table->string('seo_og_image')->nullable();
+            $table->string('seo_og_type')->default('website');
+            // Twitter Cards
+            $table->string('seo_twitter_card')->default('summary_large_image');
+            $table->string('seo_twitter_title')->nullable();
+            $table->text('seo_twitter_description')->nullable();
+            $table->string('seo_twitter_image')->nullable();
+            // Schema.org JSON-LD
+            $table->longText('seo_schema_markup')->nullable();
+            // Advanced SEO
+            $table->string('seo_author')->nullable();
+            $table->string('seo_publisher')->nullable();
+            $table->date('seo_published_date')->nullable();
+            $table->date('seo_modified_date')->nullable();
+            // Search engine verification
+            $table->text('google_site_verification')->nullable();
+            $table->text('bing_site_verification')->nullable();
+            // Analytics
+            $table->text('google_analytics_id')->nullable();
+            $table->text('google_tag_manager_id')->nullable();
+            // Sitemap control
+            $table->boolean('seo_sitemap_include')->default(true);
+            $table->integer('seo_sitemap_priority')->default(50);
+            $table->string('seo_sitemap_frequency')->default('weekly');
+            $table->timestamps();
+        });
+
+ Schema::create('upload_pdf', function (Blueprint $table) {
+            $table->id();
+            $table->text('pdf_name');
+            $table->string('pdf_title')->nullable();
+            $table->text('pdf_description')->nullable();
+            $table->string('pdf_category')->nullable();
+            $table->string('pdf_file_size')->nullable();
+            $table->boolean('is_active')->default(true);
+            $table->integer('sort_order')->default(0);
+            $table->timestamps();
+        });
+
+
+Schema::create('work_gallery', function (Blueprint $table) {
+            $table->id();
+            $table->string('wg_type');
+            $table->string('wg_title');
+            $table->string('wg_image');
+            $table->text('wg_description')->nullable();
+            $table->string('wg_category')->nullable();
+            $table->boolean('is_active')->default(true);
+            $table->integer('sort_order')->default(0);
+            $table->timestamps();
+        });
+
+        
