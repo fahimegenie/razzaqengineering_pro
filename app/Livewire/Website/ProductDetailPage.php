@@ -60,7 +60,7 @@ class ProductDetailPage extends Component
 
                 // Get related products (same category)
                 $this->relatedProducts = Product::active()
-                    ->where('p_id', '!=', $this->product->p_id)
+                    ->where('p_id', '!=', $this->product->id)
                     ->where(function ($q) {
                         $q->where('pc_type', $this->product->pc_type)
                           ->orWhere('product_category_id', $this->product->product_category_id);

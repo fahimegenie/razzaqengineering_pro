@@ -3,35 +3,31 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Str;
 
-#[Fillable([
-    'pc_name',
-    'pc_slug',
-    'pc_description',
-    'pc_image',
-    'is_active',
-    'sort_order'
-])]
 class ProjectCategory extends Model
 {
     use HasFactory;
 
     protected $table = 'project_category';
 
-    protected function casts(): array
-    {
-        return [
-            'is_active' => 'boolean',
-            'sort_order' => 'integer',
-            'created_at' => 'datetime',
-            'updated_at' => 'datetime',
-        ];
-    }
+    protected $fillable = [
+        'pc_name',
+        'pc_slug',
+        'pc_description',
+        'pc_image',
+        'is_active',
+        'sort_order',
+    ];
+
+    protected $casts = [
+        'is_active' => 'boolean',
+        'sort_order' => 'integer',
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime',
+    ];
 
     protected static function booted(): void
     {
@@ -47,30 +43,49 @@ class ProjectCategory extends Model
         return $this->hasMany(Project::class, 'pc_id');
     }
 
-    public function scopeActive(Builder $query): void
+    public function scopeActive($query)
     {
-        $query->where('is_active', true);
+        return $query->where('is_active', 1);
     }
 
-    public function scopeOrdered(Builder $query): void
+    public function scopeOrdered($query)
     {
-        $query->orderBy('sort_order')->orderBy('pc_name');
+        return $query->orderBy('sort_order', 'ASC')->orderBy('pc_name', 'ASC');
     }
 
     public function getImageUrlAttribute(): string
     {
-        return $this->pc_image 
-            ? asset('uploads/project-categories/' . $this->pc_image) 
-            : asset('images/placeholder-category.jpg');
+        if ($this->pc_image) {
+            $paths = [
+                public_path('uploads/project-categories/' . $this->pc_image),
+                public_path('storage/project-categories/' . $this->pc_image),
+            ];
+            foreach ($paths as $path) {
+                if (file_exists($path)) {
+                    return asset(str_replace(public_path(), '', $path));
+                }
+            }
+        }
+        return asset('images/placeholder-category.jpg');
+    }
+
+    public function getProjectsCountAttribute(): int
+    {
+        return $this->projects()->count();
+    }
+
+    public static function getTotalCategories(): int
+    {
+        return self::count();
+    }
+
+    public static function getActiveCategories(): int
+    {
+        return self::active()->count();
     }
 
     public function getRouteKeyName(): string
     {
         return 'pc_slug';
-    }
-
-    public function getActiveProjectsCountAttribute(): int
-    {
-        return $this->projects()->where('is_active', true)->count();
     }
 }

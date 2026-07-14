@@ -1,9 +1,11 @@
 <div x-data="dashboardHandler()" x-init="initCharts()">
     <!-- Loading State -->
-    <div wire:loading wire:target="refreshData, updatedPeriod" 
-         class="position-fixed top-0 start-0 w-100 h-100 d-flex justify-content-center align-items-center" 
-         style="background: rgba(0,0,0,0.2); z-index: 9999;">
-        <div class="bg-white p-4 rounded-3 shadow-lg text-center">
+    <div wire:loading 
+        wire:target="refreshData, updatedPeriod" 
+        class="position-fixed top-0 start-0 w-100 h-100 d-none align-items-center justify-content-center" 
+        style="background: rgba(0,0,0,0.3); z-index: 99999; pointer-events: auto;"
+        :class="{ 'd-flex': true }">
+        <div class="bg-body p-4 rounded-3 shadow-lg text-center border border-secondary-subtle">
             <div class="spinner-border text-primary mb-2" role="status">
                 <span class="visually-hidden">Loading...</span>
             </div>
@@ -42,10 +44,10 @@
                             <h2 class="mb-2 fw-bold">{{ $welcomeMessage }}</h2>
                             <p class="mb-0 opacity-90">
                                 Here's what's happening with your website today. 
-                                @if($newMessages > 0)
+                                @if(!empty($newMessages) && $newMessages > 0)
                                 You have <strong class="text-warning">{{ $newMessages }}</strong> new messages
                                 @endif
-                                @if($newQuotes > 0)
+                                @if(!empty($newQuotes) && $newQuotes > 0)
                                 and <strong class="text-warning">{{ $newQuotes }}</strong> pending quotes.
                                 @endif
                             </p>

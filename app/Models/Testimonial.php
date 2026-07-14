@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Storage;
 
 class Testimonial extends Model
 {
@@ -57,11 +58,6 @@ class Testimonial extends Model
         return $query->where('t_rating', $rating);
     }
     
-    public function scopeByLocation($query, $location)
-    {
-        return $query->where('t_location', $location);
-    }
-    
     public function scopeHighRated($query)
     {
         return $query->where('t_rating', '>=', 4);
@@ -78,24 +74,20 @@ class Testimonial extends Model
         return $this->belongsTo(Service::class, 'service_id', 'os_id');
     }
     
-    // Accessors (Virtual Attributes)
+    // Accessors
     public function getImageUrlAttribute()
     {
-        if ($this->t_image) {
-            return asset('storage/testimonials/' . $this->t_image);
+        if ($this->t_image && file_exists(public_path('testimonial_images/' . $this->t_image))) {
+            return asset('testimonial_images/' . $this->t_image);
         }
-        return asset('images/default-avatar.jpg');
+        return asset('images/default-avatar.png');
     }
     
     public function getRatingStarsAttribute()
     {
         $stars = '';
         for ($i = 1; $i <= 5; $i++) {
-            if ($i <= $this->t_rating) {
-                $stars .= '★'; // Filled star
-            } else {
-                $stars .= '☆'; // Empty star
-            }
+            $stars .= $i <= $this->t_rating ? '★' : '☆';
         }
         return $stars;
     }
@@ -120,10 +112,7 @@ class Testimonial extends Model
     
     public function getLocationBadgeAttribute()
     {
-        if ($this->t_location) {
-            return '📍 ' . $this->t_location;
-        }
-        return null;
+        return $this->t_location ? '📍 ' . $this->t_location : null;
     }
     
     // Helper Methods
@@ -137,20 +126,10 @@ class Testimonial extends Model
         return !empty($this->t_image);
     }
     
-    public function hasProject()
-    {
-        return !is_null($this->project_id);
-    }
-    
-    public function hasService()
-    {
-        return !is_null($this->service_id);
-    }
-    
-    // Static Methods for Dashboard/Analytics
+    // Static Methods
     public static function getAverageRating()
     {
-        return self::active()->avg('t_rating') ?? 0;
+        return number_format(self::active()->avg('t_rating') ?? 0, 1);
     }
     
     public static function getTotalTestimonials()
@@ -167,45 +146,19 @@ class Testimonial extends Model
         return $distribution;
     }
     
-    public static function getFeaturedTestimonials($limit = 6)
-    {
-        return self::active()
-            ->featured()
-            ->ordered()
-            ->limit($limit)
-            ->get();
-    }
-    
-    public static function getRandomTestimonials($limit = 3)
-    {
-        return self::active()
-            ->inRandomOrder()
-            ->limit($limit)
-            ->get();
-    }
-    
     // Boot Method
     protected static function boot()
     {
         parent::boot();
         
         static::creating(function ($testimonial) {
-            // Auto-set sort order if not provided
             if (empty($testimonial->sort_order)) {
                 $testimonial->sort_order = self::max('sort_order') + 1;
             }
-            
-            // Validate rating range
-            if ($testimonial->t_rating < 1) {
-                $testimonial->t_rating = 1;
-            }
-            if ($testimonial->t_rating > 5) {
-                $testimonial->t_rating = 5;
-            }
+            $testimonial->t_rating = max(1, min(5, $testimonial->t_rating ?? 5));
         });
         
         static::saving(function ($testimonial) {
-            // Ensure rating is within valid range
             $testimonial->t_rating = max(1, min(5, $testimonial->t_rating));
         });
     }

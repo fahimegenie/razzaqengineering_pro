@@ -123,11 +123,11 @@
                         @if(count($products) > 0)
                             <div class="row g-4">
                                 @foreach($products as $product)
-                                    <div class="col-lg-3 col-md-4 col-sm-6" data-aos="fade-up" data-aos-delay="{{ $loop->index % 4 * 100 }}" wire:key="product-card-{{ $product->p_id }}">
+                                    <div class="col-lg-3 col-md-4 col-sm-6" data-aos="fade-up" data-aos-delay="{{ $loop->index % 4 * 100 }}" wire:key="product-card-{{ $product->id }}">
                                         <div class="product-card">
                                             
                                             {{-- ✅ Image Clickable - Product Detail Link --}}
-                                            <a href="{{ route('product.detail', ['slug' => $product->p_name ?? $product->p_id]) }}" class="product-card-img" wire:ignore>
+                                            <a href="{{ route('product.detail', ['slug' => $product->p_name ?? $product->id]) }}" class="product-card-img" wire:ignore>
                                                 <img src="{{ asset('uploads/products/'.$product->p_image) }}" 
                                                      alt="{{ $product->p_name }}" class="img-fluid" loading="lazy">
                                                 @if($product->is_featured)
@@ -147,7 +147,7 @@
                                                 
                                                 {{-- ✅ Product Name Clickable - Product Detail Link --}}
                                                 <h4>
-                                                    <a href="{{ route('product.detail', ['slug' => $product->p_name ?? $product->p_id]) }}" class="text-decoration-none text-dark">
+                                                    <a href="{{ route('product.detail', ['slug' => $product->p_name ?? $product->id]) }}" class="text-decoration-none text-dark">
                                                         {{ $product->p_name }}
                                                     </a>
                                                 </h4>
@@ -166,7 +166,7 @@
                                                 </div>
                                                 
                                                 {{-- ✅ View Details Button --}}
-                                                <a href="{{ route('product.detail', ['slug' => $product->p_name ?? $product->p_id]) }}" 
+                                                <a href="{{ route('product.detail', ['slug' => $product->p_name ?? $product->id]) }}" 
                                                    class="btn btn-outline-success btn-sm rounded-pill w-100 mt-2 fw-semibold">
                                                     <i class="fas fa-eye me-1"></i> View Details
                                                 </a>

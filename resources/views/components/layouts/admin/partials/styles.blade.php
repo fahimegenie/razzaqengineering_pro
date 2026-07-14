@@ -13,7 +13,7 @@
 <!--end::OverlayScrollbars-->
 
 <!--begin::AdminLTE CSS-->
-<link rel="stylesheet" href="{{ asset('css/adminlte.css') }}">
+<link rel="stylesheet" href="{{ asset('admin_assets/css/adminlte.css') }}">
 <!--end::AdminLTE CSS-->
 
 <!--begin::DataTables-->

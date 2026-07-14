@@ -4,14 +4,14 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Str;
 
 class WorkGallery extends Model
 {
     use HasFactory;
 
     protected $table = 'work_gallery';
-    protected $primaryKey = 'wg_id';
+    protected $primaryKey = 'id'; // Fixed: Using 'id' as per migration
 
     protected $fillable = [
         'wg_type',
@@ -23,15 +23,12 @@ class WorkGallery extends Model
         'sort_order',
     ];
 
-    protected function casts(): array
-    {
-        return [
-            'is_active' => 'boolean',
-            'sort_order' => 'integer',
-            'created_at' => 'datetime',
-            'updated_at' => 'datetime',
-        ];
-    }
+    protected $casts = [
+        'is_active' => 'boolean',
+        'sort_order' => 'integer',
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime',
+    ];
 
     // ============================================
     // SCOPES
@@ -42,14 +39,15 @@ class WorkGallery extends Model
         return $query->where('is_active', 1);
     }
 
-    /**
-     * ✅ FIX: Added ordered() scope
-     */
     public function scopeOrdered($query)
     {
         return $query->orderBy('sort_order', 'ASC')
-                     ->orderBy('wg_created_at', 'DESC')
                      ->orderBy('created_at', 'DESC');
+    }
+
+    public function scopeLatest($query)
+    {
+        return $query->orderBy('created_at', 'DESC');
     }
 
     public function scopeByType($query, $type)
@@ -70,18 +68,78 @@ class WorkGallery extends Model
     {
         if ($this->wg_image) {
             // Check multiple possible paths
-            if (file_exists(public_path('public/wg_image/' . $this->wg_image))) {
-                return asset('public/wg_image/' . $this->wg_image);
-            }
-            if (file_exists(public_path('uploads/gallery/' . $this->wg_image))) {
-                return asset('uploads/gallery/' . $this->wg_image);
+            $paths = [
+                public_path('wg_image/' . $this->wg_image),
+                public_path('uploads/gallery/' . $this->wg_image),
+                public_path('storage/gallery/' . $this->wg_image),
+            ];
+            
+            foreach ($paths as $path) {
+                if (file_exists($path)) {
+                    return asset(str_replace(public_path(), '', $path));
+                }
             }
         }
+        
+        // Default placeholder
         return asset('images/placeholder-gallery.jpg');
     }
 
     public function getTypeLabelAttribute(): string
     {
-        return ucwords(str_replace('-', ' ', $this->wg_type));
+        return ucwords(str_replace(['-', '_'], ' ', $this->wg_type ?? ''));
+    }
+
+    public function getCategoryLabelAttribute(): string
+    {
+        return ucwords(str_replace(['-', '_'], ' ', $this->wg_category ?? ''));
+    }
+
+    public function getShortDescriptionAttribute($length = 100): string
+    {
+        return Str::limit(strip_tags($this->wg_description ?? ''), $length);
+    }
+
+    // ============================================
+    // HELPER METHODS
+    // ============================================
+    
+    public function hasImage(): bool
+    {
+        return !empty($this->wg_image);
+    }
+
+    // ============================================
+    // STATIC METHODS
+    // ============================================
+    
+    public static function getTotalItems(): int
+    {
+        return self::active()->count();
+    }
+
+    public static function getTypes(): array
+    {
+        return self::distinct()->whereNotNull('wg_type')->pluck('wg_type')->toArray();
+    }
+
+    public static function getCategories(): array
+    {
+        return self::distinct()->whereNotNull('wg_category')->pluck('wg_category')->toArray();
+    }
+
+    // ============================================
+    // BOOT
+    // ============================================
+    
+    protected static function boot()
+    {
+        parent::boot();
+        
+        static::creating(function ($gallery) {
+            if (empty($gallery->sort_order)) {
+                $gallery->sort_order = self::max('sort_order') + 1;
+            }
+        });
     }
 }

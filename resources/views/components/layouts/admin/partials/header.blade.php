@@ -72,7 +72,7 @@
                     <div class="dropdown-divider"></div>
                     
                     @forelse($recentMessages as $msg)
-                    <a href="{{ route('admin.contacts.messages') }}" class="dropdown-item">
+                    <a href="{{ url('admin.contacts.messages') }}" class="dropdown-item">
                         <div class="d-flex align-items-start">
                             <div class="flex-shrink-0">
                                 <div class="avatar avatar-sm bg-primary rounded-circle d-flex align-items-center justify-content-center" 
@@ -100,7 +100,7 @@
                     <div class="dropdown-divider"></div>
                     @endforelse
                     
-                    <a href="{{ route('admin.contacts.messages') }}" class="dropdown-item text-center text-primary fw-bold">
+                    <a href="{{ url('admin.contacts.messages') }}" class="dropdown-item text-center text-primary fw-bold">
                         View All Messages
                     </a>
                 </div>
@@ -204,7 +204,7 @@
             @auth
             <li class="nav-item dropdown user-menu">
                 <a href="#" class="nav-link dropdown-toggle d-flex align-items-center gap-2" data-bs-toggle="dropdown">
-                    <img src="{{ Auth::user()->avatar ? asset('storage/' . Auth::user()->avatar) : asset('assets/img/default-avatar.png') }}" 
+                    <img src="{{ Auth::user()->avatar ? asset('storage/' . Auth::user()->avatar) : asset('admin_assets/assets/img/default-avatar.png') }}" 
                          class="user-image rounded-circle shadow-sm" 
                          alt="{{ Auth::user()->name }}"
                          style="width: 32px; height: 32px; object-fit: cover;">
@@ -213,7 +213,7 @@
                 <ul class="dropdown-menu dropdown-menu-lg dropdown-menu-end shadow">
                     <!-- User Header -->
                     <li class="user-header text-bg-primary rounded-top">
-                        <img src="{{ Auth::user()->avatar ? asset('storage/' . Auth::user()->avatar) : asset('assets/img/default-avatar.png') }}" 
+                        <img src="{{ Auth::user()->avatar ? asset('storage/' . Auth::user()->avatar) : asset('admin_assets/assets/img/default-avatar.png') }}" 
                              class="rounded-circle shadow mb-2" 
                              alt="{{ Auth::user()->name }}"
                              style="width: 80px; height: 80px; object-fit: cover;">
@@ -231,7 +231,7 @@
                     <li class="user-body border-bottom">
                         <div class="row g-0 text-center">
                             <div class="col-4">
-                                <a href="{{ route('admin.users.index') }}" class="d-block py-1 text-decoration-none">
+                                <a href="{{ url('admin.users.index') }}" class="d-block py-1 text-decoration-none">
                                     <small class="d-block fw-bold">{{ \App\Models\User::count() }}</small>
                                     <small class="text-muted">Users</small>
                                 </a>
@@ -259,7 +259,7 @@
                         <a href="#" class="btn btn-outline-danger btn-sm flex-grow-1" @click.prevent="confirmLogout()">
                             <i class="bi bi-box-arrow-right me-1"></i> Sign out
                         </a>
-                        <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
+                        <form id="logout-form" action="{{ url('logout') }}" method="POST" class="d-none">
                             @csrf
                         </form>
                     </li>

@@ -29,7 +29,7 @@
                                     
                                     {{-- Hover Overlay --}}
                                     <div class="project-card-overlay">
-                                        <a href="{{ url('project/'.$project->p_id) }}" class="overlay-link">
+                                        <a href="{{ url('project/'.$project->id) }}" class="overlay-link">
                                             View Project <i class="fas fa-arrow-right ms-2"></i>
                                         </a>
                                     </div>
@@ -47,7 +47,7 @@
                                         {{ date("M Y", strtotime($project->p_created_at)) }}
                                     </div>
                                     <h4 class="project-name">
-                                        <a href="{{ url('project/'.$project->p_id) }}">{{ Str::limit($project->p_title, 40) }}</a>
+                                        <a href="{{ url('project/'.$project->id) }}">{{ Str::limit($project->p_title, 40) }}</a>
                                     </h4>
                                     <p class="project-desc">{{ Str::limit($project->p_description, 90) }}</p>
                                     

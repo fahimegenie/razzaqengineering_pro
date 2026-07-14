@@ -7,8 +7,7 @@ use Livewire\Attributes\Layout;
 use Livewire\Attributes\Title;
 use App\Models\Faq;
 use App\Models\SeoData;
-use App\Models\Service;
-use App\Models\ProductCategory;
+use App\Models\Setting;
 
 #[Layout('components.layouts.app-layout')]
 #[Title('FAQ - Razzaq Engineering Services')]
@@ -19,16 +18,20 @@ class FaqPage extends Component
     public $faqs = [];
     public $categories = [];
     public $seo = null;
-    public $services = [];
-    public $pc = [];
 
     public function mount()
     {
-        $this->seo = SeoData::where('seo_page_type', 'Faq')->first();
-        $this->faqs = Faq::where('is_active', 1)->orderBy('sort_order', 'ASC')->get();
-        $this->services = Service::where('is_active', 1)->orderBy('id', 'ASC')->get();
-        $this->pc = ProductCategory::where('is_active', 1)->select('pc_name')->get();
+        $settings = Setting::getCached();
         
+        $this->seo = SeoData::where('seo_page_type', 'Faq')->first();
+        
+        // Load only active FAQs, ordered by sort_order
+        $this->faqs = Faq::where('is_active', 1)
+            ->orderBy('sort_order', 'ASC')
+            ->orderBy('id', 'ASC')
+            ->get();
+        
+        // Get unique categories from active FAQs
         $this->categories = Faq::where('is_active', 1)
             ->whereNotNull('faq_category')
             ->where('faq_category', '!=', '')
@@ -40,18 +43,22 @@ class FaqPage extends Component
     }
 
     /**
-     * Called from Alpine.js when category changes
+     * Filter FAQs by category - called from Alpine.js
      */
     public function filterByCategory($category)
     {
         $this->selectedCategory = $category;
         
         if ($category === 'all') {
-            $this->faqs = Faq::where('is_active', 1)->orderBy('sort_order', 'ASC')->get();
+            $this->faqs = Faq::where('is_active', 1)
+                ->orderBy('sort_order', 'ASC')
+                ->orderBy('id', 'ASC')
+                ->get();
         } else {
             $this->faqs = Faq::where('is_active', 1)
                 ->where('faq_category', $category)
                 ->orderBy('sort_order', 'ASC')
+                ->orderBy('id', 'ASC')
                 ->get();
         }
     }

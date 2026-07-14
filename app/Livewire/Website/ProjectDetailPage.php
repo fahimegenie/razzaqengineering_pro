@@ -84,7 +84,7 @@ class ProjectDetailPage extends Component
                 }
 
                 $this->relatedProjects = Project::active()
-                    ->where('p_id', '!=', $this->project->p_id)
+                    ->where('id', '!=', $this->project->id)
                     ->where(function ($q) {
                         $q->where('pc_id', $this->project->pc_id)
                         ->orWhere('p_location', 'like', '%' . ($this->project->p_location ?? '') . '%');

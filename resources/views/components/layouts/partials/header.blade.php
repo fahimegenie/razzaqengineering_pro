@@ -1,25 +1,77 @@
 <!--================ Header Area =================-->
 <header class="main_header_area">
+    @php
+        // Get settings from cache
+        $settings = App\Models\Setting::getCached();
+        
+        // Get navigation data
+        $navServices = App\Models\OurService::active()->ordered()->get();
+        $navCategories = App\Models\ProjectCategory::active()->get();
+        $navProducts = App\Models\ProductCategory::active()->get();
+        
+        // Determine logo
+        $logo = $settings->logo_url ?? asset('assets/images/logo-black.png');
+        
+        // Social links array
+        $socialLinks = [];
+        if ($settings->facebook_url) {
+            $socialLinks[] = ['url' => $settings->facebook_url, 'icon' => 'fab fa-facebook-f', 'title' => 'Facebook'];
+        }
+        if ($settings->instagram_url) {
+            $socialLinks[] = ['url' => $settings->instagram_url, 'icon' => 'fab fa-instagram', 'title' => 'Instagram'];
+        }
+        if ($settings->linkedin_url) {
+            $socialLinks[] = ['url' => $settings->linkedin_url, 'icon' => 'fab fa-linkedin-in', 'title' => 'LinkedIn'];
+        }
+        if ($settings->tiktok_url) {
+            $socialLinks[] = ['url' => $settings->tiktok_url, 'icon' => 'fab fa-tiktok', 'title' => 'TikTok'];
+        }
+        if ($settings->youtube_url) {
+            $socialLinks[] = ['url' => $settings->youtube_url, 'icon' => 'fab fa-youtube', 'title' => 'YouTube'];
+        }
+        if ($settings->twitter_url) {
+            $socialLinks[] = ['url' => $settings->twitter_url, 'icon' => 'fab fa-x-twitter', 'title' => 'Twitter'];
+        }
+        if ($settings->pinterest_url) {
+            $socialLinks[] = ['url' => $settings->pinterest_url, 'icon' => 'fab fa-pinterest', 'title' => 'Pinterest'];
+        }
+        
+        // Contact info
+        $primaryPhone = $settings->mobile_phone_1 ?? '+923048902805';
+        $primaryEmail = $settings->email_primary ?? 'info@razzaqengineering.com';
+        $whatsappNumber = $settings->whatsapp_number ?? $settings->mobile_phone_1 ?? '+923048902805';
+        $whatsappNumberClean = preg_replace('/[^0-9]/', '', $whatsappNumber);
+        
+        // Site name
+        $siteName = $settings->site_name ?? 'Razzaq Engineering';
+        
+        // Feature toggles
+        $showFaq = $settings->enable_faq ?? true;
+        $showPortfolio = $settings->enable_portfolio ?? true;
+        $showQuoteForm = $settings->enable_quote_form ?? true;
+    @endphp
+    
     <!-- Top Bar -->
     <div class="header_top d-none d-md-block">
         <div class="container">
             <div class="row align-items-center">
                 <div class="col-md-6">
                     <div class="d-flex gap-4">
-                        <a href="tel:+923048902805" class="topbar-link">
-                            <i class="fa fa-phone me-1"></i> + (0304) 890 2805
+                        <a href="tel:{{ $primaryPhone }}" class="topbar-link">
+                            <i class="fa fa-phone me-1"></i> {{ $primaryPhone }}
                         </a>
-                        <a href="mailto:info@razzaqengineering.com" class="topbar-link">
-                            <i class="fa fa-envelope me-1"></i> info@razzaqengineering.com
+                        <a href="mailto:{{ $primaryEmail }}" class="topbar-link">
+                            <i class="fa fa-envelope me-1"></i> {{ $primaryEmail }}
                         </a>
                     </div>
                 </div>
                 <div class="col-md-6 text-end">
                     <div class="header_social">
-                        <a href="https://web.facebook.com/razzaqengineering/" target="_blank" class="topbar-social-icon" title="Facebook"><i class="fab fa-facebook-f"></i></a>
-                        <a href="https://www.instagram.com/razzaq_engineering" target="_blank" class="topbar-social-icon" title="Instagram"><i class="fab fa-instagram"></i></a>
-                        <a href="https://www.linkedin.com/in/razzaq-engineering-services-265b15401/" target="_blank" class="topbar-social-icon" title="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
-                        <a href="https://www.tiktok.com/@razzaq_engineering" target="_blank" class="topbar-social-icon" title="TikTok"><i class="fab fa-tiktok"></i></a>
+                        @foreach($socialLinks as $social)
+                            <a href="{{ $social['url'] }}" target="_blank" class="topbar-social-icon" title="{{ $social['title'] }}">
+                                <i class="{{ $social['icon'] }}"></i>
+                            </a>
+                        @endforeach
                     </div>
                 </div>
             </div>
@@ -29,21 +81,9 @@
     <!-- Navigation -->
     <nav class="navbar navbar-expand-lg bg-white shadow-sm sticky-top">
         <div class="container">
-            @php 
-                $settings = App\Models\Setting::where('status', 1)->first();
-                $logo = isset($settings) && !empty($settings->logo) 
-                    ? asset('uploads/settings/'.$settings->logo) 
-                    : asset('assets/images/logo-black.png');
-                
-                // Fetch data once for both desktop & mobile menus
-                $navServices = App\Models\Service::active()->ordered()->get();
-                $navCategories = App\Models\ProjectCategory::active()->get();
-                $navProducts = App\Models\ProductCategory::active()->get();
-            @endphp
-            
             <!-- Brand Logo -->
             <a class="navbar-brand" href="{{ url('/') }}">
-                <img src="{{ $logo }}" alt="Razzaq Engineering" class="nav-logo">
+                <img src="{{ $logo }}" alt="{{ $siteName }}" class="nav-logo">
             </a>
             
             <!-- Mobile Toggle Button -->
@@ -68,7 +108,9 @@
                         </a>
                         <ul class="dropdown-menu shadow border-0 rounded-3">
                             <li><a class="dropdown-item {{ request()->is('about-us') ? 'active' : '' }}" href="{{ route('home.about') }}"><i class="fas fa-building me-2"></i> About Us</a></li>
+                            @if($showFaq)
                             <li><a class="dropdown-item {{ request()->is('faq') ? 'active' : '' }}" href="{{ route('home.faq') }}"><i class="fas fa-question-circle me-2"></i> FAQ</a></li>
+                            @endif
                         </ul>
                     </li>
                     
@@ -101,12 +143,14 @@
                             @if(!empty($navCategories) && count($navCategories) > 0)
                                 <li><hr class="dropdown-divider"></li>
                                 @foreach($navCategories as $cat)
-                                    @php $projs = App\Models\Project::active()->where('pc_id',$cat->id)->get(); @endphp
+                                    @php 
+                                        $projs = App\Models\Project::active()->where('pc_id',$cat->id)->get(); 
+                                    @endphp
                                     @if(!empty($projs) && count($projs) > 0)
                                         <li class="dropdown-header fw-bold bg-light py-2 small text-uppercase text-dark">{{ $cat->pc_name }}</li>
                                         @foreach($projs as $proj)
                                             <li>
-                                                <a class="dropdown-item ps-4" href="{{ route('project.detail', ['slug' => $proj->slug] ) }}">
+                                                <a class="dropdown-item ps-4" href="{{ route('project.detail', ['slug' => $proj->p_title] ) }}">
                                                     <i class="fas fa-angle-right me-2 small"></i> {{ Str::limit($proj->p_title, 30) }}
                                                 </a>
                                             </li>
@@ -137,11 +181,13 @@
                     </li>
                     
                     <!-- Portfolio -->
+                    @if($showPortfolio)
                     <li class="nav-item">
                         <a class="nav-link fw-semibold {{ request()->is('gallery') ? 'active' : '' }}" href="{{ url('gallery') }}">
                             Portfolio
                         </a>
                     </li>
+                    @endif
                     
                     <!-- Team -->
                     <li class="nav-item">
@@ -158,11 +204,13 @@
                     </li>
                     
                     <!-- Get Quote Button -->
+                    @if($showQuoteForm)
                     <li class="nav-item ms-lg-3">
                         <a href="{{ route('quote.index') }}" class="btn btn-gradient btn-sm fw-bold px-4 py-2 rounded-pill">
                             <i class="fas fa-paper-plane me-1"></i> Get a Quote
                         </a>
                     </li>
+                    @endif
                 </ul>
             </div>
         </div>
@@ -173,7 +221,7 @@
         <!-- Offcanvas Header -->
         <div class="offcanvas-header mobile-menu-header">
             <h5 class="offcanvas-title text-white fw-bold" id="mobileMenuLabel">
-                <img src="{{ $logo }}" alt="Logo" class="me-2" style="height:32px;">
+                <img src="{{ $logo }}" alt="{{ $siteName }}" class="me-2" style="height:32px;">
             </h5>
             <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas" aria-label="Close"></button>
         </div>
@@ -197,7 +245,9 @@
                     <div class="collapse {{ request()->is('about-us','faq') ? 'show' : '' }}" id="mobAbout">
                         <ul class="mobile-submenu list-unstyled">
                             <li><a href="{{ route('home.about') }}" class="mobile-submenu-link {{ request()->is('about-us') ? 'active' : '' }}">About Us</a></li>
+                            @if($showFaq)
                             <li><a href="{{ route('home.faq') }}" class="mobile-submenu-link {{ request()->is('faq') ? 'active' : '' }}">FAQ</a></li>
+                            @endif
                         </ul>
                     </div>
                 </li>
@@ -232,7 +282,7 @@
                                 @if($projs->count())
                                     <li class="mobile-submenu-header">{{ $cat->pc_name }}</li>
                                     @foreach($projs as $proj)
-                                        <li><a href="{{ url('project/'.$proj->p_id) }}" class="mobile-submenu-link ps-4">{{ $proj->p_title }}</a></li>
+                                        <li><a href="{{ url('project/'.$proj->id) }}" class="mobile-submenu-link ps-4">{{ $proj->p_title }}</a></li>
                                     @endforeach
                                 @endif
                             @endforeach
@@ -257,11 +307,13 @@
                 </li>
                 
                 <!-- Portfolio -->
+                @if($showPortfolio)
                 <li class="mobile-nav-item">
                     <a href="{{ url('gallery') }}" class="mobile-nav-link {{ request()->is('gallery') ? 'active' : '' }}">
                         <i class="fas fa-images me-3"></i> Portfolio
                     </a>
                 </li>
+                @endif
                 
                 <!-- Team -->
                 <li class="mobile-nav-item">
@@ -280,23 +332,39 @@
             
             <!-- Mobile Menu Footer -->
             <div class="mobile-menu-bottom p-4 mt-3">
-                <a href="{{ route('home.contact') }}" class="btn btn-gradient w-100 fw-bold py-3 rounded-pill mb-3">
+                @if($showQuoteForm)
+                <a href="{{ route('quote.index') }}" class="btn btn-gradient w-100 fw-bold py-3 rounded-pill mb-3">
                     <i class="fas fa-paper-plane me-2"></i> Get Free Quote
                 </a>
+                @else
+                <a href="{{ route('home.contact') }}" class="btn btn-gradient w-100 fw-bold py-3 rounded-pill mb-3">
+                    <i class="fas fa-paper-plane me-2"></i> Contact Us
+                </a>
+                @endif
+                
                 <div class="d-flex flex-column gap-2">
-                    <a href="tel:+923048902805" class="mobile-contact-link">
-                        <i class="fas fa-phone text-success"></i> + (0304) 890 2805
+                    <a href="tel:{{ $primaryPhone }}" class="mobile-contact-link">
+                        <i class="fas fa-phone text-success"></i> {{ $primaryPhone }}
                     </a>
-                    <a href="mailto:info@razzaqengineering.com" class="mobile-contact-link">
-                        <i class="fas fa-envelope text-success"></i> info@razzaqengineering.com
+                    <a href="mailto:{{ $primaryEmail }}" class="mobile-contact-link">
+                        <i class="fas fa-envelope text-success"></i> {{ $primaryEmail }}
                     </a>
+                    @if($whatsappNumber)
+                    <a href="https://wa.me/{{ $whatsappNumberClean }}" target="_blank" class="mobile-contact-link">
+                        <i class="fab fa-whatsapp text-success"></i> WhatsApp Chat
+                    </a>
+                    @endif
                 </div>
+                
+                @if(count($socialLinks) > 0)
                 <div class="d-flex justify-content-center gap-3 mt-4">
-                    <a href="https://web.facebook.com/razzaqengineering/" target="_blank" class="mobile-social-icon" title="Facebook"><i class="fab fa-facebook-f"></i></a>
-                    <a href="https://www.instagram.com/razzaq_engineering" target="_blank" class="mobile-social-icon" title="Instagram"><i class="fab fa-instagram"></i></a>
-                    <a href="https://www.linkedin.com/in/razzaq-engineering-services-265b15401/" target="_blank" class="mobile-social-icon" title="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
-                    <a href="https://www.tiktok.com/@razzaq_engineering" target="_blank" class="mobile-social-icon" title="TikTok"><i class="fab fa-tiktok"></i></a>
+                    @foreach($socialLinks as $social)
+                        <a href="{{ $social['url'] }}" target="_blank" class="mobile-social-icon" title="{{ $social['title'] }}">
+                            <i class="{{ $social['icon'] }}"></i>
+                        </a>
+                    @endforeach
                 </div>
+                @endif
             </div>
         </div>
     </div>

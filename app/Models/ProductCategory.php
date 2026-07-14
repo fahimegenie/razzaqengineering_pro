@@ -3,40 +3,42 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Str;
 
-#[Fillable([
-    'pc_name',
-    'pc_slug',
-    'pc_description',
-    'pc_image',
-    'is_active',
-    'sort_order'
-])]
 class ProductCategory extends Model
 {
     use HasFactory;
 
     protected $table = 'product_category';
 
-    protected function casts(): array
-    {
-        return [
-            'is_active' => 'boolean',
-            'sort_order' => 'integer',
-            'created_at' => 'datetime',
-            'updated_at' => 'datetime',
-        ];
-    }
+    protected $fillable = [
+        'pc_name',
+        'pc_slug',
+        'pc_description',
+        'pc_image',
+        'is_active',
+        'sort_order',
+    ];
+
+    protected $casts = [
+        'is_active' => 'boolean',
+        'sort_order' => 'integer',
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime',
+    ];
 
     protected static function booted(): void
     {
         static::creating(function (ProductCategory $category) {
             if (empty($category->pc_slug)) {
+                $category->pc_slug = Str::slug($category->pc_name);
+            }
+        });
+        
+        static::updating(function (ProductCategory $category) {
+            if ($category->isDirty('pc_name') && !$category->isDirty('pc_slug')) {
                 $category->pc_slug = Str::slug($category->pc_name);
             }
         });
@@ -47,16 +49,59 @@ class ProductCategory extends Model
         return $this->hasMany(Product::class, 'product_category_id');
     }
 
-    public function scopeActive(Builder $query): void
+    // Scopes
+    public function scopeActive($query)
     {
-        $query->where('is_active', true);
+        return $query->where('is_active', 1);
     }
 
+    public function scopeOrdered($query)
+    {
+        return $query->orderBy('sort_order', 'ASC')->orderBy('pc_name', 'ASC');
+    }
+
+    public function scopeWithProductCount($query)
+    {
+        return $query->withCount('products');
+    }
+
+    // Accessors
     public function getImageUrlAttribute(): string
     {
-        return $this->pc_image 
-            ? asset('uploads/product-categories/' . $this->pc_image) 
-            : asset('images/placeholder-category.jpg');
+        if ($this->pc_image) {
+            $paths = [
+                public_path('uploads/product-categories/' . $this->pc_image),
+                public_path('storage/product-categories/' . $this->pc_image),
+            ];
+            
+            foreach ($paths as $path) {
+                if (file_exists($path)) {
+                    return asset(str_replace(public_path(), '', $path));
+                }
+            }
+        }
+        return asset('images/placeholder-category.jpg');
+    }
+
+    public function getProductsCountAttribute(): int
+    {
+        return $this->products()->count();
+    }
+
+    public function getActiveProductsCountAttribute(): int
+    {
+        return $this->products()->active()->count();
+    }
+
+    // Static Methods
+    public static function getTotalCategories(): int
+    {
+        return self::count();
+    }
+
+    public static function getActiveCategories(): int
+    {
+        return self::active()->count();
     }
 
     public function getRouteKeyName(): string

@@ -34,8 +34,7 @@
             }
         })();
     </script>
-
-    @include('layouts.admin.partials.styles')
+    <x-layouts.admin.partials.styles />
     
     @stack('styles')
     @livewireStyles
@@ -51,11 +50,11 @@
     <div class="app-wrapper">
         
         <!--begin::Header-->
-        @include('layouts.admin.partials.header')
+        <x-layouts.admin.partials.header />
         <!--end::Header-->
 
         <!--begin::Sidebar-->
-        @include('layouts.admin.partials.sidebar')
+        <x-layouts.admin.partials.sidebar />
         <!--end::Sidebar-->
 
         <!--begin::App Main-->
@@ -149,10 +148,12 @@
             <!--end::App Content-->
             
             <!--begin::Loading Overlay-->
-            <div wire:loading wire:target="save,update,delete,submit,upload" 
-                 class="position-fixed top-0 start-0 w-100 h-100 d-flex justify-content-center align-items-center" 
-                 style="background: rgba(0,0,0,0.3); z-index: 9999;">
-                <div class="bg-white p-4 rounded-3 shadow-lg text-center">
+            <div wire:loading.remove.class="d-none" 
+                wire:loading.class="d-flex" 
+                wire:target="save,update,delete,submit,upload" 
+                class="position-fixed top-0 start-0 w-100 h-100 d-none justify-content-center align-items-center" 
+                style="background: rgba(0,0,0,0.4); z-index: 99999;">
+                <div class="bg-body p-4 rounded-3 shadow-lg text-center border border-secondary-subtle">
                     <div class="spinner-border text-primary mb-2" role="status">
                         <span class="visually-hidden">Loading...</span>
                     </div>
@@ -165,13 +166,13 @@
         <!--end::App Main-->
 
         <!--begin::Footer-->
-        @include('layouts.admin.partials.footer')
+        <x-layouts.admin.partials.footer />
         <!--end::Footer-->
     </div>
     <!--end::App Wrapper-->
 
     <!--begin::Scripts-->
-    @include('layouts.admin.partials.scripts')
+    <x-layouts.admin.partials.scripts />
     <!--end::Scripts-->
 
     @stack('scripts')
@@ -284,10 +285,11 @@
                 },
                 
                 initScrollbars() {
-                    setTimeout(() => {
+                    const setupScrollbars = () => {
                         const sidebarWrapper = document.querySelector('.sidebar-wrapper');
                         const isMobile = window.innerWidth <= 992;
                         
+                        // Safe check: pehle check karein ke kya scrollbars library load ho chuki hai ya nahi
                         if (sidebarWrapper && typeof OverlayScrollbarsGlobal !== 'undefined' && !isMobile) {
                             OverlayScrollbarsGlobal.OverlayScrollbars(sidebarWrapper, {
                                 scrollbars: {
@@ -297,7 +299,15 @@
                                 },
                             });
                         }
-                    }, 300);
+                    };
+
+                    // Agar document load ho raha ho to window load event ka wait karein, 
+                    // warna direct execute kar dein taake timing issue hal ho jaye.
+                    if (document.readyState === 'loading') {
+                        window.addEventListener('load', setupScrollbars);
+                    } else {
+                        setTimeout(setupScrollbars, 100);
+                    }
                 },
                 
                 toggleSidebar() {

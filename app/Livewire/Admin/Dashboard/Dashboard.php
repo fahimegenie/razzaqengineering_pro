@@ -25,7 +25,7 @@ use Illuminate\Support\Facades\Cache;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Log;
 
-#[Layout('layouts.admin.master')]
+#[Layout('components.layouts.admin-layout')]
 #[Title('Dashboard - Razzaq Engineering Admin')]
 class Dashboard extends Component
 {
@@ -322,7 +322,7 @@ class Dashboard extends Component
                 'value' => $this->totalMessages,
                 'icon' => 'bi-envelope',
                 'color' => 'secondary',
-                'url' => route('admin.contacts.messages'),
+                'url' => url('admin.contacts.messages'),
                 'trend' => $this->newMessages . ' new',
                 'trend_color' => 'danger',
                 'trend_icon' => 'bi-exclamation-circle',
@@ -332,7 +332,7 @@ class Dashboard extends Component
                 'value' => $this->totalUsers,
                 'icon' => 'bi-people',
                 'color' => 'primary',
-                'url' => route('admin.users.index'),
+                'url' => url('admin.users.index'),
                 'trend' => '+2%',
                 'trend_color' => 'success',
                 'trend_icon' => 'bi-arrow-up-short',
@@ -367,14 +367,16 @@ class Dashboard extends Component
     {
         $months = $this->period === '6months' ? 6 : 12;
         
-        $monthlyMessages = ContactMessage::select(
-                DB::raw('DATE_FORMAT(created_at, "%b %Y") as month'),
-                DB::raw('COUNT(*) as count')
-            )
-            ->where('created_at', '>=', now()->subMonths($months))
-            ->groupBy('month')
-            ->orderBy('created_at')
-            ->get();
+        $monthlyMessages = ContactMessage::selectRaw("
+                    YEAR(created_at) as year,
+                    MONTH(created_at) as month_number,
+                    DATE_FORMAT(created_at, '%b %Y') as month,
+                    COUNT(*) as count
+                ")
+                ->where('created_at', '>=', now()->subMonths($months))
+                ->groupByRaw('YEAR(created_at), MONTH(created_at), DATE_FORMAT(created_at, "%b %Y")')
+                ->orderByRaw('YEAR(created_at), MONTH(created_at)')
+                ->get();
             
         return [
             'categories' => $monthlyMessages->pluck('month')->toArray(),
@@ -389,7 +391,7 @@ class Dashboard extends Component
     
     private function calculateServicesData()
     {
-        $services = OurService::withCount('details')->get();
+        $services = OurService::withCount('serviceDetails')->get();
         
         return [
             'categories' => $services->pluck('os_name')->toArray(),
@@ -520,13 +522,13 @@ class Dashboard extends Component
             [
                 'label' => 'Add Service',
                 'icon' => 'bi-plus-circle',
-                'url' => route('admin.services.create'),
+                'url' => url('admin.services.create'),
                 'color' => 'success',
             ],
             [
                 'label' => 'Add Project',
                 'icon' => 'bi-plus-circle',
-                'url' => route('admin.projects.create'),
+                'url' => url('admin.projects.create'),
                 'color' => 'warning',
             ],
             [
@@ -544,13 +546,13 @@ class Dashboard extends Component
             [
                 'label' => 'Add User',
                 'icon' => 'bi-person-plus',
-                'url' => route('admin.users.create'),
+                'url' => url('admin.users.create'),
                 'color' => 'secondary',
             ],
             [
                 'label' => 'New Page',
                 'icon' => 'bi-file-earmark-plus',
-                'url' => route('admin.pages.create'),
+                'url' => url('admin.pages.create'),
                 'color' => 'outline-primary',
             ],
             [
@@ -579,7 +581,7 @@ class Dashboard extends Component
     
     public function render()
     {
-        return view('livewire.admin.dashboard', [
+        return view('livewire.admin.dashboard.dashboard', [
             'stats' => $this->stats,
             'projectStatusChart' => $this->projectStatusChart,
             'monthlyMessagesChart' => $this->monthlyMessagesChart,

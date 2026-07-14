@@ -12,12 +12,10 @@
 <!--end::Popper & Bootstrap-->
 
 <!--begin::AdminLTE JS-->
-<script src="{{ asset('js/adminlte.js') }}"></script>
+<script src="{{ asset('admin_assets/js/adminlte.js') }}"></script>
 <!--end::AdminLTE JS-->
 
-<!--begin::Alpine.js-->
-<script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.13.3/dist/cdn.min.js"></script>
-<!--end::Alpine.js-->
+
 
 <!--begin::Chart.js-->
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>

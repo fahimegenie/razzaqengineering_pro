@@ -142,9 +142,7 @@ class Setting extends Model
      */
     public static function getCached(): self
     {
-        return Cache::remember('site_settings', 3600, function () {
-            return static::first() ?? new static();
-        });
+        return static::query()->first() ?? new static();
     }
 
     /**

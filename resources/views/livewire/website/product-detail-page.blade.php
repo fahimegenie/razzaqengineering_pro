@@ -53,7 +53,7 @@
                 
             {{-- Content --}}
             @elseif($product)
-                <div wire:key="pdp-content-{{ $product->p_id }}">
+                <div wire:key="pdp-content-{{ $product->id }}">
                     
                     {{-- Product Info Bar --}}
                     <div class="pdp-info-bar" data-aos="fade-up" wire:ignore.self>
@@ -128,7 +128,7 @@
                             
                             {{-- Specifications --}}
                             @if(count($specifications) > 0)
-                                <div class="pdp-specifications mt-4" wire:key="specs-{{ $product->p_id }}">
+                                <div class="pdp-specifications mt-4" wire:key="specs-{{ $product->id }}">
                                     <h3 class="pdp-section-title">Specifications</h3>
                                     <div class="table-responsive">
                                         <table class="table table-bordered spec-table">
@@ -213,7 +213,7 @@
                                     </h5>
                                     <div class="pdp-related-list">
                                         @foreach($relatedProducts as $rp)
-                                            <a href="{{ url('product/'.Str::slug($rp->pc_type ?? 'p')) }}?product={{ $rp->p_slug ?? $rp->p_id }}" 
+                                            <a href="{{ url('product/'.Str::slug($rp->pc_type ?? 'p')) }}?product={{ $rp->p_slug ?? $rp->id }}" 
                                                class="pdp-related-item">
                                                 <img src="{{ asset('uploads/products/'.$rp->p_image) }}" alt="{{ $rp->p_name }}" loading="lazy">
                                                 <div>

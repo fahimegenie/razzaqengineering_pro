@@ -10,7 +10,7 @@ class OurTeam extends Model
     use HasFactory;
 
     protected $table = 'our_team';
-    protected $primaryKey = 'ot_id';
+    protected $primaryKey = 'id'; // Fixed: Using 'id' as per migration
 
     protected $fillable = [
         'ot_name',
@@ -30,17 +30,13 @@ class OurTeam extends Model
         'sort_order',
     ];
 
-    protected function casts(): array
-    {
-        return [
-            'ot_experience' => 'integer',
-            'ot_skills' => 'array',
-            'is_active' => 'boolean',
-            'sort_order' => 'integer',
-            'created_at' => 'datetime',
-            'updated_at' => 'datetime',
-        ];
-    }
+    protected $casts = [
+        'ot_experience' => 'integer',
+        'is_active' => 'boolean',
+        'sort_order' => 'integer',
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime',
+    ];
 
     // ============================================
     // SCOPES
@@ -57,6 +53,16 @@ class OurTeam extends Model
                      ->orderBy('ot_name', 'ASC');
     }
 
+    public function scopeLatest($query)
+    {
+        return $query->orderBy('created_at', 'DESC');
+    }
+
+    public function scopeExperienced($query)
+    {
+        return $query->where('ot_experience', '>', 5);
+    }
+
     // ============================================
     // ACCESSORS
     // ============================================
@@ -64,13 +70,21 @@ class OurTeam extends Model
     public function getImageUrlAttribute(): string
     {
         if ($this->ot_image) {
-            if (file_exists(public_path('public/ot_image/' . $this->ot_image))) {
-                return asset('public/ot_image/' . $this->ot_image);
-            }
-            if (file_exists(public_path('uploads/team/' . $this->ot_image))) {
-                return asset('uploads/team/' . $this->ot_image);
+            // Check multiple possible paths
+            $paths = [
+                public_path('team_images/' . $this->ot_image),
+                public_path('uploads/team/' . $this->ot_image),
+                public_path('storage/team/' . $this->ot_image),
+            ];
+            
+            foreach ($paths as $path) {
+                if (file_exists($path)) {
+                    return asset(str_replace(public_path(), '', $path));
+                }
             }
         }
+        
+        // Default avatar
         return 'https://ui-avatars.com/api/?name=' . urlencode($this->ot_name) . '&background=0056b3&color=fff&size=300';
     }
 
@@ -88,10 +102,86 @@ class OurTeam extends Model
 
     public function getSkillsListAttribute(): array
     {
-        $skills = $this->ot_skills;
-        if (is_string($skills)) {
-            return json_decode($skills, true) ?? [];
+        if (empty($this->ot_skills)) {
+            return [];
         }
-        return is_array($skills) ? $skills : [];
+        
+        if (is_string($this->ot_skills)) {
+            $decoded = json_decode($this->ot_skills, true);
+            return is_array($decoded) ? $decoded : explode(',', $this->ot_skills);
+        }
+        
+        return is_array($this->ot_skills) ? $this->ot_skills : [];
+    }
+
+    public function getExperienceYearsAttribute(): string
+    {
+        if (!$this->ot_experience) {
+            return 'Fresher';
+        }
+        return $this->ot_experience . ' ' . ($this->ot_experience > 1 ? 'Years' : 'Year');
+    }
+
+    public function getShortBioAttribute($length = 100): string
+    {
+        return \Illuminate\Support\Str::limit(strip_tags($this->ot_description ?? ''), $length);
+    }
+
+    // ============================================
+    // HELPER METHODS
+    // ============================================
+    
+    public function hasImage(): bool
+    {
+        return !empty($this->ot_image);
+    }
+
+    public function hasSocialLinks(): bool
+    {
+        return !empty($this->ot_fb) || 
+               !empty($this->ot_inst) || 
+               !empty($this->ot_twitter) || 
+               !empty($this->ot_linkedin);
+    }
+
+    public function isSeniorMember(): bool
+    {
+        return $this->ot_experience && $this->ot_experience >= 10;
+    }
+
+    // ============================================
+    // STATIC METHODS
+    // ============================================
+    
+    public static function getTotalMembers(): int
+    {
+        return self::active()->count();
+    }
+
+    public static function getAverageExperience(): float
+    {
+        return round(self::active()->avg('ot_experience') ?? 0, 1);
+    }
+
+    // ============================================
+    // BOOT
+    // ============================================
+    
+    protected static function boot()
+    {
+        parent::boot();
+        
+        static::creating(function ($member) {
+            if (empty($member->sort_order)) {
+                $member->sort_order = self::max('sort_order') + 1;
+            }
+        });
+        
+        static::saving(function ($member) {
+            // Convert skills array to JSON string if needed
+            if (is_array($member->ot_skills)) {
+                $member->ot_skills = json_encode(array_values(array_filter($member->ot_skills)));
+            }
+        });
     }
 }

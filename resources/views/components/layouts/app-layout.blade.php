@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="{{ $settings->default_language ?? 'en' }}">
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -8,28 +8,36 @@
     <!-- CSRF Token -->
     <meta name="csrf-token" content="{{ csrf_token() }}">
     
+    @php
+        $settings = App\Models\Setting::getCached();
+        $siteName = $settings->site_name ?? 'Razzaq Engineering Services';
+        $siteTagline = $settings->site_tagline ?? 'Professional Engineering Services';
+        $primaryPhone = $settings->mobile_phone_1 ?? '+923048902805';
+        $primaryEmail = $settings->email_primary ?? 'info@razzaqengineering.com';
+    @endphp
+    
     <!-- SEO Meta Tags -->
     @if(isset($seo))
         <meta name="title" content="{{ $seo->seo_main_title ?? $seo->seo_title }}">
         <meta name="description" content="{{ $seo->seo_description }}">
         <meta name="keywords" content="{{ $seo->seo_keywords }}">
-        <meta name="author" content="{{ $seo->seo_author ?? 'Razzaq Engineering' }}">
+        <meta name="author" content="{{ $seo->seo_author ?? $siteName }}">
         <link rel="canonical" href="{{ $seo->seo_canonical ?? url()->current() }}">
-        <title>{{ $seo->seo_main_title ?? $seo->seo_title ?? 'Razzaq Engineering Services' }}</title>
+        <title>{{ $seo->seo_main_title ?? $seo->seo_title ?? $siteName }}</title>
         
         <!-- Open Graph / Facebook -->
         <meta property="og:type" content="{{ $seo->seo_og_type ?? 'website' }}">
         <meta property="og:title" content="{{ $seo->seo_og_title ?? $seo->seo_title }}">
         <meta property="og:description" content="{{ $seo->seo_og_description ?? $seo->seo_description }}">
-        <meta property="og:image" content="{{ $seo->seo_og_image ? asset('storage/'.$seo->seo_og_image) : asset('assets/images/og-image.jpg') }}">
+        <meta property="og:image" content="{{ $seo->seo_og_image ? asset('storage/'.$seo->seo_og_image) : $settings->og_image_url }}">
         <meta property="og:url" content="{{ url()->current() }}">
-        <meta property="og:site_name" content="Razzaq Engineering Services">
+        <meta property="og:site_name" content="{{ $siteName }}">
         
         <!-- Twitter -->
         <meta name="twitter:card" content="{{ $seo->seo_twitter_card ?? 'summary_large_image' }}">
         <meta name="twitter:title" content="{{ $seo->seo_twitter_title ?? $seo->seo_title }}">
         <meta name="twitter:description" content="{{ $seo->seo_twitter_description ?? $seo->seo_description }}">
-        <meta name="twitter:image" content="{{ $seo->seo_twitter_image ? asset('storage/'.$seo->seo_twitter_image) : asset('assets/images/og-image.jpg') }}">
+        <meta name="twitter:image" content="{{ $seo->seo_twitter_image ? asset('storage/'.$seo->seo_twitter_image) : $settings->og_image_url }}">
         
         <!-- Robots -->
         @if(isset($seo->seo_no_index) && $seo->seo_no_index)
@@ -43,15 +51,20 @@
             <script type="application/ld+json">{!! $seo->seo_schema_markup !!}</script>
         @endif
     @else
-        <title>@yield('title', 'Razzaq Engineering Services | RCC Core Cutting | Plumbing Contractor Pakistan')</title>
-        <meta name="description" content="Razzaq Engineering Services - Professional RCC Core Cutting, Diamond Drilling, Wall Saw Cutting, Plumbing & Fire Fighting Services in Lahore, Karachi, Islamabad, Rawalpindi, Peshawar Pakistan">
-        <meta name="keywords" content="RCC core cutting, diamond core drilling, wall saw cutting, plumbing contractor, fire fighting, Pakistan">
-        <meta name="robots" content="index, follow">
+        <title>{{ $settings->meta_title ?: $siteName . ' | RCC Core Cutting | Plumbing Contractor Pakistan' }}</title>
+        <meta name="description" content="{{ $settings->meta_description ?: $siteName . ' - Professional RCC Core Cutting, Diamond Drilling, Wall Saw Cutting, Plumbing & Fire Fighting Services in Lahore, Karachi, Islamabad, Rawalpindi, Peshawar Pakistan' }}">
+        <meta name="keywords" content="{{ $settings->meta_keywords ?: 'RCC core cutting, diamond core drilling, wall saw cutting, plumbing contractor, fire fighting, Pakistan' }}">
+        <meta name="robots" content="{{ $settings->meta_robots ?? 'index, follow' }}">
     @endif
     
-    <!-- Favicon -->
-    <link rel="icon" href="{{ asset('assets/images/fav-icon.png') }}" type="image/x-icon" />
-    <link rel="shortcut icon" href="{{ asset('assets/images/fav-icon.png') }}" type="image/x-icon" />
+    <!-- Favicon - Dynamic from Settings -->
+    @if($settings->favicon && file_exists(public_path('uploads/settings/' . $settings->favicon)))
+        <link rel="icon" href="{{ asset('uploads/settings/' . $settings->favicon) }}" type="image/x-icon" />
+        <link rel="shortcut icon" href="{{ asset('uploads/settings/' . $settings->favicon) }}" type="image/x-icon" />
+    @else
+        <link rel="icon" href="{{ asset('assets/images/fav-icon.png') }}" type="image/x-icon" />
+        <link rel="shortcut icon" href="{{ asset('assets/images/fav-icon.png') }}" type="image/x-icon" />
+    @endif
     
     <!-- Bootstrap 5.3.3 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -80,19 +93,72 @@
     <!-- AOS Animation 2.3.4 -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css" rel="stylesheet">
     
-    <!-- Custom CSS (Updated for Bootstrap 5) -->
+    <!-- Custom CSS -->
     <link href="{{ asset('assets/css/bootstrap5-style.css') }}" rel="stylesheet">
     <link href="{{ asset('assets/css/bootstrap5-responsive.css') }}" rel="stylesheet">
     <link href="{{ asset('assets/css/custom.css') }}" rel="stylesheet">
     <link href="{{ asset('assets/css/animations.css') }}" rel="stylesheet">
-    <link href="{{ asset('assets/css/bootstrap5-responsive.css') }}" rel="stylesheet">
+    
+    <!-- Custom CSS from Settings -->
+    @if($settings->custom_css)
+    <style>{!! $settings->custom_css !!}</style>
+    @endif
     
     <!-- Livewire Styles -->
     @livewireStyles
     
     @stack('styles')
     
-    <!-- Security Protection -->
+    <!-- Custom Header Scripts from Settings -->
+    @if($settings->custom_header_scripts)
+    {!! $settings->custom_header_scripts !!}
+    @endif
+    
+    <!-- Google Analytics - Dynamic -->
+    @if($settings->google_analytics_id)
+    <script async src="https://www.googletagmanager.com/gtag/js?id={{ $settings->google_analytics_id }}"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', '{{ $settings->google_analytics_id }}');
+    </script>
+    @else
+    <!-- Default Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-137344360-1"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'UA-137344360-1');
+        gtag('config', 'G-P8RM9PE3P1');
+    </script>
+    @endif
+    
+    <!-- Google Site Verification -->
+    @if($settings->google_site_verification)
+    <meta name="google-site-verification" content="{{ strip_tags($settings->google_site_verification) }}" />
+    @endif
+    
+    <!-- Facebook Pixel -->
+    @if($settings->facebook_pixel_id)
+    <script>
+        !function(f,b,e,v,n,t,s)
+        {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+        n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+        if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+        n.queue=[];t=b.createElement(e);t.async=!0;
+        t.src=v;s=b.getElementsByTagName(e)[0];
+        s.parentNode.insertBefore(t,s)}(window, document,'script',
+        'https://connect.facebook.net/en_US/fbevents.js');
+        fbq('init', '{{ $settings->facebook_pixel_id }}');
+        fbq('track', 'PageView');
+    </script>
+    @endif
+    
+    <!-- ============================================ -->
+    <!-- SECURITY PROTECTION (Full Original Code) -->
+    <!-- ============================================ -->
     <script>
         // Disable Right Click
         document.addEventListener('contextmenu', function(e) {
@@ -156,87 +222,42 @@
         })();
     </script>
     
-    <!-- Google Analytics -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-137344360-1"></script>
-    <script>
-        window.dataLayer = window.dataLayer || [];
-        function gtag(){dataLayer.push(arguments);}
-        gtag('js', new Date());
-        gtag('config', 'UA-137344360-1');
-        gtag('config', 'G-P8RM9PE3P1');
-    </script>
-    
-    <!-- Schema Markup -->
-        @php
+    <!-- Schema Markup - Dynamic from Settings -->
+    @php
+        $socialUrls = array_values(array_filter([
+            $settings->facebook_url ?? 'https://web.facebook.com/razzaqengineering/',
+            $settings->instagram_url ?? 'https://www.instagram.com/razzaq_engineering',
+            $settings->linkedin_url ?? 'https://www.linkedin.com/in/razzaq-engineering-services-265b15401/',
+            $settings->tiktok_url ?? 'https://www.tiktok.com/@razzaq_engineering',
+            $settings->youtube_url ?? null,
+            $settings->twitter_url ?? null,
+        ]));
+        
         $schemaData = [
             '@context' => 'https://schema.org',
             '@type' => 'LocalBusiness',
-
-            'name' => $settings->company_name ?? 'Razzaq Engineering Services',
-
-            'image' => !empty($settings->logo)
-                ? asset('uploads/settings/'.$settings->logo)
-                : asset('assets/images/logo-black.png'),
-
-            'url' => url('/'),
-
-            'telephone' => $settings->phone ?? '+923048902805',
-
-            'email' => $settings->email ?? 'info@razzaqengineering.com',
-
-            'description' => $settings->description 
-                ?? 'Razzaq Engineering Services - RCC Core Cutting, Diamond Drilling, Wall Saw Cutting, Plumbing and Fire Fighting Services in Pakistan.',
-
+            'name' => $settings->company_name ?? $siteName,
+            'image' => $settings->logo_url ?? asset('assets/images/logo-black.png'),
+            'url' => $settings->site_url ?? url('/'),
+            'telephone' => $primaryPhone,
+            'email' => $primaryEmail,
+            'description' => $settings->meta_description ?? $settings->site_description ?? $siteName . ' - RCC Core Cutting, Diamond Drilling, Wall Saw Cutting, Plumbing and Fire Fighting Services in Pakistan.',
             'address' => [
-                [
-                    '@type' => 'PostalAddress',
-                    'streetAddress' => $settings->address_lahore 
-                        ?? 'Plot 04 Ali Raza Abad Haji Electronics Plaza Raiwind Road',
-                    'addressLocality' => 'Lahore',
-                    'addressCountry' => 'PK'
-                ],
-                [
-                    '@type' => 'PostalAddress',
-                    'streetAddress' => $settings->address_islamabad 
-                        ?? '#02 LG Hassan Arcade 2 B Block Near Masjid Al Basheer Multi Garden B17',
-                    'addressLocality' => 'Islamabad',
-                    'addressCountry' => 'PK'
-                ],
-                [
-                    '@type' => 'PostalAddress',
-                    'streetAddress' => $settings->address_karachi 
-                        ?? '#519 Gulzar E Hijri Khatam e Nabuwat Chowk Scheme 33',
-                    'addressLocality' => 'Karachi',
-                    'addressCountry' => 'PK'
-                ]
+                '@type' => 'PostalAddress',
+                'streetAddress' => $settings->address_1 ?? 'Plot 04 Ali Raza Abad Haji Electronics Plaza Raiwind Road',
+                'addressLocality' => $settings->city ?? 'Lahore',
+                'addressRegion' => $settings->state ?? 'Punjab',
+                'addressCountry' => $settings->country ?? 'PK',
             ],
-
             'openingHoursSpecification' => [
                 '@type' => 'OpeningHoursSpecification',
-                'dayOfWeek' => [
-                    'Monday',
-                    'Tuesday',
-                    'Wednesday',
-                    'Thursday',
-                    'Friday',
-                    'Saturday',
-                    'Sunday'
-                ],
-                'opens' => '00:00',
-                'closes' => '23:59'
+                'dayOfWeek' => ['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'],
+                'opens' => $settings->is_24_7 ? '00:00' : ($settings->office_start_time ?? '00:00'),
+                'closes' => $settings->is_24_7 ? '23:59' : ($settings->office_end_time ?? '23:59'),
             ],
-
-            'sameAs' => [
-                $settings->facebook ?? 'https://web.facebook.com/razzaqengineering/',
-                $settings->instagram ?? 'https://www.instagram.com/razzaq_engineering',
-                $settings->linkedin ?? 'https://www.linkedin.com/in/razzaq-engineering-services-265b15401/',
-                $settings->tiktok ?? 'https://www.tiktok.com/@razzaq_engineering'
-            ]
+            'sameAs' => $socialUrls,
         ];
     @endphp
-
-
-    <!-- Schema Markup -->
     <script type="application/ld+json">
     {!! json_encode($schemaData, JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT) !!}
     </script>
@@ -253,8 +274,12 @@
         </div>
     </div>
 
-    <!-- WhatsApp Floating Button -->
-    <a href="https://api.whatsapp.com/send?phone=923048902805&text=Hello,%20how%20can%20we%20help%20you?" 
+    <!-- WhatsApp Floating Button - Dynamic -->
+    @php
+        $whatsappNumber = $settings->whatsapp_number_2 ?? $settings->whatsapp_number ?? $settings->mobile_phone_1 ?? '+923048902805';
+        $whatsappClean = preg_replace('/[^0-9]/', '', $whatsappNumber);
+    @endphp
+    <a href="https://api.whatsapp.com/send?phone={{ $whatsappClean }}&text=Hello,%20how%20can%20we%20help%20you?" 
        class="position-fixed bottom-0 end-0 m-4 bg-success text-white rounded-circle d-flex align-items-center justify-content-center shadow-lg text-decoration-none z-3"
        style="width: 60px; height: 60px; font-size: 30px; animation: pulse 2s infinite;"
        target="_blank"
@@ -262,8 +287,8 @@
         <i class="fab fa-whatsapp"></i>
     </a>
 
-    <!-- Call Floating Button -->
-    <a href="tel:+923048902805" 
+    <!-- Call Floating Button - Dynamic -->
+    <a href="tel:{{ $primaryPhone }}" 
        class="position-fixed bottom-0 end-0 me-4 mb-20 bg-primary text-white rounded-circle d-flex align-items-center justify-content-center shadow-lg text-decoration-none z-3"
        style="width: 60px; height: 60px; font-size: 24px; margin-bottom: 80px; animation: pulse-call 2s infinite;"
        title="Call Now">
@@ -320,23 +345,27 @@
     <!-- Custom JS -->
     <script src="{{ asset('assets/js/bootstrap5-theme.js') }}"></script>
     
+    <!-- Custom JavaScript from Settings -->
+    @if($settings->custom_javascript)
+    <script>{!! $settings->custom_javascript !!}</script>
+    @endif
+    
     <!-- Livewire Scripts -->
     @livewireScripts
     
+    <!-- ============================================ -->
+    <!-- ALL ORIGINAL SCRIPTS (Fully Preserved) -->
+    <!-- ============================================ -->
     <script>
         $(document).ready(function() {
-            // ============================================
             // PRELOADER
-            // ============================================
             $(window).on('load', function() {
                 $('#preloader').fadeOut('slow', function() {
                     $(this).remove();
                 });
             });
             
-            // ============================================
             // AOS INITIALIZATION
-            // ============================================
             AOS.init({
                 duration: 800,
                 easing: 'ease-in-out',
@@ -345,17 +374,13 @@
                 offset: 100
             });
             
-            // ============================================
             // LAZY LOADING
-            // ============================================
             var lazyLoadInstance = new LazyLoad({
                 elements_selector: ".lazy",
                 threshold: 300
             });
             
-            // ============================================
             // BACK TO TOP
-            // ============================================
             $(window).scroll(function() {
                 if ($(this).scrollTop() > 300) {
                     $('#back-to-top').fadeIn();
@@ -369,9 +394,7 @@
                 return false;
             });
             
-            // ============================================
             // NAVBAR SCROLL
-            // ============================================
             $(window).scroll(function() {
                 if ($(this).scrollTop() > 50) {
                     $('.navbar').addClass('navbar-scrolled shadow-sm');
@@ -380,9 +403,7 @@
                 }
             });
             
-            // ============================================
             // TAB FUNCTIONALITY (For Home Page)
-            // ============================================
             window.openCity = function(evt, cityName) {
                 var tabcontent = document.getElementsByClassName("tabcontent");
                 for (var i = 0; i < tabcontent.length; i++) {
@@ -420,9 +441,7 @@
             var defaultTabNew = document.getElementById("defaultOpen_new");
             if (defaultTabNew) defaultTabNew.click();
             
-            // ============================================
             // POPUP YOUTUBE VIDEO
-            // ============================================
             $('.popup-youtube').magnificPopup({
                 type: 'iframe',
                 iframe: {
@@ -439,12 +458,10 @@
                 }
             });
             
-            // ============================================
-            // WHATSAPP FLOATING BUTTON
-            // ============================================
+            // WHATSAPP FLOATING BUTTON - Dynamic
             if (typeof $('#WAButton').floatingWhatsApp === 'function') {
                 $('#WAButton').floatingWhatsApp({
-                    phone: '+923048902805',
+                    phone: '{{ $whatsappClean }}',
                     headerTitle: 'Chat with us on WhatsApp!',
                     popupMessage: 'Hello, how can we help you?',
                     showPopup: true,
@@ -453,9 +470,7 @@
                 });
             }
             
-            // ============================================
             // OWL CAROUSEL INITIALIZATION
-            // ============================================
             $('.owl-carousel').owlCarousel({
                 loop: true,
                 margin: 10,
@@ -467,9 +482,7 @@
                 }
             });
             
-            // ============================================
             // LIVEVIEW EVENTS
-            // ============================================
             document.addEventListener('livewire:initialized', () => {
                 AOS.refresh();
             });
@@ -479,9 +492,7 @@
             });
         });
         
-        // ============================================
-        // PULSE ANIMATIONS
-        // ============================================
+        // PULSE ANIMATIONS (Original)
         const style = document.createElement('style');
         style.textContent = `
             @keyframes pulse {
@@ -502,7 +513,12 @@
     
     @stack('scripts')
     
-    <!-- Console Protection -->
+    <!-- Custom Footer Scripts from Settings -->
+    @if($settings->custom_footer_scripts)
+    {!! $settings->custom_footer_scripts !!}
+    @endif
+    
+    <!-- Console Protection (Original) -->
     <script>
         console.clear();
         setInterval(() => console.clear(), 3000);

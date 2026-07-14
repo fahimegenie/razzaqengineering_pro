@@ -56,7 +56,7 @@
                 
             {{-- Content --}}
             @elseif($project)
-                <div wire:key="pdp-content-{{ $project->p_id }}">
+                <div wire:key="pdp-content-{{ $project->id }}">
                     
                     {{-- Project Info Bar --}}
                     <div class="pdp-info-bar" data-aos="fade-up" wire:ignore.self>
@@ -210,7 +210,7 @@
                                     </h5>
                                     <div class="pdp-related-list">
                                         @foreach($relatedProjects as $rp)
-                                            <a href="{{ url('project/'.($rp->p_slug ?? $rp->p_id)) }}" class="pdp-related-item">
+                                            <a href="{{ url('project/'.($rp->p_slug ?? $rp->id)) }}" class="pdp-related-item">
                                                 <img src="{{ asset('p_image/'.$rp->p_image) }}" alt="{{ $rp->p_title }}" loading="lazy">
                                                 <div>
                                                     <h6 class="mb-1">{{ Str::limit($rp->p_title, 40) }}</h6>

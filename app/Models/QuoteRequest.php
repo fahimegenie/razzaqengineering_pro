@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Str;
 
 class QuoteRequest extends Model
 {
@@ -47,23 +48,108 @@ class QuoteRequest extends Model
         return $query->where('qr_status', 'completed');
     }
     
-    // Accessors
-    public function getStatusBadgeAttribute()
+    public function scopeCancelled($query)
     {
-        $badges = [
-            'pending' => 'bg-warning',
-            'contacted' => 'bg-info',
-            'completed' => 'bg-success',
-            'cancelled' => 'bg-danger',
-        ];
-        
-        return $badges[$this->qr_status] ?? 'bg-secondary';
+        return $query->where('qr_status', 'cancelled');
     }
     
-    public function getAttachmentUrlAttribute()
+    public function scopeToday($query)
     {
-        return $this->qr_attachment 
-            ? asset('storage/'.$this->qr_attachment) 
-            : null;
+        return $query->whereDate('created_at', today());
+    }
+    
+    public function scopeThisWeek($query)
+    {
+        return $query->whereBetween('created_at', [now()->startOfWeek(), now()->endOfWeek()]);
+    }
+    
+    public function scopeThisMonth($query)
+    {
+        return $query->whereMonth('created_at', now()->month);
+    }
+    
+    public function scopeOrdered($query)
+    {
+        return $query->orderBy('created_at', 'DESC');
+    }
+    
+    // Accessors
+    public function getStatusBadgeAttribute(): string
+    {
+        return match($this->qr_status) {
+            'pending' => '<span class="badge bg-warning">Pending</span>',
+            'contacted' => '<span class="badge bg-info">Contacted</span>',
+            'completed' => '<span class="badge bg-success">Completed</span>',
+            'cancelled' => '<span class="badge bg-danger">Cancelled</span>',
+            default => '<span class="badge bg-secondary">Unknown</span>',
+        };
+    }
+    
+    public function getStatusColorAttribute(): string
+    {
+        return match($this->qr_status) {
+            'pending' => 'warning',
+            'contacted' => 'info',
+            'completed' => 'success',
+            'cancelled' => 'danger',
+            default => 'secondary',
+        };
+    }
+    
+    public function getAttachmentUrlAttribute(): ?string
+    {
+        if ($this->qr_attachment) {
+            $path = public_path('uploads/quote-attachments/' . $this->qr_attachment);
+            if (file_exists($path)) {
+                return asset('uploads/quote-attachments/' . $this->qr_attachment);
+            }
+        }
+        return null;
+    }
+    
+    public function getShortDetailsAttribute($length = 100): string
+    {
+        return Str::limit(strip_tags($this->qr_details ?? ''), $length);
+    }
+    
+    public function getFullLocationAttribute(): string
+    {
+        return $this->qr_location ?: 'Not specified';
+    }
+    
+    public function getFormattedBudgetAttribute(): string
+    {
+        return $this->qr_budget ?: 'Not specified';
+    }
+    
+    // Static Methods
+    public static function getTotalQuotes(): int
+    {
+        return self::count();
+    }
+    
+    public static function getPendingQuotes(): int
+    {
+        return self::pending()->count();
+    }
+    
+    public static function getTodayQuotes(): int
+    {
+        return self::today()->count();
+    }
+    
+    public static function getCompletedQuotes(): int
+    {
+        return self::completed()->count();
+    }
+    
+    public static function getServiceTypes(): array
+    {
+        return self::distinct()->pluck('qr_service_type')->filter()->toArray();
+    }
+    
+    public static function getLocations(): array
+    {
+        return self::distinct()->pluck('qr_location')->filter()->toArray();
     }
 }

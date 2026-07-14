@@ -3,50 +3,45 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Str;
 
-#[Fillable([
-    'p_title',
-    'p_slug',
-    'p_image',
-    'p_description',
-    'p_short_description',
-    'p_category',
-    'pc_id',
-    'p_location',
-    'p_client',
-    'p_start_date',
-    'p_end_date',
-    'p_status',
-    'p_gallery',
-    'is_active',
-    'is_featured',
-    'sort_order'
-])]
 class Project extends Model
 {
     use HasFactory;
 
     protected $table = 'projects';
 
-    protected function casts(): array
-    {
-        return [
-            'p_gallery' => 'array',
-            'p_start_date' => 'date',
-            'p_end_date' => 'date',
-            'p_status' => 'string',
-            'is_active' => 'boolean',
-            'is_featured' => 'boolean',
-            'sort_order' => 'integer',
-            'created_at' => 'datetime',
-            'updated_at' => 'datetime',
-        ];
-    }
+    protected $fillable = [
+        'p_title',
+        'p_slug',
+        'p_image',
+        'p_description',
+        'p_short_description',
+        'p_category',
+        'pc_id',
+        'p_location',
+        'p_client',
+        'p_start_date',
+        'p_end_date',
+        'p_status',
+        'p_gallery',
+        'is_active',
+        'is_featured',
+        'sort_order',
+    ];
+
+    protected $casts = [
+        'p_gallery' => 'array',
+        'p_start_date' => 'date',
+        'p_end_date' => 'date',
+        'is_active' => 'boolean',
+        'is_featured' => 'boolean',
+        'sort_order' => 'integer',
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime',
+    ];
 
     protected static function booted(): void
     {
@@ -54,23 +49,10 @@ class Project extends Model
             if (empty($project->p_slug)) {
                 $project->p_slug = Str::slug($project->p_title);
             }
+            if (empty($project->sort_order)) {
+                $project->sort_order = self::max('sort_order') + 1;
+            }
         });
-    }
-
-    public function getSlugAttribute()
-    {
-        $value = $this->p_name ?: $this->p_title;
-
-        // custom replacements
-        $value = str_replace(['(', ')', '?'], '_', $value);
-
-        // spaces to dash
-        $value = preg_replace('/\s+/', '-', $value);
-
-        // remove unwanted characters except - and _
-        $value = preg_replace('/[^A-Za-z0-9\-_]/', '', $value);
-
-        return strtolower(trim($value, '-'));
     }
 
     public function category(): BelongsTo
@@ -78,48 +60,55 @@ class Project extends Model
         return $this->belongsTo(ProjectCategory::class, 'pc_id');
     }
 
-    public function scopeActive(Builder $query): void
+    public function scopeActive($query)
     {
-        $query->where('is_active', true);
+        return $query->where('is_active', 1);
     }
 
-    public function scopeFeatured(Builder $query): void
+    public function scopeFeatured($query)
     {
-        $query->where('is_featured', true);
+        return $query->where('is_featured', 1);
     }
 
-    public function scopeCompleted(Builder $query): void
+    public function scopeOrdered($query)
     {
-        $query->where('p_status', 'completed');
+        return $query->orderBy('sort_order', 'ASC')->orderBy('p_start_date', 'DESC');
     }
 
-    public function scopeOngoing(Builder $query): void
+    public function scopeByStatus($query, $status)
     {
-        $query->where('p_status', 'ongoing');
+        return $query->where('p_status', $status);
     }
 
-    public function scopeOrdered(Builder $query): void
+    public function scopeByCategory($query, $categoryId)
     {
-        $query->orderBy('sort_order')->orderBy('p_start_date', 'desc');
-    }
-
-    public function scopeByLocation(Builder $query, string $location): void
-    {
-        $query->where('p_location', 'like', "%{$location}%");
+        return $query->where('pc_id', $categoryId);
     }
 
     public function getImageUrlAttribute(): string
     {
-        return $this->p_image 
-            ? asset('uploads/projects/' . $this->p_image) 
-            : asset('images/placeholder-project.jpg');
+        if ($this->p_image) {
+            $paths = [
+                public_path('p_image/' . $this->p_image),
+                public_path('storage/p_image/' . $this->p_image),
+            ];
+            foreach ($paths as $path) {
+                if (file_exists($path)) {
+                    return asset(str_replace(public_path(), '', $path));
+                }
+            }
+        }
+        return asset('images/placeholder-project.jpg');
     }
 
     public function getGalleryUrlsAttribute(): array
     {
         return collect($this->p_gallery ?? [])->map(function ($image) {
-            return asset('uploads/projects/gallery/' . $image);
-        })->toArray();
+            if (file_exists(public_path('uploads/projects/gallery/' . $image))) {
+                return asset('uploads/projects/gallery/' . $image);
+            }
+            return null;
+        })->filter()->values()->toArray();
     }
 
     public function getStatusBadgeAttribute(): string
@@ -129,7 +118,8 @@ class Project extends Model
             'ongoing' => '<span class="badge bg-primary">Ongoing</span>',
             'planning' => '<span class="badge bg-warning">Planning</span>',
             'on-hold' => '<span class="badge bg-secondary">On Hold</span>',
-            default => '<span class="badge bg-info">' . ucfirst($this->p_status) . '</span>',
+            'cancelled' => '<span class="badge bg-danger">Cancelled</span>',
+            default => '<span class="badge bg-info">' . ucfirst($this->p_status ?? 'Unknown') . '</span>',
         };
     }
 
@@ -139,6 +129,36 @@ class Project extends Model
             return $this->p_start_date->diffInDays($this->p_end_date) . ' days';
         }
         return 'N/A';
+    }
+
+    public function getFormattedStartDateAttribute(): string
+    {
+        return $this->p_start_date ? $this->p_start_date->format('M d, Y') : 'N/A';
+    }
+
+    public function getFormattedEndDateAttribute(): string
+    {
+        return $this->p_end_date ? $this->p_end_date->format('M d, Y') : 'N/A';
+    }
+
+    public static function getTotalProjects(): int
+    {
+        return self::count();
+    }
+
+    public static function getActiveProjects(): int
+    {
+        return self::active()->count();
+    }
+
+    public static function getFeaturedProjects(): int
+    {
+        return self::featured()->count();
+    }
+
+    public static function getCompletedProjects(): int
+    {
+        return self::where('p_status', 'completed')->count();
     }
 
     public function getRouteKeyName(): string

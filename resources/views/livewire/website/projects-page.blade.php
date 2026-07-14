@@ -169,7 +169,7 @@
                             <h3 class="fw-bold mb-4"><i class="fas fa-star text-warning me-2"></i> Featured Projects</h3>
                             <div class="row g-4">
                                 @foreach($featuredProjects as $fp)
-                                    <div class="col-lg-4 col-md-6" wire:key="fp-card-{{ $fp->p_id }}">
+                                    <div class="col-lg-4 col-md-6" wire:key="fp-card-{{ $fp->id }}">
                                         <div class="project-card featured">
                                             <div class="project-card-img" wire:ignore>
                                                 <img src="{{ asset('p_image/'.$fp->p_image) }}" alt="{{ $fp->p_title }}" class="img-fluid" loading="lazy">
@@ -182,7 +182,7 @@
                                                 @if($fp->category)
                                                     <span class="project-category">{{ $fp->category->pc_name }}</span>
                                                 @endif
-                                                <h4><a href="{{ route('project.detail', ['slug' => $fp->slug] ) }}">{{ $fp->p_title }}</a></h4>
+                                                <h4><a href="{{ route('project.detail', ['slug' => $fp->p_title] ) }}">{{ $fp->p_title }}</a></h4>
                                                 <p>{{ Str::limit($fp->p_short_description ?? $fp->p_description, 100) }}</p>
                                                 @if($fp->p_location)
                                                     <div class="project-location"><i class="fas fa-map-marker-alt text-danger me-1"></i> {{ $fp->p_location }}</div>
@@ -207,7 +207,7 @@
                         @if(count($projects) > 0)
                             <div class="row g-4">
                                 @foreach($projects as $project)
-                                    <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="{{ $loop->index % 3 * 100 }}" wire:key="proj-card-{{ $project->p_id }}">
+                                    <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="{{ $loop->index % 3 * 100 }}" wire:key="proj-card-{{ $project->id }}">
                                         <div class="project-card">
                                             <div class="project-card-img" wire:ignore>
                                                 <img src="{{ asset('p_image/'.$project->p_image) }}" alt="{{ $project->p_title }}" class="img-fluid" loading="lazy">
@@ -219,7 +219,7 @@
                                                 @if($project->category)
                                                     <span class="project-category">{{ $project->category->pc_name }}</span>
                                                 @endif
-                                                <h4><a href="{{ route('project.detail', ['slug' => $project->slug]) }}">{{ $project->p_title }}</a></h4>
+                                                <h4><a href="{{ route('project.detail', ['slug' => $project->p_title]) }}">{{ $project->p_title }}</a></h4>
                                                 <p>{{ Str::limit($project->p_short_description ?? $project->p_description, 100) }}</p>
                                                 <div class="project-meta">
                                                     @if($project->p_location)
@@ -230,7 +230,7 @@
                                                     @endif
                                                 </div>
                                                 <div class="project-card-footer">
-                                                    <a href="{{ route('project.detail', ['slug' => $project->slug]) }}" class="proj-link">View Details <i class="fas fa-arrow-right ms-1"></i></a>
+                                                    <a href="{{ route('project.detail', ['slug' => $project->p_title]) }}" class="proj-link">View Details <i class="fas fa-arrow-right ms-1"></i></a>
                                                     <span class="proj-date"><i class="far fa-calendar-alt me-1"></i> {{ $project->p_start_date ? $project->p_start_date->format('M Y') : 'N/A' }}</span>
                                                 </div>
                                             </div>
