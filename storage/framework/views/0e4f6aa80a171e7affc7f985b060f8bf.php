@@ -45,22 +45,27 @@ unset($__errorArgs, $__bag); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendB
 $__split = function ($name, $params = []) {
     return [$name, $params];
 };
-[$__name, $__params] = $__split('components.ck-editor', ['label' => 'Description','placeholder' => 'Describe this advantage...','height' => '300px','toolbar' => 'basic','value' => $sa_description]);
+[$__name, $__params] = $__split('components.ck-editor', ['label' => 'Description','placeholder' => 'Describe this advantage...','height' => '300px','toolbar' => 'basic','value' => $sa_description,'field' => 'sa_description']);
+
+$__keyOuter = $__key ?? null;
 
 $__key = null;
+$__componentSlots = [];
 
 $__key ??= \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::generateKey('lw-627147840-0', $__key);
 
-$__html = app('livewire')->mount($__name, $__params, $__key);
+$__html = app('livewire')->mount($__name, $__params, $__key, $__componentSlots);
 
 echo $__html;
 
 unset($__html);
 unset($__key);
+$__key = $__keyOuter;
+unset($__keyOuter);
 unset($__name);
 unset($__params);
+unset($__componentSlots);
 unset($__split);
-if (isset($__slots)) unset($__slots);
 ?>
             </div></div>
         </div>

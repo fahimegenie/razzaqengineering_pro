@@ -3,25 +3,27 @@
 namespace App\Livewire\Admin\Products;
 
 use Livewire\Component;
-use Livewire\WithFileUploads;
+use App\Traits\HandlesUploads; // Updated Trait integrate kiya
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\Title;
 use Livewire\Attributes\Validate;
 use App\Models\ProductCategory;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 
 #[Layout('components.layouts.admin-layout')]
 #[Title('Product Category Form - Admin Panel')]
 class ProductCategoryForm extends Component
 {
-    use WithFileUploads;
+    use HandlesUploads; // Trait apply kiya (WithFileUploads isme auto-included hai)
 
     public $categoryId = null;
     public $isEditing = false;
     public $isSaving = false;
     
     public $pc_image;
+    public $existing_image = null; // Purani image ka database path track karne ke liye
     public $imagePreview;
     
     #[Validate('required|string|max:255')]
@@ -56,7 +58,14 @@ class ProductCategoryForm extends Component
                     }
                 }
                 
-                $this->imagePreview = $category->image_url;
+                // Existing image track karna
+                $this->existing_image = $category->pc_image;
+
+                if ($this->existing_image) {
+                    $this->imagePreview = Storage::disk('public')->url($this->existing_image);
+                } else {
+                    $this->imagePreview = $category->image_url;
+                }
             }
         }
     }
@@ -112,21 +121,13 @@ class ProductCategoryForm extends Component
             $category->sort_order = (int) ($this->sort_order ?? 0);
             $category->is_active = (bool) $this->is_active;
             
+            // Trait ka generic upload handoff (Purani image auto replace ho jayegi)
             if ($this->pc_image) {
-                if ($category->pc_image) {
-                    @unlink(public_path('uploads/product-categories/' . $category->pc_image));
-                }
-                
-                $imageName = 'pcat_' . time() . '_' . uniqid() . '.' . $this->pc_image->getClientOriginalExtension();
-                $destinationPath = public_path('uploads/product-categories');
-                
-                if (!is_dir($destinationPath)) mkdir($destinationPath, 0777, true);
-                
-                $tempFile = $this->pc_image->getRealPath();
-                copy($tempFile, $destinationPath . '/' . $imageName);
-                @unlink($tempFile);
-                
-                $category->pc_image = $imageName;
+                $category->pc_image = $this->uploadFile(
+                    $this->pc_image, 
+                    'product-categories', 
+                    $this->existing_image
+                );
             }
             
             $category->save();

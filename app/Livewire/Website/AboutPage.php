@@ -6,6 +6,7 @@ use Livewire\Component;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\Title;
 use App\Models\AboutUs;
+use App\Models\OurTeam;
 use App\Models\SeoData;
 use App\Models\Service;
 use App\Models\ProductCategory;
@@ -50,7 +51,7 @@ class AboutPage extends Component
             $this->seo = SeoData::where('seo_page_type', 'About')->first();
             $this->services = Service::active()->ordered()->get();
             $this->pc = ProductCategory::active()->select('pc_name')->get();
-            $this->team = Testimonial::active()->ordered()->get();
+            $this->team = OurTeam::active()->ordered()->get();
             $this->testimonials = Testimonial::active()->featured()->ordered()->limit(6)->get();
             
             // Calculate stats
@@ -79,7 +80,7 @@ class AboutPage extends Component
 
     public function showMemberDetail($memberId)
     {
-        $this->selectedMember = $this->team->where('ot_id', $memberId)->first();
+        $this->selectedMember = $this->team->where('id', $memberId)->first();
         $this->showTeamModal = true;
     }
 

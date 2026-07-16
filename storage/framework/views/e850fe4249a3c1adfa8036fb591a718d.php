@@ -37,14 +37,14 @@
             
             
             <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if($isLoading): ?>
-                <div class="text-center py-5" <?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::processElementKey('pdp-loading', get_defined_vars()); ?>wire:key="pdp-loading">
+                <div class="text-center py-5" <?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::$currentLoop['key'] = 'pdp-loading'; ?>wire:key="pdp-loading">
                     <div class="spinner-border text-success" style="width:3rem;height:3rem;"></div>
                     <p class="text-muted mt-2">Loading product details...</p>
                 </div>
                 
             
             <?php elseif($errorMessage): ?>
-                <div class="alert alert-danger text-center rounded-3 border-0 shadow-sm" <?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::processElementKey('pdp-error', get_defined_vars()); ?>wire:key="pdp-error">
+                <div class="alert alert-danger text-center rounded-3 border-0 shadow-sm" <?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::$currentLoop['key'] = 'pdp-error'; ?>wire:key="pdp-error">
                     <i class="fas fa-exclamation-triangle me-2"></i> <?php echo $errorMessage; ?>
 
                     <a href="<?php echo e(url('products/p')); ?>" class="btn btn-outline-danger btn-sm ms-3 rounded-pill">
@@ -54,7 +54,7 @@
                 
             
             <?php elseif($product): ?>
-                <div <?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::processElementKey('pdp-content-{{ $product->id }}', get_defined_vars()); ?>wire:key="pdp-content-<?php echo e($product->id); ?>">
+                <div <?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::$currentLoop['key'] = 'pdp-content-'.e($product->id).''; ?>wire:key="pdp-content-<?php echo e($product->id); ?>">
                     
                     
                     <div class="pdp-info-bar" data-aos="fade-up" wire:ignore.self>
@@ -130,7 +130,7 @@
                             
                             
                             <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if(count($specifications) > 0): ?>
-                                <div class="pdp-specifications mt-4" <?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::processElementKey('specs-{{ $product->id }}', get_defined_vars()); ?>wire:key="specs-<?php echo e($product->id); ?>">
+                                <div class="pdp-specifications mt-4" <?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::$currentLoop['key'] = 'specs-'.e($product->id).''; ?>wire:key="specs-<?php echo e($product->id); ?>">
                                     <h3 class="pdp-section-title">Specifications</h3>
                                     <div class="table-responsive">
                                         <table class="table table-bordered spec-table">
@@ -245,7 +245,7 @@
          GALLERY MODAL
          ============================================ -->
     <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if($activeGalleryImage !== null && count($galleryImages) > 0): ?>
-        <div class="pdp-gallery-modal" <?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::processElementKey('gallery-modal', get_defined_vars()); ?>wire:key="gallery-modal" @keydown.escape.window="closeGallery">
+        <div class="pdp-gallery-modal" <?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::$currentLoop['key'] = 'gallery-modal'; ?>wire:key="gallery-modal" @keydown.escape.window="closeGallery">
             <div class="pdp-gallery-backdrop" @click="closeGallery"></div>
             <div class="pdp-gallery-content">
                 <button class="pdp-gallery-close" @click="closeGallery">&times;</button>

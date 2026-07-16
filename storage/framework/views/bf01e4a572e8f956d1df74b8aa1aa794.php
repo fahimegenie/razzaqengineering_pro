@@ -54,6 +54,22 @@
                     </ul>
                 </li>
 
+                <!-- Fleet Management -->
+                <li class="nav-item">
+                    <a href="<?php echo e(route('admin.fleet.index')); ?>" class="nav-link <?php echo e(request()->routeIs('admin.fleet.*') ? 'active' : ''); ?>">
+                        <i class="nav-icon bi bi-truck"></i>
+                        <p>Fleet Management</p>
+                    </a>
+                </li>
+
+                <!-- Our Companies -->
+                <li class="nav-item">
+                    <a href="<?php echo e(route('admin.our-companies.index')); ?>" class="nav-link <?php echo e(request()->routeIs('admin.our-companies.*') ? 'active' : ''); ?>">
+                        <i class="nav-icon bi bi-building"></i>
+                        <p>Our Companies</p>
+                    </a>
+                </li>
+
                 <!-- Projects Management -->
                 <li class="nav-item <?php echo e(request()->is('admin/projects*') || request()->is('admin/project-categories*') ? 'menu-open' : ''); ?>">
                     <a href="#" class="nav-link <?php echo e(request()->is('admin/projects*') || request()->is('admin/project-categories*') ? 'active' : ''); ?>">
@@ -141,6 +157,31 @@
                     </ul>
                 </li>
 
+                <!-- Pages Management -->
+                <li class="nav-item <?php echo e(request()->is('admin/pages*') || request()->is('admin/settings/contact-us*') || request()->is('admin/settings/about-us*') ? 'menu-open' : ''); ?>">
+                    <a href="#" class="nav-link <?php echo e(request()->is('admin/pages*') || request()->is('admin/settings/contact-us*') || request()->is('admin/settings/about-us*') ? 'active' : ''); ?>">
+                        <i class="nav-icon bi bi-file-earmark-text"></i>
+                        <p>
+                            Pages
+                            <i class="nav-arrow bi bi-chevron-right"></i>
+                        </p>
+                    </a>
+                    <ul class="nav nav-treeview">
+                        <li class="nav-item">
+                            <a href="<?php echo e(route('admin.settings.contact-us')); ?>" class="nav-link <?php echo e(request()->routeIs('admin.settings.contact-us') ? 'active' : ''); ?>">
+                                <i class="nav-icon bi bi-circle"></i>
+                                <p>Contact Us Page</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="<?php echo e(route('admin.settings.about-us')); ?>" class="nav-link <?php echo e(request()->routeIs('admin.settings.about-us') ? 'active' : ''); ?>">
+                                <i class="nav-icon bi bi-circle"></i>
+                                <p>About Us Page</p>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+
                 <!-- Gallery -->
                 <li class="nav-item">
                     <a href="<?php echo e(route('admin.gallery.index')); ?>" class="nav-link <?php echo e(request()->routeIs('admin.gallery.*') ? 'active' : ''); ?>">
@@ -181,9 +222,6 @@
                     </a>
                 </li>
 
-                <!-- City Service SEO -->
-                
-
                 <!-- Slider -->
                 <li class="nav-item">
                     <a href="<?php echo e(route('admin.sliders.index')); ?>" class="nav-link <?php echo e(request()->routeIs('admin.slider.*') ? 'active' : ''); ?>">
@@ -220,18 +258,41 @@
                     </a>
                 </li>
 
-                <!-- Settings -->
-                <li class="nav-item">
-                    <a href="<?php echo e(route('admin.settings.index')); ?>" class="nav-link <?php echo e(request()->routeIs('admin.settings.*') ? 'active' : ''); ?>">
+                <!-- Settings Dropdown -->
+                <li class="nav-item <?php echo e(request()->is('admin/settings*') ? 'menu-open' : ''); ?>">
+                    <a href="#" class="nav-link <?php echo e(request()->is('admin/settings*') ? 'active' : ''); ?>">
                         <i class="nav-icon bi bi-gear"></i>
-                        <p>Settings</p>
+                        <p>
+                            Settings
+                            <i class="nav-arrow bi bi-chevron-right"></i>
+                        </p>
                     </a>
+                    <ul class="nav nav-treeview">
+                        <li class="nav-item">
+                            <a href="<?php echo e(route('admin.settings.index')); ?>" class="nav-link <?php echo e(request()->routeIs('admin.settings.index') ? 'active' : ''); ?>">
+                                <i class="nav-icon bi bi-circle"></i>
+                                <p>General Settings</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="<?php echo e(route('admin.settings.contact-us')); ?>" class="nav-link <?php echo e(request()->routeIs('admin.settings.contact-us') ? 'active' : ''); ?>">
+                                <i class="nav-icon bi bi-circle"></i>
+                                <p>Contact Us Settings</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="<?php echo e(route('admin.settings.about-us')); ?>" class="nav-link <?php echo e(request()->routeIs('admin.settings.about-us') ? 'active' : ''); ?>">
+                                <i class="nav-icon bi bi-circle"></i>
+                                <p>About Us Settings</p>
+                            </a>
+                        </li>
+                    </ul>
                 </li>
 
                 <!-- Users (if admin) -->
                 <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if(auth()->user() && auth()->user()->is_admin): ?>
                     <li class="nav-item">
-                        <a href="<?php echo e(url('admin.users.index')); ?>" class="nav-link <?php echo e(request()->routeIs('admin.users.*') ? 'active' : ''); ?>">
+                        <a href="<?php echo e(route('admin.users.index')); ?>" class="nav-link <?php echo e(request()->routeIs('admin.users.*') ? 'active' : ''); ?>">
                             <i class="nav-icon bi bi-person-badge"></i>
                             <p>Users</p>
                         </a>

@@ -20,7 +20,7 @@
     <div class="carousel-inner">
         @foreach($slider as $key => $value)
             <div class="carousel-item {{ $key == 0 ? 'active' : '' }}" 
-                 style="background-image: url('{{ asset('slider_image/'.$value->s_image) }}');
+                 style="background-image: url('{{ $value->image_url }}');
                         background-size: cover;
                         background-position: center;
                         background-repeat: no-repeat;
@@ -119,7 +119,7 @@
                                     <div class="hero-video-wrapper rounded-4 overflow-hidden shadow-lg" 
                                          style="border: 4px solid rgba(255,255,255,0.2);">
                                         <video autoplay muted loop playsinline class="w-100 rounded-3" style="max-height: 350px;">
-                                            <source src="{{ asset('slider_image/'.$value->s_video) }}" type="video/mp4">
+                                            <source src="{{ $value->video_url }}" type="video/mp4">
                                         </video>
                                     </div>
                                 @endif

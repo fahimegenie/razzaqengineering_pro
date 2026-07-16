@@ -63,7 +63,7 @@
                 <div class="col-lg-6" data-aos="fade-right">
                     <div class="about-img-wrapper">
                         <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if(!empty($about) && !empty($about->a_image)): ?>
-                            <img src="<?php echo e(asset('public/images/'.$about->a_image)); ?>" 
+                            <img src="<?php echo e(asset('images/'.$about->a_image)); ?>" 
                                  alt="<?php echo e($about->about_title ?? 'About Razzaq Engineering'); ?>"
                                  class="about-main-img"
                                  loading="lazy">
@@ -303,11 +303,11 @@
             </div>
             
             <div class="row g-4">
-                <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::openLoop(); ?><?php endif; ?><?php $__currentLoopData = $team->take(4); $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $member): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::startLoopIteration(); ?><?php endif; ?>
+                <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::openLoop(); ?><?php endif; ?><?php $__currentLoopData = $team; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $member): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::startLoopIteration(); ?><?php endif; ?>
                     <div class="col-lg-3 col-md-6" data-aos="fade-up" data-aos-delay="<?php echo e($loop->index * 100); ?>">
-                        <div class="team-card" wire:click="showMemberDetail(<?php echo e($member->ot_id); ?>)" style="cursor:pointer;">
+                        <div class="team-card" wire:click="showMemberDetail(<?php echo e($member->id); ?>)" style="cursor:pointer;">
                             <div class="team-img-wrap">
-                                <img src="<?php echo e(asset('public/images/'.$member->ot_image)); ?>" 
+                                <img src="<?php echo e(asset('ot_image/'.$member->ot_image)); ?>" 
                                      alt="<?php echo e($member->ot_name); ?>" loading="lazy">
                                 <div class="team-overlay">
                                     <span>View Profile</span>
@@ -342,7 +342,7 @@
             <button class="modal-close-btn" wire:click="closeTeamModal">&times;</button>
             <div class="row g-4">
                 <div class="col-md-5">
-                    <img src="<?php echo e(asset('public/images/'.$selectedMember->ot_image)); ?>" 
+                    <img src="<?php echo e(asset('ot_image/'.$selectedMember->ot_image)); ?>" 
                          alt="<?php echo e($selectedMember->ot_name); ?>"
                          class="w-100 rounded-3" style="max-height:350px;object-fit:cover;">
                 </div>

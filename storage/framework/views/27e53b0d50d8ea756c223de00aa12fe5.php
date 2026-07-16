@@ -69,14 +69,14 @@ use Livewire\Volt\Component;
 
             <!-- Settings Dropdown -->
             <div class="hidden sm:flex sm:items-center sm:ms-6">
-                <?php if (isset($component)) { $__componentOriginaldf8083d4a852c446488d8d384bbc7cbe = $component; } ?>
-<?php if (isset($attributes)) { $__attributesOriginaldf8083d4a852c446488d8d384bbc7cbe = $attributes; } ?>
-<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'components.dropdown','data' => ['align' => 'right','width' => '48']] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
+                <?php if (isset($component)) { $__componentOriginal475082bceccb4828086a111231be100f = $component; } ?>
+<?php if (isset($attributes)) { $__attributesOriginal475082bceccb4828086a111231be100f = $attributes; } ?>
+<?php $component = Mary\View\Components\Dropdown::resolve([] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
 <?php $component->withName('dropdown'); ?>
 <?php if ($component->shouldRender()): ?>
 <?php $__env->startComponent($component->resolveView(), $component->data()); ?>
 <?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
-<?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
+<?php $attributes = $attributes->except(\Mary\View\Components\Dropdown::ignoredParameterNames()); ?>
 <?php endif; ?>
 <?php $component->withAttributes(['align' => 'right','width' => '48']); ?>
 <?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::processComponentKey($component); ?>
@@ -149,13 +149,13 @@ use Livewire\Volt\Component;
                      <?php $__env->endSlot(); ?>
                  <?php echo $__env->renderComponent(); ?>
 <?php endif; ?>
-<?php if (isset($__attributesOriginaldf8083d4a852c446488d8d384bbc7cbe)): ?>
-<?php $attributes = $__attributesOriginaldf8083d4a852c446488d8d384bbc7cbe; ?>
-<?php unset($__attributesOriginaldf8083d4a852c446488d8d384bbc7cbe); ?>
+<?php if (isset($__attributesOriginal475082bceccb4828086a111231be100f)): ?>
+<?php $attributes = $__attributesOriginal475082bceccb4828086a111231be100f; ?>
+<?php unset($__attributesOriginal475082bceccb4828086a111231be100f); ?>
 <?php endif; ?>
-<?php if (isset($__componentOriginaldf8083d4a852c446488d8d384bbc7cbe)): ?>
-<?php $component = $__componentOriginaldf8083d4a852c446488d8d384bbc7cbe; ?>
-<?php unset($__componentOriginaldf8083d4a852c446488d8d384bbc7cbe); ?>
+<?php if (isset($__componentOriginal475082bceccb4828086a111231be100f)): ?>
+<?php $component = $__componentOriginal475082bceccb4828086a111231be100f; ?>
+<?php unset($__componentOriginal475082bceccb4828086a111231be100f); ?>
 <?php endif; ?>
             </div>
 

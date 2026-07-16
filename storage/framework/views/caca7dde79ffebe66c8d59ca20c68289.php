@@ -35,21 +35,21 @@
             
             
             <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if($isLoading): ?>
-                <div class="text-center py-5" <?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::processElementKey('team-loading', get_defined_vars()); ?>wire:key="team-loading">
+                <div class="text-center py-5" <?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::$currentLoop['key'] = 'team-loading'; ?>wire:key="team-loading">
                     <div class="spinner-border text-success" style="width:3rem;height:3rem;"></div>
                     <p class="text-muted mt-2">Loading team...</p>
                 </div>
                 
             
             <?php elseif($errorMessage): ?>
-                <div class="alert alert-danger text-center rounded-3 border-0 shadow-sm" <?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::processElementKey('team-error', get_defined_vars()); ?>wire:key="team-error">
+                <div class="alert alert-danger text-center rounded-3 border-0 shadow-sm" <?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::$currentLoop['key'] = 'team-error'; ?>wire:key="team-error">
                     <i class="fas fa-exclamation-triangle me-2"></i> <?php echo e($errorMessage); ?>
 
                 </div>
                 
             
             <?php else: ?>
-                <div <?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::processElementKey('team-main-content', get_defined_vars()); ?>wire:key="team-main-content">
+                <div <?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::$currentLoop['key'] = 'team-main-content'; ?>wire:key="team-main-content">
                     
                     
                     <div class="team-intro text-center mb-5" data-aos="fade-up" wire:ignore.self>
@@ -79,13 +79,13 @@
                     
                     
                     <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if($filteredMembers->count() > 0): ?>
-                        <div class="team-grid" <?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::processElementKey('team-grid-{{ md5($search) }}', get_defined_vars()); ?>wire:key="team-grid-<?php echo e(md5($search)); ?>">
+                        <div class="team-grid" <?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::$currentLoop['key'] = 'team-grid-'.e(md5($search)).''; ?>wire:key="team-grid-<?php echo e(md5($search)); ?>">
                             <div class="row g-4">
                                 <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::openLoop(); ?><?php endif; ?><?php $__currentLoopData = $filteredMembers; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $member): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::startLoopIteration(); ?><?php endif; ?>
                                     <div class="col-lg-3 col-md-4 col-sm-6" 
                                          data-aos="fade-up" 
                                          data-aos-delay="<?php echo e($loop->index % 4 * 100); ?>"
-                                         <?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::processElementKey('team-member-{{ $member->ot_id }}', get_defined_vars()); ?>wire:key="team-member-<?php echo e($member->ot_id); ?>">
+                                         <?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::$currentLoop['key'] = 'team-member-'.e($member->ot_id).''; ?>wire:key="team-member-<?php echo e($member->ot_id); ?>">
                                         <div class="team-card" @click="openModal(<?php echo e($member->ot_id); ?>)">
                                             
                                             
@@ -145,7 +145,7 @@
                         </div>
                         
                     <?php else: ?>
-                        <div class="text-center py-5" data-aos="fade-up" <?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::processElementKey('team-empty', get_defined_vars()); ?>wire:key="team-empty">
+                        <div class="text-center py-5" data-aos="fade-up" <?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::$currentLoop['key'] = 'team-empty'; ?>wire:key="team-empty">
                             <i class="fas fa-users fa-3x text-muted opacity-25 mb-3"></i>
                             <h5 class="fw-bold">No Team Members Found</h5>
                             <p class="text-muted">Try different search terms.</p>
@@ -164,7 +164,7 @@
          TEAM MEMBER MODAL
          ============================================ -->
     <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if($showModal && $selectedMember): ?>
-        <div class="team-modal-overlay" <?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::processElementKey('modal-{{ $selectedMember->ot_id }}', get_defined_vars()); ?>wire:key="modal-<?php echo e($selectedMember->ot_id); ?>" @click.self="closeModal" @keydown.escape.window="closeModal">
+        <div class="team-modal-overlay" <?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::$currentLoop['key'] = 'modal-'.e($selectedMember->ot_id).''; ?>wire:key="modal-<?php echo e($selectedMember->ot_id); ?>" @click.self="closeModal" @keydown.escape.window="closeModal">
             <div class="team-modal-content">
                 
                 <button class="team-modal-close" @click="closeModal">&times;</button>

@@ -8,7 +8,7 @@ use Illuminate\Support\Str;
 class Company extends Model
 {
     protected $table = 'our_company';
-    protected $primaryKey = 'oc_id';
+    protected $primaryKey = 'id';
     
     protected $fillable = [
         'oc_title',

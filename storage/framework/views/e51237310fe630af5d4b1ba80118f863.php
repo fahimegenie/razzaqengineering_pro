@@ -41,12 +41,12 @@
         <div class="container">
             
             <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if($isLoading): ?>
-                <div class="text-center py-5" <?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::processElementKey('sd-loading', get_defined_vars()); ?>wire:key="sd-loading">
+                <div class="text-center py-5" <?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::$currentLoop['key'] = 'sd-loading'; ?>wire:key="sd-loading">
                     <div class="spinner-border text-success" style="width:3rem;height:3rem;"></div>
                     <p class="text-muted mt-2">Loading service details...</p>
                 </div>
             <?php elseif($errorMessage): ?>
-                <div class="alert alert-danger text-center rounded-3 border-0 shadow-sm" <?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::processElementKey('sd-error', get_defined_vars()); ?>wire:key="sd-error">
+                <div class="alert alert-danger text-center rounded-3 border-0 shadow-sm" <?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::$currentLoop['key'] = 'sd-error'; ?>wire:key="sd-error">
                     <i class="fas fa-exclamation-triangle me-2"></i> <?php echo e($errorMessage); ?>
 
                 </div>
@@ -88,7 +88,7 @@
                             <button type="button"
                                     class="sd-tab-btn <?php echo e($activeTab == $service->id ? 'active' : ''); ?>"
                                     wire:click="switchTab(<?php echo e($service->id); ?>)"
-                                    <?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::processElementKey('tab-btn-{{ $service->id }}', get_defined_vars()); ?>wire:key="tab-btn-<?php echo e($service->id); ?>">
+                                    <?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::$currentLoop['key'] = 'tab-btn-'.e($service->id).''; ?>wire:key="tab-btn-<?php echo e($service->id); ?>">
                                 <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if($service->os_icon): ?>
                                     <span class="sd-tab-icon">
                                         <img src="<?php echo e(asset('slider_image/'.$service->os_icon)); ?>" 
@@ -110,7 +110,7 @@
                 </div>
                 
                 
-                <div class="sd-content-wrapper" data-aos="fade-up" <?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::processElementKey('sd-panel-container-{{ $activeTab }}', get_defined_vars()); ?>wire:key="sd-panel-container-<?php echo e($activeTab); ?>">
+                <div class="sd-content-wrapper" data-aos="fade-up" <?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::$currentLoop['key'] = 'sd-panel-container-'.e($activeTab).''; ?>wire:key="sd-panel-container-<?php echo e($activeTab); ?>">
                     
                     <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if($currentDetail): ?>
                         <div class="sd-panel">
@@ -172,11 +172,11 @@
                             
                             
                             <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if(count($currentAdvantages) > 0): ?>
-                                <div class="sd-advantages" <?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::processElementKey('advantages-panel-{{ $currentDetail->id }}', get_defined_vars()); ?>wire:key="advantages-panel-<?php echo e($currentDetail->id); ?>">
+                                <div class="sd-advantages" <?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::$currentLoop['key'] = 'advantages-panel-'.e($currentDetail->id).''; ?>wire:key="advantages-panel-<?php echo e($currentDetail->id); ?>">
                                     <div class="row align-items-center">
                                         <div class="col-lg-7">
                                             <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::openLoop(); ?><?php endif; ?><?php $__currentLoopData = $currentAdvantages; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $adv): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::startLoopIteration(); ?><?php endif; ?>
-                                                <div class="sd-adv-block" <?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::processElementKey('adv-block-{{ $adv->id }}', get_defined_vars()); ?>wire:key="adv-block-<?php echo e($adv->id); ?>">
+                                                <div class="sd-adv-block" <?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::$currentLoop['key'] = 'adv-block-'.e($adv->id).''; ?>wire:key="adv-block-<?php echo e($adv->id); ?>">
                                                     <h3><?php echo e($adv->sa_title); ?></h3>
                                                     <p><?php echo e($adv->sa_description); ?></p>
                                                     <ul class="sd-adv-list">
@@ -210,7 +210,7 @@
                         </div>
                     <?php else: ?>
                         
-                        <div class="text-center py-5" <?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::processElementKey('sd-empty', get_defined_vars()); ?>wire:key="sd-empty">
+                        <div class="text-center py-5" <?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::$currentLoop['key'] = 'sd-empty'; ?>wire:key="sd-empty">
                             <i class="fas fa-tools fa-3x text-muted opacity-25 mb-3"></i>
                             <h4 class="fw-bold">Service Details Coming Soon</h4>
                             <p class="text-muted">Please contact us for more information.</p>

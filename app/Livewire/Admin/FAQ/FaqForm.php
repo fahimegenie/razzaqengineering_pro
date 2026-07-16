@@ -1,13 +1,15 @@
 <?php
+// app/Livewire/Admin/FAQ/FaqForm.php
 
 namespace App\Livewire\Admin\FAQ;
 
 use Livewire\Component;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\Title;
-use Livewire\Attributes\Validate;
+use Livewire\Attributes\Rule;
 use App\Models\Faq;
 use Illuminate\Support\Facades\Log;
+use Livewire\Attributes\On;
 
 #[Layout('components.layouts.admin-layout')]
 #[Title('FAQ Form - Admin Panel')]
@@ -16,42 +18,64 @@ class FaqForm extends Component
     public $faqId = null;
     public $isEditing = false;
     public $isSaving = false;
+    public $saveSuccess = false;
     
-    #[Validate('required|string|max:500')]
+    #[Rule('required|string|max:500')]
     public $faq_question = '';
     
-    #[Validate('required|string')]
+    #[Rule('required|string')]
     public $faq_answer = '';
     
-    #[Validate('nullable|string|max:255')]
+    #[Rule('nullable|string|max:255')]
     public $faq_category = '';
     
-    #[Validate('nullable|integer|min:0')]
+    #[Rule('nullable|integer|min:0')]
     public $sort_order = 0;
     
-    #[Validate('boolean')]
+    #[Rule('boolean')]
     public $is_active = true;
+    
+    // CKEditor value handler
+    public $description = '';
 
     public function mount($faq = null)
     {
-        // FIX: Handle both cases - when $faq is a Model instance OR a string ID
         if ($faq) {
-            // If $faq is string (route parameter), fetch from database
             if (is_string($faq) || is_numeric($faq)) {
                 $faq = Faq::find($faq);
             }
             
-            // Now $faq should be a Model instance
             if ($faq && $faq instanceof Faq) {
-                $this->faqId = $faq->id; // Use correct primary key
+                $this->faqId = $faq->id;
                 $this->isEditing = true;
                 $this->faq_question = $faq->faq_question;
                 $this->faq_answer = $faq->faq_answer;
+                $this->description = $faq->faq_answer; // For CKEditor
                 $this->faq_category = $faq->faq_category;
                 $this->sort_order = $faq->sort_order ?? 0;
                 $this->is_active = $faq->is_active ?? true;
             }
         }
+    }
+
+    // ============================================
+    // CKEDITOR LISTENER - THIS IS THE KEY FIX
+    // ============================================
+    #[On('ckeditor-value-updated')]
+    public function handleCkEditorUpdate($value, $field)
+    {
+        $fieldMap = [
+            'faq_answer' => 'faq_answer',
+        ];
+
+        if (isset($fieldMap[$field]) && property_exists($this, $fieldMap[$field])) {
+            $this->{$fieldMap[$field]} = $value;
+        }
+    }
+
+    public function updatedDescription($value)
+    {
+        $this->faq_answer = $value;
     }
 
     public function save()
@@ -72,25 +96,22 @@ class FaqForm extends Component
                 $faq = Faq::findOrFail($this->faqId);
                 $faq->update($data);
                 $message = 'FAQ updated successfully.';
-                $event = 'faq-updated';
             } else {
                 Faq::create($data);
                 $message = 'FAQ created successfully.';
-                $event = 'faq-created';
-                // Reset form after create
-                $this->reset(['faq_question', 'faq_answer', 'faq_category', 'sort_order']);
+                $this->reset(['faq_question', 'faq_answer', 'description', 'faq_category', 'sort_order']);
             }
             
             $this->isSaving = false;
+            $this->saveSuccess = true;
             
-            $this->dispatch('toast', type: 'success', message: $message);
-            $this->dispatch($event);
+            $this->dispatch('toast', type: 'success', title: 'Success!', message: $message);
             
             return redirect()->route('admin.faq.index');
             
         } catch (\Exception $e) {
             $this->isSaving = false;
-            $this->dispatch('toast', type: 'error', message: 'Failed to save FAQ: ' . $e->getMessage());
+            $this->dispatch('toast', type: 'error', title: 'Error!', message: 'Failed to save FAQ.');
             Log::error('FAQ save error: ' . $e->getMessage());
         }
     }

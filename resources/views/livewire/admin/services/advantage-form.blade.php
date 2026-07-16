@@ -13,7 +13,7 @@
                 <div class="col-md-3"><label>Point 4</label><input class="form-control" wire:model="sa_t4"></div>
             </div></div></div>
             <div class="card shadow-sm border-0 mb-3"><div class="card-header"><h3 class="card-title mb-0 fw-semibold"><i class="bi bi-text-paragraph me-2"></i>Description</h3></div><div class="card-body">
-                <livewire:components.ck-editor label="Description" placeholder="Describe this advantage..." height="300px" toolbar="basic" :value="$sa_description" />
+                <livewire:components.ck-editor label="Description" placeholder="Describe this advantage..." height="300px" toolbar="basic" :value="$sa_description" field="sa_description" />
             </div></div>
         </div>
         <div class="col-lg-4">

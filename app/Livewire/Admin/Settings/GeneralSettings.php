@@ -7,19 +7,19 @@ use Livewire\Attributes\Layout;
 use Livewire\Attributes\Title;
 use Livewire\Attributes\Computed;
 use Livewire\Attributes\Validate;
-use Livewire\WithFileUploads;
+use Livewire\Attributes\On;
 use App\Models\Setting;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Str;
+use App\Traits\HandlesUploads;
 
 #[Layout('components.layouts.admin-layout')]
 #[Title('Settings - Admin Panel')]
 class GeneralSettings extends Component
 {
-    use WithFileUploads;
+    use HandlesUploads;
 
     // Active tab
     public $activeTab = 'general';
@@ -341,6 +341,22 @@ class GeneralSettings extends Component
     {
         $this->loadSettings();
     }
+
+    // CKEditor Listener
+    #[On('ckeditor-value-updated')]
+    public function handleCkEditorUpdate($value, $field)
+    {
+        $fieldMap = [
+            'footer_aboutus' => 'footer_aboutus',
+            'terms_and_conditions' => 'terms_and_conditions',
+            'privacy_policy' => 'privacy_policy',
+            'refund_policy' => 'refund_policy',
+        ];
+
+        if (isset($fieldMap[$field]) && property_exists($this, $fieldMap[$field])) {
+            $this->{$fieldMap[$field]} = $value;
+        }
+    }
     
     private function loadSettings()
     {
@@ -350,14 +366,12 @@ class GeneralSettings extends Component
             $settings = Setting::first();
             
             if ($settings) {
-                // Map all settings to component properties
                 foreach ($settings->getFillable() as $field) {
                     if (property_exists($this, $field)) {
                         $this->$field = $settings->$field ?? '';
                     }
                 }
                 
-                // Set preview URLs
                 $this->logoPreview = $settings->logo_url ?? '';
                 $this->logoDarkPreview = $settings->logo_dark_url ?? '';
                 $this->logoLightPreview = $settings->logo_light_url ?? '';
@@ -374,54 +388,42 @@ class GeneralSettings extends Component
         }
     }
     
+    // ============================================
+    // FILE UPLOAD HANDLERS WITH PREVIEW
+    // ============================================
     public function updatedLogoFile()
     {
         $this->validateOnly('logoFile');
-        try {
-            $this->logoPreview = $this->logoFile->temporaryUrl();
-        } catch (\Exception $e) {
-            $this->logoPreview = null;
-        }
+        try { $this->logoPreview = $this->logoFile->temporaryUrl(); } 
+        catch (\Exception $e) { $this->logoPreview = null; }
     }
     
     public function updatedLogoDarkFile()
     {
         $this->validateOnly('logoDarkFile');
-        try {
-            $this->logoDarkPreview = $this->logoDarkFile->temporaryUrl();
-        } catch (\Exception $e) {
-            $this->logoDarkPreview = null;
-        }
+        try { $this->logoDarkPreview = $this->logoDarkFile->temporaryUrl(); } 
+        catch (\Exception $e) { $this->logoDarkPreview = null; }
     }
     
     public function updatedLogoLightFile()
     {
         $this->validateOnly('logoLightFile');
-        try {
-            $this->logoLightPreview = $this->logoLightFile->temporaryUrl();
-        } catch (\Exception $e) {
-            $this->logoLightPreview = null;
-        }
+        try { $this->logoLightPreview = $this->logoLightFile->temporaryUrl(); } 
+        catch (\Exception $e) { $this->logoLightPreview = null; }
     }
     
     public function updatedFaviconFile()
     {
         $this->validateOnly('faviconFile');
-        try {
-            $this->faviconPreview = $this->faviconFile->temporaryUrl();
-        } catch (\Exception $e) {
-            $this->faviconPreview = null;
-        }
+        try { $this->faviconPreview = $this->faviconFile->temporaryUrl(); } 
+        catch (\Exception $e) { $this->faviconPreview = null; }
     }
     
     public function updatedOgImageFile()
     {
         $this->validateOnly('ogImageFile');
-        try {
-            $this->ogImagePreview = $this->ogImageFile->temporaryUrl();
-        } catch (\Exception $e) {
-            $this->ogImagePreview = null;
-        }
+        try { $this->ogImagePreview = $this->ogImageFile->temporaryUrl(); } 
+        catch (\Exception $e) { $this->ogImagePreview = null; }
     }
     
     public function setTab($tab)
@@ -430,6 +432,9 @@ class GeneralSettings extends Component
         $this->resetValidation();
     }
     
+    // ============================================
+    // SAVE - USING TRAIT uploadFile() METHOD
+    // ============================================
     public function save()
     {
         $this->isSaving = true;
@@ -438,53 +443,52 @@ class GeneralSettings extends Component
         try {
             $settings = Setting::firstOrCreate(['id' => 1]);
             
-            // Handle file uploads FIRST
+            // ============================================
+            // HANDLE FILE UPLOADS USING TRAIT
+            // ============================================
             $uploadFields = [
-                'logoFile' => 'logo',
-                'logoDarkFile' => 'logo_dark',
-                'logoLightFile' => 'logo_light',
-                'faviconFile' => 'favicon',
-                'ogImageFile' => 'og_image',
+                'logoFile'      => ['dbField' => 'logo',       'directory' => 'uploads/settings'],
+                'logoDarkFile'  => ['dbField' => 'logo_dark',  'directory' => 'uploads/settings'],
+                'logoLightFile' => ['dbField' => 'logo_light', 'directory' => 'uploads/settings'],
+                'faviconFile'   => ['dbField' => 'favicon',    'directory' => 'uploads/settings'],
+                'ogImageFile'   => ['dbField' => 'og_image',   'directory' => 'uploads/settings'],
             ];
             
-            foreach ($uploadFields as $property => $dbField) {
+            foreach ($uploadFields as $property => $config) {
                 if ($this->$property) {
-                    try {
-                        if ($settings->$dbField) {
-                            Storage::disk('public')->delete('uploads/settings/' . $settings->$dbField);
-                        }
-                        $extension = $this->$property->getClientOriginalExtension();
-                        $filename = $dbField . '_' . time() . '_' . Str::random(6) . '.' . $extension;
-                        $this->$property->storeAs('uploads/settings', $filename, 'public');
-                        $settings->$dbField = $filename;
-                    } catch (\Exception $e) {
-                        Log::error("Upload failed for {$dbField}: " . $e->getMessage());
+                    // Use trait's uploadFile method
+                    $oldPath = $settings->{$config['dbField']} 
+                        ? $config['directory'] . '/' . $settings->{$config['dbField']} 
+                        : null;
+                    
+                    $newPath = $this->uploadFile($this->$property, $config['directory'], $oldPath);
+                    
+                    if ($newPath) {
+                        // Extract just the filename for DB storage
+                        $settings->{$config['dbField']} = basename($newPath);
                     }
                 }
             }
             
-            // Get actual columns and their types
-            $actualColumns = Schema::getColumnListing('settings');
-            
-            // Manually sanitize and set each field
+            // ============================================
+            // SAVE ALL TEXT FIELDS
+            // ============================================
             $this->safeSetField($settings, 'site_name', $this->site_name, 'string', 255);
             $this->safeSetField($settings, 'site_tagline', $this->site_tagline, 'string', 255);
             $this->safeSetField($settings, 'site_description', $this->site_description, 'text');
             $this->safeSetField($settings, 'site_url', $this->site_url, 'string', 255);
             
-            // Contact - Phone (VARCHAR 30)
+            // Contact
             $this->safeSetField($settings, 'mobile_phone_1', $this->mobile_phone_1, 'string', 30);
             $this->safeSetField($settings, 'mobile_phone_2', $this->mobile_phone_2, 'string', 30);
             $this->safeSetField($settings, 'whatsapp_number', $this->whatsapp_number, 'string', 30);
             $this->safeSetField($settings, 'landline_1', $this->landline_1, 'string', 30);
-            
-            // Contact - Email (VARCHAR 100)
             $this->safeSetField($settings, 'email_primary', $this->email_primary, 'string', 100);
             $this->safeSetField($settings, 'email_sales', $this->email_sales, 'string', 100);
             $this->safeSetField($settings, 'email_support', $this->email_support, 'string', 100);
             $this->safeSetField($settings, 'email_info', $this->email_info, 'string', 100);
             
-            // Address (TEXT)
+            // Address
             $this->safeSetField($settings, 'address_1', $this->address_1, 'text');
             $this->safeSetField($settings, 'address_2', $this->address_2, 'text');
             $this->safeSetField($settings, 'city', $this->city, 'string', 100);
@@ -498,7 +502,7 @@ class GeneralSettings extends Component
             $this->safeSetField($settings, 'is_24_7', $this->is_24_7, 'boolean');
             $this->safeSetField($settings, 'is_emergency_service', $this->is_emergency_service, 'boolean');
             
-            // Social Media (VARCHAR 255)
+            // Social Media
             $this->safeSetField($settings, 'facebook_url', $this->facebook_url, 'string', 255);
             $this->safeSetField($settings, 'twitter_url', $this->twitter_url, 'string', 255);
             $this->safeSetField($settings, 'instagram_url', $this->instagram_url, 'string', 255);
@@ -507,17 +511,15 @@ class GeneralSettings extends Component
             $this->safeSetField($settings, 'pinterest_url', $this->pinterest_url, 'string', 255);
             $this->safeSetField($settings, 'tiktok_url', $this->tiktok_url, 'string', 255);
             
-            // Company Info - IMPORTANT: establishment_year is VARCHAR(10)
+            // Company Info
             $this->safeSetField($settings, 'company_name', $this->company_name, 'string', 255);
             $this->safeSetField($settings, 'company_registration_number', $this->company_registration_number, 'string', 100);
             $this->safeSetField($settings, 'tax_number', $this->tax_number, 'string', 100);
             
-            // Sanitize establishment_year - MUST be max 10 chars
             $establishmentYear = trim($this->establishment_year);
             if (strlen($establishmentYear) > 10) {
                 $establishmentYear = substr($establishmentYear, 0, 10);
             }
-            // If it contains @ or looks like email, set to empty
             if (filter_var($establishmentYear, FILTER_VALIDATE_EMAIL) || strpos($establishmentYear, '@') !== false) {
                 $establishmentYear = '';
             }
@@ -531,7 +533,7 @@ class GeneralSettings extends Component
             $this->safeSetField($settings, 'og_title', $this->og_title, 'string', 255);
             $this->safeSetField($settings, 'og_description', $this->og_description, 'text');
             
-            // Scripts (TEXT)
+            // Scripts
             $this->safeSetField($settings, 'google_analytics_id', $this->google_analytics_id, 'text');
             $this->safeSetField($settings, 'google_tag_manager_id', $this->google_tag_manager_id, 'text');
             $this->safeSetField($settings, 'google_site_verification', $this->google_site_verification, 'text');
@@ -541,7 +543,7 @@ class GeneralSettings extends Component
             $this->safeSetField($settings, 'custom_css', $this->custom_css, 'text');
             $this->safeSetField($settings, 'custom_javascript', $this->custom_javascript, 'text');
             
-            // Content (TEXT)
+            // Content
             $this->safeSetField($settings, 'footer_aboutus', $this->footer_aboutus, 'text');
             $this->safeSetField($settings, 'footer_copyright_text', $this->footer_copyright_text, 'string', 255);
             $this->safeSetField($settings, 'terms_and_conditions', $this->terms_and_conditions, 'text');
@@ -567,7 +569,7 @@ class GeneralSettings extends Component
             $this->safeSetField($settings, 'currency', $this->currency, 'string', 10);
             $this->safeSetField($settings, 'currency_symbol', $this->currency_symbol, 'string', 10);
             
-            // Feature Toggles (boolean)
+            // Feature Toggles
             $booleanFields = [
                 'enable_blog', 'enable_comments', 'enable_newsletter', 'enable_chat',
                 'enable_quote_form', 'enable_portfolio', 'enable_testimonials',
@@ -636,7 +638,6 @@ class GeneralSettings extends Component
      */
     private function safeSetField($model, $field, $value, $type = 'string', $maxLength = null)
     {
-        // Check if column exists
         if (!Schema::hasColumn('settings', $field)) {
             return;
         }
@@ -645,7 +646,6 @@ class GeneralSettings extends Component
             if ($type === 'boolean') {
                 $model->$field = (bool) $value;
             } elseif ($type === 'string' && $maxLength) {
-                // Truncate if too long
                 $value = is_string($value) ? $value : (string) $value;
                 if (mb_strlen($value) > $maxLength) {
                     $value = mb_substr($value, 0, $maxLength);
@@ -665,48 +665,17 @@ class GeneralSettings extends Component
     public function testEmail()
     {
         try {
-            // Test email logic here
-            $this->dispatch('toast', 
-                type: 'success', 
-                message: 'Test email sent successfully!'
-            );
+            $this->dispatch('toast', type: 'success', message: 'Test email sent successfully!');
         } catch (\Exception $e) {
-            $this->dispatch('toast', 
-                type: 'error', 
-                message: 'Email test failed: ' . $e->getMessage()
-            );
+            $this->dispatch('toast', type: 'error', message: 'Email test failed: ' . $e->getMessage());
         }
     }
 
-    /**
-     * Set a field value - called from CKEditor via JavaScript
-     * Accepts array with 'field' and 'value' keys
-     */
-    public function setFieldValue($data = [])
-    {
-        // Handle both array and separate parameters
-        if (is_array($data)) {
-            $field = $data['field'] ?? null;
-            $value = $data['value'] ?? null;
-        } else {
-            // If called with separate parameters
-            $field = $data;
-            $value = request()->input('value') ?? func_get_arg(1) ?? null;
-        }
-        
-        if ($field && property_exists($this, $field)) {
-            $this->$field = $value;
-        }
-    }
-    
     public function clearCache()
     {
         Cache::flush();
         Setting::clearCache();
-        $this->dispatch('toast', 
-            type: 'success', 
-            message: 'Cache cleared successfully!'
-        );
+        $this->dispatch('toast', type: 'success', message: 'Cache cleared successfully!');
     }
     
     #[Computed]

@@ -39,17 +39,17 @@
         <div class="container">
             
             <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if($isLoading): ?>
-                <div class="text-center py-5" <?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::processElementKey('testi-loading', get_defined_vars()); ?>wire:key="testi-loading">
+                <div class="text-center py-5" <?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::$currentLoop['key'] = 'testi-loading'; ?>wire:key="testi-loading">
                     <div class="spinner-border text-success" style="width:3rem;height:3rem;"></div>
                     <p class="text-muted mt-2">Loading testimonials...</p>
                 </div>
             <?php elseif($errorMessage): ?>
-                <div class="alert alert-danger text-center rounded-3 border-0 shadow-sm" <?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::processElementKey('testi-error', get_defined_vars()); ?>wire:key="testi-error">
+                <div class="alert alert-danger text-center rounded-3 border-0 shadow-sm" <?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::$currentLoop['key'] = 'testi-error'; ?>wire:key="testi-error">
                     <i class="fas fa-exclamation-triangle me-2"></i> <?php echo e($errorMessage); ?>
 
                 </div>
             <?php else: ?>
-                <div <?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::processElementKey('testi-main-content', get_defined_vars()); ?>wire:key="testi-main-content">
+                <div <?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::$currentLoop['key'] = 'testi-main-content'; ?>wire:key="testi-main-content">
                     
                     
                     <div class="testi-stats-bar" data-aos="fade-up" wire:ignore.self>
@@ -127,13 +127,13 @@
                     <?php $displayed = $this->displayedTestimonials; ?>
                     
                     <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if($displayed->count() > 0): ?>
-                        <div class="testi-grid" <?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::processElementKey('testi-grid-{{ md5($search.$filterRating.$filterCity) }}', get_defined_vars()); ?>wire:key="testi-grid-<?php echo e(md5($search.$filterRating.$filterCity)); ?>">
+                        <div class="testi-grid" <?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::$currentLoop['key'] = 'testi-grid-'.e(md5($search.$filterRating.$filterCity)).''; ?>wire:key="testi-grid-<?php echo e(md5($search.$filterRating.$filterCity)); ?>">
                             <div class="row g-4">
                                 <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::openLoop(); ?><?php endif; ?><?php $__currentLoopData = $displayed; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $item): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::startLoopIteration(); ?><?php endif; ?>
                                     <div class="col-lg-4 col-md-6" 
                                          data-aos="fade-up" 
                                          data-aos-delay="<?php echo e($loop->index % 3 * 100); ?>"
-                                         <?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::processElementKey('testi-item-{{ $item->id }}', get_defined_vars()); ?>wire:key="testi-item-<?php echo e($item->id); ?>">
+                                         <?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::$currentLoop['key'] = 'testi-item-'.e($item->id).''; ?>wire:key="testi-item-<?php echo e($item->id); ?>">
                                         <div class="testi-card">
                                             
                                             
@@ -192,7 +192,7 @@
                         
                         
                         <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if($this->filteredTestimonials->count() > $loadedCount): ?>
-                            <div x-ref="loadMoreSentinel" class="text-center py-4" <?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::processElementKey('sentinel-wrapper', get_defined_vars()); ?>wire:key="sentinel-wrapper">
+                            <div x-ref="loadMoreSentinel" class="text-center py-4" <?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::$currentLoop['key'] = 'sentinel-wrapper'; ?>wire:key="sentinel-wrapper">
                                 <button wire:click="loadMore" wire:loading.attr="disabled"
                                         class="btn btn-outline-success rounded-pill px-5 py-2 fw-semibold">
                                     <span wire:loading.remove wire:target="loadMore">Load More <i class="fas fa-chevron-down ms-2"></i></span>
@@ -202,7 +202,7 @@
                         <?php endif; ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
                         
                     <?php else: ?>
-                        <div class="text-center py-5" data-aos="fade-up" <?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::processElementKey('testi-empty', get_defined_vars()); ?>wire:key="testi-empty">
+                        <div class="text-center py-5" data-aos="fade-up" <?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::$currentLoop['key'] = 'testi-empty'; ?>wire:key="testi-empty">
                             <i class="fas fa-comment-slash fa-3x text-muted opacity-25 mb-3"></i>
                             <h5 class="fw-bold">No Testimonials Found</h5>
                             <p class="text-muted">Try different search terms or adjust filters.</p>

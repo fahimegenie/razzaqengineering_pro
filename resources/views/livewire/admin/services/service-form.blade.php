@@ -13,7 +13,7 @@
                     </div></div></div>
 
                     <div class="card shadow-sm border-0 mb-3"><div class="card-header bg-transparent"><h3 class="card-title mb-0 fw-semibold"><i class="bi bi-text-paragraph me-2"></i>Full Description</h3></div><div class="card-body">
-                        <livewire:components.ck-editor label="Service Description" placeholder="Describe your service in detail..." height="400px" toolbar="full" :value="$os_description" />
+                        <livewire:components.ck-editor label="Service Description" placeholder="Describe your service in detail..." height="400px" toolbar="full" :value="$os_description" field="os_description" />
                     </div></div>
 
                     <div class="card shadow-sm border-0 mb-3"><div class="card-header bg-transparent"><h3 class="card-title mb-0 fw-semibold"><i class="bi bi-search me-2"></i>SEO Settings</h3></div><div class="card-body"><div class="row g-3">

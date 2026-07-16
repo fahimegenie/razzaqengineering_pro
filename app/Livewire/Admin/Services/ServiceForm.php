@@ -3,26 +3,31 @@
 namespace App\Livewire\Admin\Services;
 
 use Livewire\Component;
-use Livewire\WithFileUploads;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\Title;
 use Livewire\Attributes\Validate;
 use App\Models\Service;
+use App\Traits\HandlesUploads;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
+use Livewire\Attributes\On;
 
 #[Layout('components.layouts.admin-layout')]
 #[Title('Service Form - Admin Panel')]
 class ServiceForm extends Component
 {
-    use WithFileUploads;
+    // Uploads Handle karne wala hamara professional trait
+    use HandlesUploads;
 
     public $serviceId = null;
     public $isEditing = false;
     public $isSaving = false;
     
     public $os_image;
+    public $existing_os_image = null; // Purani image ka path store karne ke liye
     public $os_banner;
+    public $existing_os_banner = null; // Purani banner image ka path store karne ke liye
     public $imagePreview;
     public $bannerPreview;
     
@@ -96,9 +101,33 @@ class ServiceForm extends Component
                     if (isset($service->$field)) $this->$field = $service->$field;
                 }
                 
-                $this->imagePreview = $service->image_url;
-                $this->bannerPreview = $service->banner_url;
+                // Existing paths save kar rahe hain taake update par purani file automatic remove ho sake
+                $this->existing_os_image = $service->os_image;
+                $this->existing_os_banner = $service->os_banner;
+
+                // Previews load karne ka safe tarika (bina static URLs ke)
+                if ($this->existing_os_image) {
+                    $this->imagePreview = Storage::disk('public')->url($this->existing_os_image);
+                }
+                if ($this->existing_os_banner) {
+                    $this->bannerPreview = Storage::disk('public')->url($this->existing_os_banner);
+                }
             }
+        }
+    }
+
+    // ============================================
+    // CKEDITOR LISTENER - THIS IS THE KEY FIX
+    // ============================================
+    #[On('ckeditor-value-updated')]
+    public function handleCkEditorUpdate($value, $field)
+    {
+        $fieldMap = [
+            'os_description' => 'os_description',
+        ];
+
+        if (isset($fieldMap[$field]) && property_exists($this, $fieldMap[$field])) {
+            $this->{$fieldMap[$field]} = $value;
         }
     }
 
@@ -123,8 +152,17 @@ class ServiceForm extends Component
         try { $this->bannerPreview = $this->os_banner->temporaryUrl(); } catch (\Exception $e) {}
     }
 
-    public function removeImage() { $this->os_image = null; $this->imagePreview = null; }
-    public function removeBanner() { $this->os_banner = null; $this->bannerPreview = null; }
+    public function removeImage() 
+    { 
+        $this->os_image = null; 
+        $this->imagePreview = null; 
+    }
+    
+    public function removeBanner() 
+    { 
+        $this->os_banner = null; 
+        $this->bannerPreview = null; 
+    }
 
     public function save()
     {
@@ -146,26 +184,14 @@ class ServiceForm extends Component
             $service->is_active = (bool) $this->is_active;
             $service->is_featured = (bool) $this->is_featured;
             
-            // Main Image
+            // 1. Main Image (Create aur Update dono is single line se handle honge)
             if ($this->os_image) {
-                if ($service->os_image) @unlink(public_path('uploads/services/' . $service->os_image));
-                $imageName = 'svc_' . time() . '_' . uniqid() . '.' . $this->os_image->getClientOriginalExtension();
-                $path = public_path('uploads/services');
-                if (!is_dir($path)) mkdir($path, 0777, true);
-                copy($this->os_image->getRealPath(), $path . '/' . $imageName);
-                @unlink($this->os_image->getRealPath());
-                $service->os_image = $imageName;
+                $service->os_image = $this->uploadFile($this->os_image, 'services', $this->existing_os_image);
             }
             
-            // Banner Image
+            // 2. Banner Image (Auto-delete aur path generation automated)
             if ($this->os_banner) {
-                if ($service->os_banner) @unlink(public_path('uploads/services/banners/' . $service->os_banner));
-                $bannerName = 'banner_' . time() . '_' . uniqid() . '.' . $this->os_banner->getClientOriginalExtension();
-                $path = public_path('uploads/services/banners');
-                if (!is_dir($path)) mkdir($path, 0777, true);
-                copy($this->os_banner->getRealPath(), $path . '/' . $bannerName);
-                @unlink($this->os_banner->getRealPath());
-                $service->os_banner = $bannerName;
+                $service->os_banner = $this->uploadFile($this->os_banner, 'services/banners', $this->existing_os_banner);
             }
             
             $service->save();

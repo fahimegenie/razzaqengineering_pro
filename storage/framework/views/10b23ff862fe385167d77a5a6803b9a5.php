@@ -87,7 +87,7 @@
                         <select class="form-select" wire:model.live="selectedPageType">
                             <option value="">-- Select Page Type --</option>
                             <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::openLoop(); ?><?php endif; ?><?php $__currentLoopData = $pageTypes; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $val => $label): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::startLoopIteration(); ?><?php endif; ?>
-                            <option value="<?php echo e($val); ?>" <?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::processElementKey('items-page-types-{{ $val }}', get_defined_vars()); ?>wire:key="items-page-types-<?php echo e($val); ?>"><?php echo e($label); ?></option>
+                            <option value="<?php echo e($val); ?>" <?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::$currentLoop['key'] = 'items-page-types-'.e($val).''; ?>wire:key="items-page-types-<?php echo e($val); ?>"><?php echo e($label); ?></option>
                             <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::endLoop(); ?><?php endif; ?><?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::closeLoop(); ?><?php endif; ?>
                         </select>
                     </div>
@@ -114,7 +114,7 @@
             <div class="row g-3">
                 
                 <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if($generateMode !== 'cities'): ?>
-                <div class="col-md-6" <?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::processElementKey('items-selection-panel', get_defined_vars()); ?>wire:key="items-selection-panel">
+                <div class="col-md-6" <?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::$currentLoop['key'] = 'items-selection-panel'; ?>wire:key="items-selection-panel">
                     <div class="card shadow-sm border-0 h-100">
                         <div class="card-header bg-transparent d-flex justify-content-between align-items-center">
                             <h5 class="card-title mb-0 fw-semibold">
@@ -141,7 +141,7 @@
                                         default => 'Item #'.$item->id,
                                     };
                                 ?>
-                                <div class="form-check" <?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::processElementKey('item-check-group-{{ $selectedPageType }}-{{ $item->id }}', get_defined_vars()); ?>wire:key="item-check-group-<?php echo e($selectedPageType); ?>-<?php echo e($item->id); ?>">
+                                <div class="form-check" <?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::$currentLoop['key'] = 'item-check-group-'.e($selectedPageType).'-'.e($item->id).''; ?>wire:key="item-check-group-<?php echo e($selectedPageType); ?>-<?php echo e($item->id); ?>">
                                     <input class="form-check-input" type="checkbox" value="<?php echo e($item->id); ?>" wire:model="selectedItems" id="item_<?php echo e($item->id); ?>">
                                     <label class="form-check-label" for="item_<?php echo e($item->id); ?>"><?php echo e($itemName); ?></label>
                                 </div>
@@ -159,7 +159,7 @@
 
                 
                 <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if($generateMode !== 'pages'): ?>
-                <div class="col-md-6" <?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::processElementKey('cities-selection-panel', get_defined_vars()); ?>wire:key="cities-selection-panel">
+                <div class="col-md-6" <?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::$currentLoop['key'] = 'cities-selection-panel'; ?>wire:key="cities-selection-panel">
                     <div class="card shadow-sm border-0 h-100">
                         <div class="card-header bg-transparent d-flex justify-content-between align-items-center">
                             <h5 class="card-title mb-0 fw-semibold">
@@ -173,7 +173,7 @@
                         <div class="card-body" style="max-height:400px;overflow-y:auto;">
                             <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::openLoop(); ?><?php endif; ?><?php $__currentLoopData = $availableCities; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $city): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::startLoopIteration(); ?><?php endif; ?>
                             
-                            <div class="form-check" <?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::processElementKey('city-check-group-{{ $city->id }}', get_defined_vars()); ?>wire:key="city-check-group-<?php echo e($city->id); ?>">
+                            <div class="form-check" <?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::$currentLoop['key'] = 'city-check-group-'.e($city->id).''; ?>wire:key="city-check-group-<?php echo e($city->id); ?>">
                                 <input class="form-check-input" type="checkbox" value="<?php echo e($city->id); ?>" wire:model="selectedCities" id="city_<?php echo e($city->id); ?>">
                                 <label class="form-check-label" for="city_<?php echo e($city->id); ?>"><?php echo e($city->name); ?>, <?php echo e($city->country); ?></label>
                             </div>
@@ -229,7 +229,7 @@
 
         
         <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if($showPreview): ?>
-        <div class="card shadow-sm border-0 mb-3" <?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::processElementKey('preview-table-card', get_defined_vars()); ?>wire:key="preview-table-card">
+        <div class="card shadow-sm border-0 mb-3" <?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::$currentLoop['key'] = 'preview-table-card'; ?>wire:key="preview-table-card">
             <div class="card-header bg-transparent d-flex justify-content-between align-items-center">
                 <h5 class="card-title mb-0 fw-semibold">
                     <i class="bi bi-eye me-2"></i>Preview (<?php echo e($totalCount); ?> records)
@@ -258,7 +258,7 @@
                         </thead>
                         <tbody>
                             <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::openLoop(); ?><?php endif; ?><?php $__currentLoopData = $previewData; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $i => $data): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::startLoopIteration(); ?><?php endif; ?>
-                            <tr <?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::processElementKey('preview-row-{{ $i }}', get_defined_vars()); ?>wire:key="preview-row-<?php echo e($i); ?>">
+                            <tr <?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::$currentLoop['key'] = 'preview-row-'.e($i).''; ?>wire:key="preview-row-<?php echo e($i); ?>">
                                 <td><?php echo e($i + 1); ?></td>
                                 <td><span class="badge bg-primary"><?php echo e($data['type']); ?></span></td>
                                 <td><?php echo e($data['name']); ?></td>
@@ -282,7 +282,7 @@
 
         
         <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if($isGenerating): ?>
-        <div class="card shadow-sm border-0 mb-3" <?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::processElementKey('generation-progress-card', get_defined_vars()); ?>wire:key="generation-progress-card">
+        <div class="card shadow-sm border-0 mb-3" <?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::$currentLoop['key'] = 'generation-progress-card'; ?>wire:key="generation-progress-card">
             <div class="card-body text-center py-4">
                 <h5><i class="bi bi-hourglass-split spin me-2"></i>Generating SEO Data...</h5>
                 <div class="progress mt-2" style="height:25px;">
@@ -300,7 +300,7 @@
         <?php endif; ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
 
         <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if($generationComplete): ?>
-        <div class="alert alert-success" <?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::processElementKey('generation-success-alert', get_defined_vars()); ?>wire:key="generation-success-alert">
+        <div class="alert alert-success" <?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::$currentLoop['key'] = 'generation-success-alert'; ?>wire:key="generation-success-alert">
             <i class="bi bi-check-circle-fill me-2"></i>
             Successfully generated <strong><?php echo e($progressCount); ?></strong> SEO records!
         </div>

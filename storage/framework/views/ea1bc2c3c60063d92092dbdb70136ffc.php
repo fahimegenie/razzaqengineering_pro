@@ -20,7 +20,7 @@
     <div class="carousel-inner">
         <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::openLoop(); ?><?php endif; ?><?php $__currentLoopData = $slider; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $key => $value): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::startLoopIteration(); ?><?php endif; ?>
             <div class="carousel-item <?php echo e($key == 0 ? 'active' : ''); ?>" 
-                 style="background-image: url('<?php echo e(asset('slider_image/'.$value->s_image)); ?>');
+                 style="background-image: url('<?php echo e($value->image_url); ?>');
                         background-size: cover;
                         background-position: center;
                         background-repeat: no-repeat;
@@ -121,7 +121,7 @@
                                     <div class="hero-video-wrapper rounded-4 overflow-hidden shadow-lg" 
                                          style="border: 4px solid rgba(255,255,255,0.2);">
                                         <video autoplay muted loop playsinline class="w-100 rounded-3" style="max-height: 350px;">
-                                            <source src="<?php echo e(asset('slider_image/'.$value->s_video)); ?>" type="video/mp4">
+                                            <source src="<?php echo e($value->video_url); ?>" type="video/mp4">
                                         </video>
                                     </div>
                                 <?php endif; ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>

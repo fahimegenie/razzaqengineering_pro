@@ -3,7 +3,7 @@
 namespace App\Livewire\Admin\Team;
 
 use Livewire\Component;
-use Livewire\WithFileUploads;
+use App\Traits\HandlesUploads; // Custom upload system trait
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\Title;
 use Livewire\Attributes\Validate;
@@ -14,7 +14,8 @@ use Illuminate\Support\Facades\Log;
 #[Title('Team Member Form - Admin Panel')]
 class TeamForm extends Component
 {
-    use WithFileUploads;
+    // Sirf HandlesUploads use kiya hai kyunki iske andar WithFileUploads already mojood hai
+    use HandlesUploads;
 
     public $teamId = null;
     public $isEditing = false;
@@ -135,6 +136,15 @@ class TeamForm extends Component
 
     public function removeImage()
     {
+        if ($this->teamId && $this->isEditing) {
+            $member = OurTeam::find($this->teamId);
+            if ($member && $member->ot_image) {
+                // Securely delete file using trait
+                $this->deleteFile($member->ot_image);
+                $member->update(['ot_image' => null]);
+            }
+        }
+
         $this->ot_image = null;
         $this->imagePreview = null;
     }
@@ -177,41 +187,13 @@ class TeamForm extends Component
             $member->is_active = (bool) $this->is_active;
             $member->ot_skills = json_encode(array_values($this->ot_skills));
             
-            // Handle Image Upload
+            // Handle Image Upload with Trait
             if ($this->ot_image) {
-                // Delete old image
-                if ($member->ot_image) {
-                    $oldPaths = [
-                        public_path('team_images/' . $member->ot_image),
-                        public_path('uploads/team/' . $member->ot_image),
-                    ];
-                    foreach ($oldPaths as $oldPath) {
-                        if (file_exists($oldPath)) {
-                            @unlink($oldPath);
-                        }
-                    }
-                }
-                
-                $imageName = 'team_' . time() . '_' . uniqid() . '.' . $this->ot_image->getClientOriginalExtension();
-                $destinationPath = public_path('team_images');
-                
-                if (!is_dir($destinationPath)) {
-                    mkdir($destinationPath, 0777, true);
-                }
-                
-                $tempFile = $this->ot_image->getRealPath();
-                $targetFile = $destinationPath . '/' . $imageName;
-                
-                if (!file_exists($tempFile)) {
-                    throw new \Exception('Temporary file not found');
-                }
-                
-                if (!copy($tempFile, $targetFile)) {
-                    throw new \Exception('Failed to copy image to: ' . $targetFile);
-                }
-                
-                @unlink($tempFile);
-                $member->ot_image = $imageName;
+                $member->ot_image = $this->uploadFile(
+                    file: $this->ot_image,
+                    directory: 'team_images',
+                    oldFilePath: $member->ot_image
+                );
             }
             
             $member->save();

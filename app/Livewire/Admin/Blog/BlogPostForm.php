@@ -3,7 +3,7 @@
 namespace App\Livewire\Admin\Blog;
 
 use Livewire\Component;
-use Livewire\WithFileUploads;
+use App\Traits\HandlesUploads; // Dynamic storage system trait integration
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\Title;
 use Livewire\Attributes\Validate;
@@ -13,12 +13,13 @@ use App\Models\BlogTag;
 use App\Models\User;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 
 #[Layout('components.layouts.admin-layout')]
 #[Title('Blog Post Form - Admin Panel')]
 class BlogPostForm extends Component
 {
-    use WithFileUploads;
+    use HandlesUploads; // Trait call kiya (WithFileUploads included)
 
     public $postId = null;
     public $isEditing = false;
@@ -26,6 +27,8 @@ class BlogPostForm extends Component
     
     public $featured_image;
     public $banner_image;
+    public $existing_featured = null; // Featured image state tracking
+    public $existing_banner = null;   // Banner image state tracking
     public $imagePreview;
     public $bannerPreview;
     
@@ -113,8 +116,22 @@ class BlogPostForm extends Component
                 }
                 
                 $this->selectedTags = $post->tags->pluck('id')->toArray();
-                $this->imagePreview = $post->image_url;
-                $this->bannerPreview = $post->banner_url;
+                
+                // Track & Resolve Featured Image
+                $this->existing_featured = $post->featured_image;
+                if ($this->existing_featured) {
+                    $this->imagePreview = Storage::disk('public')->url($this->existing_featured);
+                } else {
+                    $this->imagePreview = $post->image_url;
+                }
+
+                // Track & Resolve Banner Image
+                $this->existing_banner = $post->banner_image;
+                if ($this->existing_banner) {
+                    $this->bannerPreview = Storage::disk('public')->url($this->existing_banner);
+                } else {
+                    $this->bannerPreview = $post->banner_url;
+                }
             }
         }
     }
@@ -218,40 +235,22 @@ class BlogPostForm extends Component
             $post->is_trending = (bool) $this->is_trending;
             $post->allow_comments = (bool) $this->allow_comments;
             
-            // Handle Featured Image
+            // Trait handoff for Featured Image
             if ($this->featured_image) {
-                if ($post->featured_image) {
-                    @unlink(public_path('uploads/blog/' . $post->featured_image));
-                }
-                
-                $imageName = 'blog_' . time() . '_' . uniqid() . '.' . $this->featured_image->getClientOriginalExtension();
-                $destinationPath = public_path('uploads/blog');
-                
-                if (!is_dir($destinationPath)) mkdir($destinationPath, 0777, true);
-                
-                $tempFile = $this->featured_image->getRealPath();
-                copy($tempFile, $destinationPath . '/' . $imageName);
-                @unlink($tempFile);
-                
-                $post->featured_image = $imageName;
+                $post->featured_image = $this->uploadFile(
+                    $this->featured_image, 
+                    'blog/featured', 
+                    $this->existing_featured
+                );
             }
             
-            // Handle Banner Image
+            // Trait handoff for Banner Image
             if ($this->banner_image) {
-                if ($post->banner_image) {
-                    @unlink(public_path('uploads/blog/banners/' . $post->banner_image));
-                }
-                
-                $bannerName = 'banner_' . time() . '_' . uniqid() . '.' . $this->banner_image->getClientOriginalExtension();
-                $bannerPath = public_path('uploads/blog/banners');
-                
-                if (!is_dir($bannerPath)) mkdir($bannerPath, 0777, true);
-                
-                $tempFile = $this->banner_image->getRealPath();
-                copy($tempFile, $bannerPath . '/' . $bannerName);
-                @unlink($tempFile);
-                
-                $post->banner_image = $bannerName;
+                $post->banner_image = $this->uploadFile(
+                    $this->banner_image, 
+                    'blog/banners', 
+                    $this->existing_banner
+                );
             }
             
             $post->save();

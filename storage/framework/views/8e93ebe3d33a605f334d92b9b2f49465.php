@@ -33,18 +33,18 @@
         <div class="container">
             
             <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if($isLoading): ?>
-                <div class="text-center py-5" <?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::processElementKey('bld-loading', get_defined_vars()); ?>wire:key="bld-loading">
+                <div class="text-center py-5" <?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::$currentLoop['key'] = 'bld-loading'; ?>wire:key="bld-loading">
                     <div class="spinner-border text-success" style="width:3rem;height:3rem;"></div>
                 </div>
             <?php elseif($errorMessage): ?>
-                <div class="alert alert-danger text-center rounded-3 border-0 shadow-sm" <?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::processElementKey('bld-error', get_defined_vars()); ?>wire:key="bld-error">
+                <div class="alert alert-danger text-center rounded-3 border-0 shadow-sm" <?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::$currentLoop['key'] = 'bld-error'; ?>wire:key="bld-error">
                     <i class="fas fa-exclamation-triangle me-2"></i> <?php echo $errorMessage; ?>
 
                     <a href="<?php echo e(route('blog.index')); ?>" class="btn btn-outline-danger btn-sm ms-3 rounded-pill">Back to Blog</a>
                 </div>
             <?php elseif($post): ?>
                 
-                <div <?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::processElementKey('bld-content-wrapper-{{ $post->id }}', get_defined_vars()); ?>wire:key="bld-content-wrapper-<?php echo e($post->id); ?>">
+                <div <?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::$currentLoop['key'] = 'bld-content-wrapper-'.e($post->id).''; ?>wire:key="bld-content-wrapper-<?php echo e($post->id); ?>">
                     
                     <div class="row g-5">
                         
@@ -58,9 +58,9 @@
                             
                             
                             <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if($post->tags && $post->tags->count() > 0): ?>
-                                <div class="bld-tags mb-3" <?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::processElementKey('post-tags-{{ $post->id }}', get_defined_vars()); ?>wire:key="post-tags-<?php echo e($post->id); ?>">
+                                <div class="bld-tags mb-3" <?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::$currentLoop['key'] = 'post-tags-'.e($post->id).''; ?>wire:key="post-tags-<?php echo e($post->id); ?>">
                                     <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::openLoop(); ?><?php endif; ?><?php $__currentLoopData = $post->tags; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $tag): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::startLoopIteration(); ?><?php endif; ?>
-                                        <a href="<?php echo e(route('blog.tag', $tag->bt_slug)); ?>" class="bld-tag" <?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::processElementKey('tag-{{ $tag->id }}', get_defined_vars()); ?>wire:key="tag-<?php echo e($tag->id); ?>"><?php echo e($tag->bt_name); ?></a>
+                                        <a href="<?php echo e(route('blog.tag', $tag->bt_slug)); ?>" class="bld-tag" <?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::$currentLoop['key'] = 'tag-'.e($tag->id).''; ?>wire:key="tag-<?php echo e($tag->id); ?>"><?php echo e($tag->bt_name); ?></a>
                                     <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::endLoop(); ?><?php endif; ?><?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::closeLoop(); ?><?php endif; ?>
                                 </div>
                             <?php endif; ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
@@ -81,11 +81,11 @@
                             </div>
                             
                             
-                            <div class="bld-comments mt-5" <?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::processElementKey('comments-section-block', get_defined_vars()); ?>wire:key="comments-section-block">
+                            <div class="bld-comments mt-5" <?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::$currentLoop['key'] = 'comments-section-block'; ?>wire:key="comments-section-block">
                                 <h4 class="fw-bold mb-4">Comments (<?php echo e(count($comments)); ?>)</h4>
                                 <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if(!empty($comments)): ?>
                                 <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::openLoop(); ?><?php endif; ?><?php $__currentLoopData = $comments; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $comment): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::startLoopIteration(); ?><?php endif; ?>
-                                    <div class="bld-comment" <?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::processElementKey('comment-card-{{ $comment->id }}', get_defined_vars()); ?>wire:key="comment-card-<?php echo e($comment->id); ?>">
+                                    <div class="bld-comment" <?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::$currentLoop['key'] = 'comment-card-'.e($comment->id).''; ?>wire:key="comment-card-<?php echo e($comment->id); ?>">
                                         <div class="d-flex gap-3">
                                             <img src="<?php echo e($comment->gravatar_url); ?>" alt="<?php echo e($comment->commenter_name); ?>" class="bld-comment-avatar">
                                             <div>
@@ -97,7 +97,7 @@
                                         
                                         <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if($comment->replies && $comment->replies->count() > 0): ?>
                                             <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::openLoop(); ?><?php endif; ?><?php $__currentLoopData = $comment->replies; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $reply): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::startLoopIteration(); ?><?php endif; ?>
-                                                <div class="bld-comment bld-comment-reply" <?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::processElementKey('reply-card-{{ $reply->id }}', get_defined_vars()); ?>wire:key="reply-card-<?php echo e($reply->id); ?>">
+                                                <div class="bld-comment bld-comment-reply" <?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::$currentLoop['key'] = 'reply-card-'.e($reply->id).''; ?>wire:key="reply-card-<?php echo e($reply->id); ?>">
                                                     <div class="d-flex gap-3">
                                                         <img src="<?php echo e($reply->gravatar_url); ?>" alt="<?php echo e($reply->commenter_name); ?>" class="bld-comment-avatar">
                                                         <div>
@@ -112,18 +112,18 @@
                                     </div>
                                 <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::endLoop(); ?><?php endif; ?><?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::closeLoop(); ?><?php endif; ?>
                                 <?php else: ?>
-                                    <p class="text-muted" <?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::processElementKey('no-comments-msg', get_defined_vars()); ?>wire:key="no-comments-msg">No comments yet. Be the first to comment!</p>
+                                    <p class="text-muted" <?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::$currentLoop['key'] = 'no-comments-msg'; ?>wire:key="no-comments-msg">No comments yet. Be the first to comment!</p>
                                 <?php endif; ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
                                 
                                 
-                                <div class="bld-comment-form mt-4" <?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::processElementKey('comment-form-container', get_defined_vars()); ?>wire:key="comment-form-container">
+                                <div class="bld-comment-form mt-4" <?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::$currentLoop['key'] = 'comment-form-container'; ?>wire:key="comment-form-container">
                                     <h5 class="fw-bold mb-3">Leave a Comment</h5>
                                     
                                     <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if(session()->has('comment_success')): ?>
-                                        <div class="alert alert-success rounded-3 border-0" <?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::processElementKey('msg-success', get_defined_vars()); ?>wire:key="msg-success"><?php echo e(session('comment_success')); ?></div>
+                                        <div class="alert alert-success rounded-3 border-0" <?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::$currentLoop['key'] = 'msg-success'; ?>wire:key="msg-success"><?php echo e(session('comment_success')); ?></div>
                                     <?php endif; ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
                                     <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if(session()->has('comment_error')): ?>
-                                        <div class="alert alert-danger rounded-3 border-0" <?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::processElementKey('msg-error', get_defined_vars()); ?>wire:key="msg-error"><?php echo e(session('comment_error')); ?></div>
+                                        <div class="alert alert-danger rounded-3 border-0" <?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::$currentLoop['key'] = 'msg-error'; ?>wire:key="msg-error"><?php echo e(session('comment_error')); ?></div>
                                     <?php endif; ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
                                     
                                     <form wire:submit.prevent="submitComment">
@@ -178,14 +178,14 @@ unset($__errorArgs, $__bag); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendB
                         <div class="col-lg-4" data-aos="fade-left" wire:ignore.self>
                             
                             
-                            <div class="blog-sidebar-card mb-4" <?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::processElementKey('sidebar-categories-card', get_defined_vars()); ?>wire:key="sidebar-categories-card">
+                            <div class="blog-sidebar-card mb-4" <?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::$currentLoop['key'] = 'sidebar-categories-card'; ?>wire:key="sidebar-categories-card">
                                 <h5 class="fw-bold mb-3"><i class="fas fa-folder text-success me-2"></i> Categories</h5>
                                 <ul class="list-unstyled mb-0">
                                     <li class="mb-2">
                                         <a href="<?php echo e(route('blog.index')); ?>" class="blog-sidebar-link">All Categories</a>
                                     </li>
                                     <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::openLoop(); ?><?php endif; ?><?php $__currentLoopData = $categories; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $cat): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::startLoopIteration(); ?><?php endif; ?>
-                                        <li class="mb-2" <?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::processElementKey('sidebar-cat-{{ $cat->id }}', get_defined_vars()); ?>wire:key="sidebar-cat-<?php echo e($cat->id); ?>">
+                                        <li class="mb-2" <?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::$currentLoop['key'] = 'sidebar-cat-'.e($cat->id).''; ?>wire:key="sidebar-cat-<?php echo e($cat->id); ?>">
                                             <a href="<?php echo e(route('blog.category', $cat->bc_slug)); ?>" class="blog-sidebar-link">
                                                 <?php echo e($cat->bc_name); ?>
 
@@ -198,10 +198,10 @@ unset($__errorArgs, $__bag); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendB
                             
                             
                             <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if(count($recentPosts) > 0): ?>
-                                <div class="blog-sidebar-card mb-4" <?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::processElementKey('sidebar-recent-card', get_defined_vars()); ?>wire:key="sidebar-recent-card">
+                                <div class="blog-sidebar-card mb-4" <?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::$currentLoop['key'] = 'sidebar-recent-card'; ?>wire:key="sidebar-recent-card">
                                     <h5 class="fw-bold mb-3"><i class="fas fa-clock text-success me-2"></i> Recent Posts</h5>
                                     <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::openLoop(); ?><?php endif; ?><?php $__currentLoopData = $recentPosts; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $rp): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::startLoopIteration(); ?><?php endif; ?>
-                                        <a href="<?php echo e(route('blog.detail', $rp->bp_slug)); ?>" class="blog-recent-item" <?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::processElementKey('sidebar-rp-{{ $rp->id }}', get_defined_vars()); ?>wire:key="sidebar-rp-<?php echo e($rp->id); ?>"  exec:ignore>
+                                        <a href="<?php echo e(route('blog.detail', $rp->bp_slug)); ?>" class="blog-recent-item" <?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::$currentLoop['key'] = 'sidebar-rp-'.e($rp->id).''; ?>wire:key="sidebar-rp-<?php echo e($rp->id); ?>"  exec:ignore>
                                             <img src="<?php echo e($rp->image_url); ?>" alt="<?php echo e($rp->bp_title); ?>" loading="lazy">
                                             <div>
                                                 <h6><?php echo e(Str::limit($rp->bp_title, 40)); ?></h6>
@@ -214,11 +214,11 @@ unset($__errorArgs, $__bag); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendB
                             
                             
                             <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if(count($tags) > 0): ?>
-                                <div class="blog-sidebar-card mb-4" <?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::processElementKey('sidebar-tags-card', get_defined_vars()); ?>wire:key="sidebar-tags-card">
+                                <div class="blog-sidebar-card mb-4" <?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::$currentLoop['key'] = 'sidebar-tags-card'; ?>wire:key="sidebar-tags-card">
                                     <h5 class="fw-bold mb-3"><i class="fas fa-tags text-success me-2"></i> Tags</h5>
                                     <div class="d-flex flex-wrap gap-2">
                                         <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::openLoop(); ?><?php endif; ?><?php $__currentLoopData = $tags; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $tag): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::startLoopIteration(); ?><?php endif; ?>
-                                            <a href="<?php echo e(route('blog.tag', $tag->bt_slug)); ?>" class="blog-tag-btn" <?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::processElementKey('sidebar-tag-{{ $tag->id }}', get_defined_vars()); ?>wire:key="sidebar-tag-<?php echo e($tag->id); ?>"><?php echo e($tag->bt_name); ?></a>
+                                            <a href="<?php echo e(route('blog.tag', $tag->bt_slug)); ?>" class="blog-tag-btn" <?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::$currentLoop['key'] = 'sidebar-tag-'.e($tag->id).''; ?>wire:key="sidebar-tag-<?php echo e($tag->id); ?>"><?php echo e($tag->bt_name); ?></a>
                                         <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::endLoop(); ?><?php endif; ?><?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::closeLoop(); ?><?php endif; ?>
                                     </div>
                                 </div>
@@ -226,10 +226,10 @@ unset($__errorArgs, $__bag); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendB
                             
                             
                             <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if(count($relatedPosts) > 0): ?>
-                                <div class="blog-sidebar-card" <?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::processElementKey('sidebar-related-card', get_defined_vars()); ?>wire:key="sidebar-related-card">
+                                <div class="blog-sidebar-card" <?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::$currentLoop['key'] = 'sidebar-related-card'; ?>wire:key="sidebar-related-card">
                                     <h5 class="fw-bold mb-3"><i class="fas fa-link text-success me-2"></i> Related Posts</h5>
                                     <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::openLoop(); ?><?php endif; ?><?php $__currentLoopData = $relatedPosts; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $rp): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::startLoopIteration(); ?><?php endif; ?>
-                                        <a href="<?php echo e(route('blog.detail', $rp->bp_slug)); ?>" class="blog-recent-item" <?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::processElementKey('sidebar-rel-{{ $rp->id }}', get_defined_vars()); ?>wire:key="sidebar-rel-<?php echo e($rp->id); ?>">
+                                        <a href="<?php echo e(route('blog.detail', $rp->bp_slug)); ?>" class="blog-recent-item" <?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::$currentLoop['key'] = 'sidebar-rel-'.e($rp->id).''; ?>wire:key="sidebar-rel-<?php echo e($rp->id); ?>">
                                             <img src="<?php echo e($rp->image_url); ?>" alt="<?php echo e($rp->bp_title); ?>" loading="lazy">
                                             <div>
                                                 <h6><?php echo e(Str::limit($rp->bp_title, 40)); ?></h6>

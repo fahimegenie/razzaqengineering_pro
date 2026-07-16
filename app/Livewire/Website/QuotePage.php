@@ -3,7 +3,7 @@
 namespace App\Livewire\Website;
 
 use Livewire\Component;
-use Livewire\WithFileUploads;
+use App\Traits\HandlesUploads; // Custom upload system trait
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\Title;
 use Livewire\Attributes\Validate;
@@ -14,13 +14,13 @@ use App\Models\Project;
 use App\Models\QuoteRequest;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Str;
 
 #[Layout('components.layouts.app-layout')]
 #[Title('Get a Free Quote - Razzaq Engineering Services')]
 class QuotePage extends Component
 {
-    use WithFileUploads;
+    // HandlesUploads use kiya hai kyunki iske andar WithFileUploads already mojood hai
+    use HandlesUploads;
 
     // ============================================
     // FORM PROPERTIES - Step 1: Personal Info
@@ -262,6 +262,7 @@ class QuotePage extends Component
             'service_type' => 'required|string',
             'project_location' => 'required|string|max:255',
             'project_details' => 'required|string|min:10|max:5000',
+            'attachment' => 'nullable|file|mimes:jpg,jpeg,png,pdf,doc,docx|max:10240',
         ], [
             'full_name.required' => 'Full name is required.',
             'email.required' => 'Email address is required.',
@@ -279,11 +280,13 @@ class QuotePage extends Component
         $this->success_message = '';
 
         try {
-            // Handle file upload
+            // Handle file upload with Trait helper
             $attachmentPath = null;
             if ($this->attachment) {
-                $filename = 'quote-' . time() . '-' . Str::random(8) . '.' . $this->attachment->getClientOriginalExtension();
-                $attachmentPath = $this->attachment->storeAs('quote-attachments', $filename, 'public');
+                $attachmentPath = $this->uploadFile(
+                    file: $this->attachment,
+                    directory: 'quote-attachments'
+                );
             }
 
             // Save to database
@@ -336,9 +339,6 @@ class QuotePage extends Component
                 'title' => 'Quote Request Sent!',
                 'message' => 'We will contact you within 24 hours with a detailed quote.',
             ]);
-
-            // Reset form (optional - if you want to keep showing success)
-            // $this->reset();
 
         } catch (\Illuminate\Database\QueryException $e) {
             $this->error_message = 'Database error occurred. Please try again.';

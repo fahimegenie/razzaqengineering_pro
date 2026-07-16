@@ -3,26 +3,32 @@
 namespace App\Livewire\Admin\Services;
 
 use Livewire\Component;
-use Livewire\WithFileUploads;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\Title;
 use Livewire\Attributes\Validate;
 use App\Models\ServiceDetail;
 use App\Models\Service;
+use App\Traits\HandlesUploads; // Trait ko use karne ke liye
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
+use Livewire\Attributes\On;
 
 #[Layout('components.layouts.admin-layout')]
 #[Title('Service Detail Form - Admin Panel')]
 class ServiceDetailForm extends Component
 {
-    use WithFileUploads;
+    // Uploads Handle karne wala hamara professional trait
+    use HandlesUploads;
 
     public $detailId = null;
     public $isEditing = false;
     public $isSaving = false;
     
     public $sd_image1;
+    public $existing_sd_image1 = null; // Purani image 1 ka path store karne ke liye
     public $sd_image2;
+    public $existing_sd_image2 = null; // Purani image 2 ka path store karne ke liye
+    
     public $image1Preview;
     public $image2Preview;
     
@@ -70,10 +76,40 @@ class ServiceDetailForm extends Component
                     if (isset($detail->$f)) $this->$f = $detail->$f;
                 }
                 
-                $this->sd_features = $detail->features_list;
-                $this->image1Preview = $detail->image_one_url;
-                $this->image2Preview = $detail->image_two_url;
+                $this->sd_features = $detail->features_list ?? [];
+                
+                // Existing paths save kar rahe hain taake update par purani file automatically delete ho sake
+                $this->existing_sd_image1 = $detail->sd_image1;
+                $this->existing_sd_image2 = $detail->sd_image2;
+
+                // Previews load karne ka safe tarika
+                if ($this->existing_sd_image1) {
+                    $this->image1Preview = Storage::disk('public')->url($this->existing_sd_image1);
+                } else {
+                    $this->image1Preview = $detail->image_one_url; // Fallback to model accessor if exists
+                }
+
+                if ($this->existing_sd_image2) {
+                    $this->image2Preview = Storage::disk('public')->url($this->existing_sd_image2);
+                } else {
+                    $this->image2Preview = $detail->image_two_url; // Fallback to model accessor if exists
+                }
             }
+        }
+    }
+
+    // ============================================
+    // CKEDITOR LISTENER - THIS IS THE KEY FIX
+    // ============================================
+    #[On('ckeditor-value-updated')]
+    public function handleCkEditorUpdate($value, $field)
+    {
+        $fieldMap = [
+            'sd_description' => 'sd_description',
+        ];
+
+        if (isset($fieldMap[$field]) && property_exists($this, $fieldMap[$field])) {
+            $this->{$fieldMap[$field]} = $value;
         }
     }
 
@@ -103,16 +139,29 @@ class ServiceDetailForm extends Component
         $this->sd_features = array_values($this->sd_features);
     }
 
-    public function removeImage1() { $this->sd_image1 = null; $this->image1Preview = null; }
-    public function removeImage2() { $this->sd_image2 = null; $this->image2Preview = null; }
+    public function removeImage1() 
+    { 
+        $this->sd_image1 = null; 
+        $this->image1Preview = null; 
+    }
+    
+    public function removeImage2() 
+    { 
+        $this->sd_image2 = null; 
+        $this->image2Preview = null; 
+    }
 
     public function save()
     {
-        $this->validate([
+        $rules = [
             'os_id' => 'required|exists:our_service,id',
             'sd_title' => 'required|string|max:255',
-        ]);
-        
+        ];
+
+        if ($this->sd_image1) $rules['sd_image1'] = 'image|mimes:jpeg,png,jpg,webp|max:5120';
+        if ($this->sd_image2) $rules['sd_image2'] = 'image|mimes:jpeg,png,jpg,webp|max:5120';
+
+        $this->validate($rules);
         $this->isSaving = true;
         
         try {
@@ -125,26 +174,14 @@ class ServiceDetailForm extends Component
             $detail->sort_order = (int) ($this->sort_order ?? 0);
             $detail->sd_features = json_encode(array_values($this->sd_features));
             
-            // Image 1
+            // Image 1 - Upload/Replace using Trait
             if ($this->sd_image1) {
-                if ($detail->sd_image1) @unlink(public_path('uploads/services/details/' . $detail->sd_image1));
-                $name = 'sdd1_' . time() . '_' . uniqid() . '.' . $this->sd_image1->getClientOriginalExtension();
-                $path = public_path('uploads/services/details');
-                if (!is_dir($path)) mkdir($path, 0777, true);
-                copy($this->sd_image1->getRealPath(), $path . '/' . $name);
-                @unlink($this->sd_image1->getRealPath());
-                $detail->sd_image1 = $name;
+                $detail->sd_image1 = $this->uploadFile($this->sd_image1, 'services/details', $this->existing_sd_image1);
             }
             
-            // Image 2
+            // Image 2 - Upload/Replace using Trait
             if ($this->sd_image2) {
-                if ($detail->sd_image2) @unlink(public_path('uploads/services/details/' . $detail->sd_image2));
-                $name = 'sdd2_' . time() . '_' . uniqid() . '.' . $this->sd_image2->getClientOriginalExtension();
-                $path = public_path('uploads/services/details');
-                if (!is_dir($path)) mkdir($path, 0777, true);
-                copy($this->sd_image2->getRealPath(), $path . '/' . $name);
-                @unlink($this->sd_image2->getRealPath());
-                $detail->sd_image2 = $name;
+                $detail->sd_image2 = $this->uploadFile($this->sd_image2, 'services/details', $this->existing_sd_image2);
             }
             
             $detail->save();

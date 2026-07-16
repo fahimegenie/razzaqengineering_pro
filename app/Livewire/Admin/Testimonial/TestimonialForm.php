@@ -3,7 +3,7 @@
 namespace App\Livewire\Admin\Testimonial;
 
 use Livewire\Component;
-use Livewire\WithFileUploads;
+use App\Traits\HandlesUploads; // Custom upload system trait
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\Title;
 use Livewire\Attributes\Validate;
@@ -16,7 +16,8 @@ use Illuminate\Support\Facades\Log;
 #[Title('Testimonial Form - Admin Panel')]
 class TestimonialForm extends Component
 {
-    use WithFileUploads;
+    // HandlesUploads use kiya hai kyunki iske andar WithFileUploads already mojood hai
+    use HandlesUploads;
 
     public $testimonialId = null;
     public $isEditing = false;
@@ -104,6 +105,15 @@ class TestimonialForm extends Component
 
     public function removeImage()
     {
+        if ($this->testimonialId && $this->isEditing) {
+            $testimonial = Testimonial::find($this->testimonialId);
+            if ($testimonial && $testimonial->t_image) {
+                // Securely delete file using trait
+                $this->deleteFile($testimonial->t_image);
+                $testimonial->update(['t_image' => null]);
+            }
+        }
+
         $this->t_image = null;
         $this->imagePreview = null;
     }
@@ -145,32 +155,13 @@ class TestimonialForm extends Component
             $testimonial->is_active = (bool) $this->is_active;
             $testimonial->is_featured = (bool) $this->is_featured;
             
-            // Handle Image Upload
+            // Handle Image Upload with Trait
             if ($this->t_image) {
-                // Delete old image
-                if ($testimonial->t_image) {
-                    $oldImagePath = public_path('testimonial_images/' . $testimonial->t_image);
-                    if (file_exists($oldImagePath)) {
-                        @unlink($oldImagePath);
-                    }
-                }
-                
-                $imageName = 'testimonial_' . time() . '_' . uniqid() . '.' . $this->t_image->getClientOriginalExtension();
-                $destinationPath = public_path('testimonial_images');
-                
-                if (!is_dir($destinationPath)) {
-                    mkdir($destinationPath, 0777, true);
-                }
-                
-                $tempFile = $this->t_image->getRealPath();
-                $targetFile = $destinationPath . '/' . $imageName;
-                
-                if (!copy($tempFile, $targetFile)) {
-                    throw new \Exception('Failed to copy image to: ' . $targetFile);
-                }
-                
-                @unlink($tempFile);
-                $testimonial->t_image = $imageName;
+                $testimonial->t_image = $this->uploadFile(
+                    file: $this->t_image,
+                    directory: 'testimonial_images',
+                    oldFilePath: $testimonial->t_image
+                );
             }
             
             $testimonial->save();

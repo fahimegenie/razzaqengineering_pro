@@ -15,7 +15,7 @@
                     <div class="main-image-wrapper">
                         <div class="main-image-card">
                             @if(!empty($com) && $com->oc_image1)
-                                <img src="{{ asset('slider_image/'.$com->oc_image1) }}" 
+                                <img src="{{ $com->oc_image1 }}" 
                                      alt="Razzaq Engineering Services" 
                                      class="main-image" loading="lazy">
                             @else
@@ -28,7 +28,7 @@
                         {{-- Floating Small Image --}}
                         <div class="floating-image-card">
                             @if(!empty($com) && $com->oc_image2)
-                                <img src="{{ asset('slider_image/'.$com->oc_image2) }}" 
+                                <img src="{{ $com->oc_image2 }}" 
                                      alt="Our Work Quality" loading="lazy">
                             @else
                                 <img src="{{ asset('assets/images/about2.jpg') }}" 

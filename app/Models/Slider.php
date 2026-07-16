@@ -111,21 +111,21 @@ class Slider extends Model
     public function getImageUrlAttribute(): string
     {
         return $this->s_image 
-            ? asset('slider_image/' . $this->s_image) 
+            ? asset('storage/'.$this->s_image) 
             : asset('images/placeholder-slider.jpg');
     }
 
     public function getMobileImageUrlAttribute(): string
     {
         return $this->s_mobile_image 
-            ? asset('slider_image/' . $this->s_mobile_image) 
+            ? asset('storage/'.$this->s_mobile_image) 
             : $this->image_url;
     }
 
     public function getVideoUrlAttribute(): string
     {
         return $this->s_video 
-            ? asset('slider_image/' . $this->s_video) 
+            ? asset('storage/'.$this->s_video) 
             : '';
     }
 

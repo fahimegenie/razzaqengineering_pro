@@ -4,18 +4,18 @@ namespace App\Livewire\Admin\Slider;
 
 use Livewire\Component;
 use Livewire\WithFileUploads;
+use App\Traits\HandlesUploads; // Custom upload system trait
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\Title;
 use Livewire\Attributes\Validate;
 use App\Models\Slider;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Storage;
 
 #[Layout('components.layouts.admin-layout')]
 #[Title('Slider Form - Admin Panel')]
 class SliderForm extends Component
 {
-    use WithFileUploads;
+    use HandlesUploads;
 
     public $sliderId = null;
     public $isEditing = false;
@@ -171,12 +171,28 @@ class SliderForm extends Component
 
     public function removeImage()
     {
+        if ($this->sliderId && $this->isEditing) {
+            $slider = Slider::find($this->sliderId);
+            if ($slider && $slider->s_image) {
+                $this->deleteFile($slider->s_image);
+                $slider->update(['s_image' => null]);
+            }
+        }
+
         $this->s_image = null;
         $this->imagePreview = null;
     }
 
     public function removeMobileImage()
     {
+        if ($this->sliderId && $this->isEditing) {
+            $slider = Slider::find($this->sliderId);
+            if ($slider && $slider->s_mobile_image) {
+                $this->deleteFile($slider->s_mobile_image);
+                $slider->update(['s_mobile_image' => null]);
+            }
+        }
+
         $this->s_mobile_image = null;
         $this->mobileImagePreview = null;
     }
@@ -224,90 +240,24 @@ class SliderForm extends Component
             $slider->show_on_mobile = (bool) $this->show_on_mobile;
             $slider->show_on_desktop = (bool) $this->show_on_desktop;
             
-            // Use direct public folder instead of storage
-            // Desktop Image
+            // Desktop Image via HandlesUploads trait
             if ($this->s_image) {
-                // Delete old image
-                if ($slider->s_image) {
-                    $oldImagePath = public_path('slider_image/' . $slider->s_image);
-                    if (file_exists($oldImagePath)) {
-                        @unlink($oldImagePath);
-                    }
-                }
-                
-                $imageName = time() . '_desktop_' . uniqid() . '.' . $this->s_image->getClientOriginalExtension();
-                $destinationPath = public_path('slider_image');
-                
-                // Ensure directory exists with proper permissions
-                if (!is_dir($destinationPath)) {
-                    mkdir($destinationPath, 0777, true);
-                }
-                
-                // Make sure directory is writable
-                if (!is_writable($destinationPath)) {
-                    mkdir($destinationPath, 0777);
-                }
-                
-                // Get the temporary file path
-                $tempFile = $this->s_image->getRealPath();
-                
-                // Check if temp file exists
-                if (!file_exists($tempFile)) {
-                    throw new \Exception('Temporary file not found: ' . $tempFile);
-                }
-                
-                // Move file using copy + unlink (more reliable than move)
-                $targetFile = $destinationPath . '/' . $imageName;
-                
-                if (!copy($tempFile, $targetFile)) {
-                    throw new \Exception('Failed to copy desktop image to: ' . $targetFile);
-                }
-                
-                // Delete temp file
-                @unlink($tempFile);
-                
-                $slider->s_image = $imageName;
+                $slider->s_image = $this->uploadFile(
+                    file: $this->s_image,
+                    directory: 'slider_image',
+                    oldFilePath: $slider->s_image
+                );
             }
 
-            // Mobile Image
+            // Mobile Image via HandlesUploads trait
             if ($this->s_mobile_image) {
-                // Delete old mobile image
-                if ($slider->s_mobile_image) {
-                    $oldMobilePath = public_path('slider_image/' . $slider->s_mobile_image);
-                    if (file_exists($oldMobilePath)) {
-                        @unlink($oldMobilePath);
-                    }
-                }
-                
-                $mobileImageName = time() . '_mobile_' . uniqid() . '.' . $this->s_mobile_image->getClientOriginalExtension();
-                $destinationPath = public_path('slider_image');
-                
-                // Ensure directory exists
-                if (!is_dir($destinationPath)) {
-                    mkdir($destinationPath, 0777, true);
-                }
-                
-                // Make sure directory is writable
-                if (!is_writable($destinationPath)) {
-                    mkdir($destinationPath, 0777);
-                }
-                
-                $tempFile = $this->s_mobile_image->getRealPath();
-                
-                if (!file_exists($tempFile)) {
-                    throw new \Exception('Temporary mobile file not found: ' . $tempFile);
-                }
-                
-                $targetFile = $destinationPath . '/' . $mobileImageName;
-                
-                if (!copy($tempFile, $targetFile)) {
-                    throw new \Exception('Failed to copy mobile image to: ' . $targetFile);
-                }
-                
-                @unlink($tempFile);
-                
-                $slider->s_mobile_image = $mobileImageName;
+                $slider->s_mobile_image = $this->uploadFile(
+                    file: $this->s_mobile_image,
+                    directory: 'slider_image',
+                    oldFilePath: $slider->s_mobile_image
+                );
             }
+
             // Save to database
             $slider->save();
             $this->isSaving = false;

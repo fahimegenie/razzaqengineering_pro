@@ -3,25 +3,29 @@
 namespace App\Livewire\Admin\Services;
 
 use Livewire\Component;
-use Livewire\WithFileUploads;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\Title;
 use Livewire\Attributes\Validate;
 use App\Models\ServiceAdvantage;
 use App\Models\Service;
+use App\Traits\HandlesUploads; // Trait ko use karne ke liye
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
+use Livewire\Attributes\On;
 
 #[Layout('components.layouts.admin-layout')]
 #[Title('Service Advantage Form - Admin Panel')]
 class ServiceAdvantageForm extends Component
 {
-    use WithFileUploads;
+    // Uploads Handle karne wala hamara professional trait
+    use HandlesUploads;
 
     public $advantageId = null;
     public $isEditing = false;
     public $isSaving = false;
     
     public $sa_image;
+    public $existing_sa_image = null; // Purani image ka path store karne ke liye
     public $imagePreview;
     
     #[Validate('required|exists:our_service,id')]
@@ -60,29 +64,61 @@ class ServiceAdvantageForm extends Component
             if ($adv) {
                 $this->advantageId = $adv->id;
                 $this->isEditing = true;
+                
                 foreach (['sa_st_id','sa_title','sa_description','sa_t1','sa_t2','sa_t3','sa_t4','sort_order'] as $f) {
                     if (isset($adv->$f)) $this->$f = $adv->$f;
                 }
-                $this->imagePreview = $adv->image_url;
+                
+                // Existing path save kar rahe hain taake update par purani file auto-delete ho
+                $this->existing_sa_image = $adv->sa_image;
+
+                // Previews load karne ka safe tarika
+                if ($this->existing_sa_image) {
+                    $this->imagePreview = Storage::disk('public')->url($this->existing_sa_image);
+                } else {
+                    $this->imagePreview = $adv->image_url; // Fallback to model accessor
+                }
             }
+        }
+    }
+
+    // ============================================
+    // CKEDITOR LISTENER - THIS IS THE KEY FIX
+    // ============================================
+    #[On('ckeditor-value-updated')]
+    public function handleCkEditorUpdate($value, $field)
+    {
+        $fieldMap = [
+            'sa_description' => 'sa_description',
+        ];
+
+        if (isset($fieldMap[$field]) && property_exists($this, $fieldMap[$field])) {
+            $this->{$fieldMap[$field]} = $value;
         }
     }
 
     public function updatedSaImage()
     {
-        $this->validateOnly('sa_image', ['sa_image' => 'image|max:2048']);
+        $this->validateOnly('sa_image', ['sa_image' => 'image|max:5120']); // Max size 5MB tak increase kar di hai safe-side ke liye
         try { $this->imagePreview = $this->sa_image->temporaryUrl(); } catch (\Exception $e) {}
     }
 
-    public function removeImage() { $this->sa_image = null; $this->imagePreview = null; }
+    public function removeImage() 
+    { 
+        $this->sa_image = null; 
+        $this->imagePreview = null; 
+    }
 
     public function save()
     {
-        $this->validate([
+        $rules = [
             'sa_st_id' => 'required|exists:our_service,id',
             'sa_title' => 'required|string|max:255',
-        ]);
-        
+        ];
+
+        if ($this->sa_image) $rules['sa_image'] = 'image|mimes:jpeg,png,jpg,webp|max:5120';
+
+        $this->validate($rules);
         $this->isSaving = true;
         
         try {
@@ -94,14 +130,9 @@ class ServiceAdvantageForm extends Component
             
             $adv->sort_order = (int) ($this->sort_order ?? 0);
             
+            // Image - Upload/Replace using Trait
             if ($this->sa_image) {
-                if ($adv->sa_image) @unlink(public_path('uploads/services/advantages/' . $adv->sa_image));
-                $name = 'adv_' . time() . '_' . uniqid() . '.' . $this->sa_image->getClientOriginalExtension();
-                $path = public_path('uploads/services/advantages');
-                if (!is_dir($path)) mkdir($path, 0777, true);
-                copy($this->sa_image->getRealPath(), $path . '/' . $name);
-                @unlink($this->sa_image->getRealPath());
-                $adv->sa_image = $name;
+                $adv->sa_image = $this->uploadFile($this->sa_image, 'services/advantages', $this->existing_sa_image);
             }
             
             $adv->save();

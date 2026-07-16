@@ -3,18 +3,19 @@
 namespace App\Livewire\Admin\SEO;
 
 use Livewire\Component;
-use Livewire\WithFileUploads;
+use App\Traits\HandlesUploads; // Trait register kiya dynamic file handling ke liye
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\Title;
 use Livewire\Attributes\Validate;
 use App\Models\SeoData;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 
 #[Layout('components.layouts.admin-layout')]
 #[Title('SEO Data Form - Admin Panel')]
 class SeoDataForm extends Component
 {
-    use WithFileUploads;
+    use HandlesUploads; // Trait apply kiya (Contains WithFileUploads internally)
 
     public $seoId = null;
     public $isEditing = false;
@@ -22,6 +23,11 @@ class SeoDataForm extends Component
     
     public $seo_og_image;
     public $seo_twitter_image;
+    
+    // Existing database path tracker properties for safe deletion
+    public $existing_og_image = null;
+    public $existing_twitter_image = null;
+    
     public $ogImagePreview;
     public $twitterImagePreview;
     
@@ -225,7 +231,7 @@ class SeoDataForm extends Component
                     }
                 }
                 
-                // Format dates
+                // Format dates safely
                 if ($seo->seo_published_date) {
                     $this->seo_published_date = $seo->seo_published_date->format('Y-m-d');
                 }
@@ -233,8 +239,20 @@ class SeoDataForm extends Component
                     $this->seo_modified_date = $seo->seo_modified_date->format('Y-m-d');
                 }
                 
-                $this->ogImagePreview = $seo->og_image_url;
-                $this->twitterImagePreview = $seo->twitter_image_url;
+                // Set and track existing image properties
+                $this->existing_og_image = $seo->seo_og_image;
+                if ($this->existing_og_image) {
+                    $this->ogImagePreview = Storage::disk('public')->url($this->existing_og_image);
+                } else {
+                    $this->ogImagePreview = $seo->og_image_url;
+                }
+                
+                $this->existing_twitter_image = $seo->seo_twitter_image;
+                if ($this->existing_twitter_image) {
+                    $this->twitterImagePreview = Storage::disk('public')->url($this->existing_twitter_image);
+                } else {
+                    $this->twitterImagePreview = $seo->twitter_image_url;
+                }
             }
         }
     }
@@ -249,17 +267,34 @@ class SeoDataForm extends Component
     public function updatedSeoOgImage()
     {
         $this->validateOnly('seo_og_image', ['seo_og_image' => 'image|max:2048']);
-        try { $this->ogImagePreview = $this->seo_og_image->temporaryUrl(); } catch (\Exception $e) {}
+        try { 
+            $this->ogImagePreview = $this->seo_og_image->temporaryUrl(); 
+        } catch (\Exception $e) {
+            Log::error('OG Image Preview failure: ' . $e->getMessage());
+        }
     }
 
     public function updatedSeoTwitterImage()
     {
         $this->validateOnly('seo_twitter_image', ['seo_twitter_image' => 'image|max:2048']);
-        try { $this->twitterImagePreview = $this->seo_twitter_image->temporaryUrl(); } catch (\Exception $e) {}
+        try { 
+            $this->twitterImagePreview = $this->seo_twitter_image->temporaryUrl(); 
+        } catch (\Exception $e) {
+            Log::error('Twitter Image Preview failure: ' . $e->getMessage());
+        }
     }
 
-    public function removeOgImage() { $this->seo_og_image = null; $this->ogImagePreview = null; }
-    public function removeTwitterImage() { $this->seo_twitter_image = null; $this->twitterImagePreview = null; }
+    public function removeOgImage() 
+    { 
+        $this->seo_og_image = null; 
+        $this->ogImagePreview = null; 
+    }
+    
+    public function removeTwitterImage() 
+    { 
+        $this->seo_twitter_image = null; 
+        $this->twitterImagePreview = null; 
+    }
 
     public function validateSchema()
     {
@@ -309,26 +344,22 @@ class SeoDataForm extends Component
             $seo->seo_sitemap_include = (bool) $this->seo_sitemap_include;
             $seo->seo_sitemap_priority = (int) ($this->seo_sitemap_priority ?? 50);
             
-            // OG Image
+            // Open Graph Image save via Dynamic uploadFile Trait
             if ($this->seo_og_image) {
-                if ($seo->seo_og_image) @unlink(public_path('uploads/seo/' . $seo->seo_og_image));
-                $name = 'og_' . time() . '_' . uniqid() . '.' . $this->seo_og_image->getClientOriginalExtension();
-                $path = public_path('uploads/seo');
-                if (!is_dir($path)) mkdir($path, 0777, true);
-                copy($this->seo_og_image->getRealPath(), $path . '/' . $name);
-                @unlink($this->seo_og_image->getRealPath());
-                $seo->seo_og_image = $name;
+                $seo->seo_og_image = $this->uploadFile(
+                    $this->seo_og_image, 
+                    'seo', 
+                    $this->existing_og_image
+                );
             }
             
-            // Twitter Image
+            // Twitter Image save via Dynamic uploadFile Trait
             if ($this->seo_twitter_image) {
-                if ($seo->seo_twitter_image) @unlink(public_path('uploads/seo/' . $seo->seo_twitter_image));
-                $name = 'tw_' . time() . '_' . uniqid() . '.' . $this->seo_twitter_image->getClientOriginalExtension();
-                $path = public_path('uploads/seo');
-                if (!is_dir($path)) mkdir($path, 0777, true);
-                copy($this->seo_twitter_image->getRealPath(), $path . '/' . $name);
-                @unlink($this->seo_twitter_image->getRealPath());
-                $seo->seo_twitter_image = $name;
+                $seo->seo_twitter_image = $this->uploadFile(
+                    $this->seo_twitter_image, 
+                    'seo', 
+                    $this->existing_twitter_image
+                );
             }
             
             $seo->save();

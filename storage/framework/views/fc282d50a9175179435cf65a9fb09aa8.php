@@ -78,7 +78,7 @@
                                     <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::openLoop(); ?><?php endif; ?><?php $__currentLoopData = $projects; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $p): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::startLoopIteration(); ?><?php endif; ?>
                                         <div class="col-md-6">
                                             <div class="cs-project-card">
-                                                <img src="<?php echo e(asset('public/p_image/'.$p->p_image)); ?>" 
+                                                <img src="<?php echo e(asset('p_image/'.$p->p_image)); ?>" 
                                                      alt="<?php echo e($p->p_title); ?>"
                                                      style="height:180px;width:100%;object-fit:cover;border-radius:10px;">
                                                 <h5 class="mt-2 fw-bold"><?php echo e($p->p_title); ?></h5>

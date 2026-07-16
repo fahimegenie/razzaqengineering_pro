@@ -3,7 +3,7 @@
 namespace App\Livewire\Admin\Products;
 
 use Livewire\Component;
-use Livewire\WithFileUploads;
+use App\Traits\HandlesUploads; // Trait apply kiya
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\Title;
 use Livewire\Attributes\Validate;
@@ -11,18 +11,20 @@ use App\Models\Product;
 use App\Models\ProductCategory;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 
 #[Layout('components.layouts.admin-layout')]
 #[Title('Product Form - Admin Panel')]
 class ProductForm extends Component
 {
-    use WithFileUploads;
+    use HandlesUploads; // HandlesUploads use kiya (WithFileUploads included)
 
     public $productId = null;
     public $isEditing = false;
     public $isSaving = false;
     
     public $p_image;
+    public $existing_image = null; // Main image ko track karne ke liye
     public $imagePreview;
     public $galleryImages = [];
     public $galleryPreviews = [];
@@ -96,8 +98,20 @@ class ProductForm extends Component
                 
                 $this->specifications = $product->specifications_list;
                 $this->p_specifications_input = '';
-                $this->existingGallery = $product->gallery_urls;
-                $this->imagePreview = $product->image_url;
+                
+                // Existing image loading safely
+                $this->existing_image = $product->p_image;
+                if ($this->existing_image) {
+                    $this->imagePreview = Storage::disk('public')->url($this->existing_image);
+                } else {
+                    $this->imagePreview = $product->image_url;
+                }
+
+                // Existing Gallery loading safely
+                if ($product->p_gallery) {
+                    $decoded = is_array($product->p_gallery) ? $product->p_gallery : json_decode($product->p_gallery, true);
+                    $this->existingGallery = $decoded ?? [];
+                }
             }
         }
     }
@@ -114,8 +128,11 @@ class ProductForm extends Component
     public function updatedPImage()
     {
         $this->validateOnly('p_image', ['p_image' => 'image|max:5120']);
-        try { $this->imagePreview = $this->p_image->temporaryUrl(); } 
-        catch (\Exception $e) { Log::error('Preview error: ' . $e->getMessage()); }
+        try { 
+            $this->imagePreview = $this->p_image->temporaryUrl(); 
+        } catch (\Exception $e) { 
+            Log::error('Preview error: ' . $e->getMessage()); 
+        }
     }
 
     public function updatedGalleryImages()
@@ -123,8 +140,9 @@ class ProductForm extends Component
         $this->validateOnly('galleryImages.*', ['galleryImages.*' => 'image|max:2048']);
         $this->galleryPreviews = [];
         foreach ($this->galleryImages as $image) {
-            try { $this->galleryPreviews[] = $image->temporaryUrl(); } 
-            catch (\Exception $e) {}
+            try { 
+                $this->galleryPreviews[] = $image->temporaryUrl(); 
+            } catch (\Exception $e) {}
         }
     }
 
@@ -140,6 +158,11 @@ class ProductForm extends Component
 
     public function removeExistingGalleryImage($index)
     {
+        $imageToDelete = $this->existingGallery[$index] ?? null;
+        if ($imageToDelete) {
+            // Storage disk se physical image file ko clean karna
+            $this->deleteFile($imageToDelete);
+        }
         unset($this->existingGallery[$index]);
         $this->existingGallery = array_values($this->existingGallery);
     }
@@ -195,32 +218,16 @@ class ProductForm extends Component
             $product->is_featured = (bool) $this->is_featured;
             $product->p_specifications = json_encode($this->specifications);
             
-            // Main Image
+            // Main Image (Trait handles uploading and replaces existing smoothly)
             if ($this->p_image) {
-                if ($product->p_image) @unlink(public_path('uploads/products/' . $product->p_image));
-                
-                $imageName = 'prod_' . time() . '_' . uniqid() . '.' . $this->p_image->getClientOriginalExtension();
-                $destinationPath = public_path('uploads/products');
-                if (!is_dir($destinationPath)) mkdir($destinationPath, 0777, true);
-                
-                $tempFile = $this->p_image->getRealPath();
-                copy($tempFile, $destinationPath . '/' . $imageName);
-                @unlink($tempFile);
-                $product->p_image = $imageName;
+                $product->p_image = $this->uploadFile($this->p_image, 'products', $this->existing_image);
             }
             
-            // Gallery Images
-            $galleryData = $this->existingGallery;
+            // Gallery Images (Dynamic uploading via Trait)
+            $galleryData = array_values($this->existingGallery);
             if (count($this->galleryImages) > 0) {
-                $galleryPath = public_path('uploads/products/gallery');
-                if (!is_dir($galleryPath)) mkdir($galleryPath, 0777, true);
-                
                 foreach ($this->galleryImages as $image) {
-                    $galleryName = 'gal_' . time() . '_' . uniqid() . '.' . $image->getClientOriginalExtension();
-                    $tempFile = $image->getRealPath();
-                    copy($tempFile, $galleryPath . '/' . $galleryName);
-                    @unlink($tempFile);
-                    $galleryData[] = $galleryName;
+                    $galleryData[] = $this->uploadFile($image, 'products/gallery');
                 }
             }
             $product->p_gallery = json_encode(array_values($galleryData));

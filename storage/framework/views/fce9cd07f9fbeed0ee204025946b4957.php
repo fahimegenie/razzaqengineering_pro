@@ -60,19 +60,19 @@
             
             
             <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if($isLoading): ?>
-                <div class="text-center py-5" <?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::processElementKey('services-loading-state', get_defined_vars()); ?>wire:key="services-loading-state">
+                <div class="text-center py-5" <?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::$currentLoop['key'] = 'services-loading-state'; ?>wire:key="services-loading-state">
                     <div class="spinner-border text-success" style="width:3rem;height:3rem;"></div>
                     <p class="text-muted mt-2">Loading services...</p>
                 </div>
             <?php elseif($errorMessage): ?>
                 
-                <div class="alert alert-danger text-center rounded-3 shadow-sm border-0" <?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::processElementKey('services-error-state', get_defined_vars()); ?>wire:key="services-error-state">
+                <div class="alert alert-danger text-center rounded-3 shadow-sm border-0" <?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::$currentLoop['key'] = 'services-error-state'; ?>wire:key="services-error-state">
                     <i class="fas fa-exclamation-triangle me-2"></i> <?php echo e($errorMessage); ?>
 
                 </div>
             <?php else: ?>
                 
-                <div <?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::processElementKey('services-main-content', get_defined_vars()); ?>wire:key="services-main-content">
+                <div <?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::$currentLoop['key'] = 'services-main-content'; ?>wire:key="services-main-content">
                     
                     
                     <div class="services-controls" data-aos="fade-up" wire:ignore.self>
@@ -133,7 +133,7 @@
                                                         class="dropdown-item py-2 px-3 rounded-2 text-start w-100 <?php echo e($selectedCity == $city->id ? 'bg-success text-white' : ''); ?>"
                                                         wire:click="selectCity('<?php echo e($city->id); ?>', '<?php echo e($city->name); ?>')"
                                                         @click="open = false"
-                                                        <?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::processElementKey('city-opt-{{ $city->id }}', get_defined_vars()); ?>wire:key="city-opt-<?php echo e($city->id); ?>">
+                                                        <?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::$currentLoop['key'] = 'city-opt-'.e($city->id).''; ?>wire:key="city-opt-<?php echo e($city->id); ?>">
                                                     <?php echo e($city->name); ?>
 
                                                 </button>
@@ -157,13 +157,13 @@
                     
                     
                     <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if($featuredServices->count() > 0 && empty($search) && $selectedCity === 'all'): ?>
-                        <div class="featured-services mb-5" data-aos="fade-up" <?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::processElementKey('featured-services-panel', get_defined_vars()); ?>wire:key="featured-services-panel">
+                        <div class="featured-services mb-5" data-aos="fade-up" <?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::$currentLoop['key'] = 'featured-services-panel'; ?>wire:key="featured-services-panel">
                             <h3 class="fw-bold mb-4">
                                 <i class="fas fa-star text-warning me-2"></i> Featured Services
                             </h3>
                             <div class="row g-4">
                                 <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::openLoop(); ?><?php endif; ?><?php $__currentLoopData = $featuredServices; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $fs): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::startLoopIteration(); ?><?php endif; ?>
-                                    <div class="col-lg-4 col-md-6" <?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::processElementKey('fs-card-{{ $fs->id }}', get_defined_vars()); ?>wire:key="fs-card-<?php echo e($fs->id); ?>">
+                                    <div class="col-lg-4 col-md-6" <?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::$currentLoop['key'] = 'fs-card-'.e($fs->id).''; ?>wire:key="fs-card-<?php echo e($fs->id); ?>">
                                         <div class="service-card featured">
                                             <div class="service-card-img" wire:ignore>
                                                 <img src="<?php echo e(asset('slider_image/'.$fs->os_image)); ?>" 
@@ -192,7 +192,7 @@
                     <?php endif; ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
                     
                     
-                    <div class="all-services" <?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::processElementKey('all-services-panel-{{ $selectedCity }}-{{ md5($search) }}', get_defined_vars()); ?>wire:key="all-services-panel-<?php echo e($selectedCity); ?>-<?php echo e(md5($search)); ?>">
+                    <div class="all-services" <?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::$currentLoop['key'] = 'all-services-panel-'.e($selectedCity).'-'.e(md5($search)).''; ?>wire:key="all-services-panel-<?php echo e($selectedCity); ?>-<?php echo e(md5($search)); ?>">
                         <h3 class="fw-bold mb-4" data-aos="fade-up">
                             <i class="fas fa-th-list text-success me-2"></i> 
                             <?php echo e($selectedCity !== 'all' && $cities->find($selectedCity) ? 'Services in ' . $cities->find($selectedCity)->name : 'All Services'); ?>
@@ -202,7 +202,7 @@
                         <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if(count($services) > 0): ?>
                             <div class="row g-4">
                                 <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::openLoop(); ?><?php endif; ?><?php $__currentLoopData = $services; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $service): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::startLoopIteration(); ?><?php endif; ?>
-                                    <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="<?php echo e($loop->index % 3 * 100); ?>" <?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::processElementKey('service-card-{{ $service->id }}', get_defined_vars()); ?>wire:key="service-card-<?php echo e($service->id); ?>">
+                                    <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="<?php echo e($loop->index % 3 * 100); ?>" <?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::$currentLoop['key'] = 'service-card-'.e($service->id).''; ?>wire:key="service-card-<?php echo e($service->id); ?>">
                                         <div class="service-card">
                                             <div class="service-card-img" wire:ignore>
                                                 <img src="<?php echo e(asset('slider_image/'.$service->os_image)); ?>" 
@@ -226,7 +226,7 @@
                                                         <div class="city-tags">
                                                             <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::openLoop(); ?><?php endif; ?><?php $__currentLoopData = $service->cityServices->take(4); $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $cs): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::startLoopIteration(); ?><?php endif; ?>
                                                                 <a href="<?php echo e(url($cs->city->slug . '/' . Str::slug($service->os_name))); ?>" 
-                                                                   class="city-tag" <?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::processElementKey('city-tag-{{ $cs->id }}', get_defined_vars()); ?>wire:key="city-tag-<?php echo e($cs->id); ?>">
+                                                                   class="city-tag" <?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::$currentLoop['key'] = 'city-tag-'.e($cs->id).''; ?>wire:key="city-tag-<?php echo e($cs->id); ?>">
                                                                     <?php echo e($cs->city->name); ?>
 
                                                                 </a>
@@ -250,7 +250,7 @@
                             </div>
                             
                             
-                            <div x-ref="loadMoreSentinel" class="text-center py-4" <?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::processElementKey('sentinel-wrapper', get_defined_vars()); ?>wire:key="sentinel-wrapper">
+                            <div x-ref="loadMoreSentinel" class="text-center py-4" <?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::$currentLoop['key'] = 'sentinel-wrapper'; ?>wire:key="sentinel-wrapper">
                                 <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if($hasMore): ?>
                                     <div wire:loading wire:target="loadMore" class="spinner-border text-success"></div>
                                     <button wire:click="loadMore" wire:loading.remove 
@@ -263,7 +263,7 @@
                             </div>
                             
                         <?php else: ?>
-                            <div class="text-center py-5" data-aos="fade-up" <?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::processElementKey('no-services-found', get_defined_vars()); ?>wire:key="no-services-found">
+                            <div class="text-center py-5" data-aos="fade-up" <?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::$currentLoop['key'] = 'no-services-found'; ?>wire:key="no-services-found">
                                 <i class="fas fa-tools fa-3x text-muted opacity-25 mb-3"></i>
                                 <h5 class="fw-bold">No Services Found</h5>
                                 <p class="text-muted">Try different search terms or select another city.</p>

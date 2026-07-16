@@ -25,7 +25,7 @@ class AboutUs extends Model
      *
      * @var string
      */
-    protected $primaryKey = 'about_id';
+    protected $primaryKey = 'id';
 
     /**
      * The attributes that are mass assignable.
@@ -188,7 +188,7 @@ class AboutUs extends Model
                         return asset('uploads/' . $path);
                     }
                     if (file_exists(public_path('public/images/' . $this->a_image))) {
-                        return asset('public/images/' . $this->a_image);
+                        return asset('images/' . $this->a_image);
                     }
                     if (file_exists(public_path('slider_image/' . $this->a_image))) {
                         return asset('slider_image/' . $this->a_image);
@@ -212,7 +212,7 @@ class AboutUs extends Model
                         return asset('uploads/' . $path);
                     }
                     if (file_exists(public_path('public/images/' . $this->about_banner))) {
-                        return asset('public/images/' . $this->about_banner);
+                        return asset('images/' . $this->about_banner);
                     }
                 }
                 return $this->image_url;
@@ -233,7 +233,7 @@ class AboutUs extends Model
                         return asset('uploads/' . $path);
                     }
                     if (file_exists(public_path('public/images/' . $this->ceo_image))) {
-                        return asset('public/images/' . $this->ceo_image);
+                        return asset('images/' . $this->ceo_image);
                     }
                     if (file_exists(public_path('slider_image/' . $this->ceo_image))) {
                         return asset('slider_image/' . $this->ceo_image);
@@ -256,7 +256,7 @@ class AboutUs extends Model
                         return asset('uploads/about/gallery/' . $image);
                     }
                     if (file_exists(public_path('public/images/' . $image))) {
-                        return asset('public/images/' . $image);
+                        return asset('images/' . $image);
                     }
                     return asset('assets/images/placeholder-gallery.jpg');
                 })->toArray();

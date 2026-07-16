@@ -43,17 +43,17 @@
             
             
             <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if($isLoading): ?>
-                <div class="text-center py-5" <?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::processElementKey('prod-loading', get_defined_vars()); ?>wire:key="prod-loading">
+                <div class="text-center py-5" <?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::$currentLoop['key'] = 'prod-loading'; ?>wire:key="prod-loading">
                     <div class="spinner-border text-success" style="width:3rem;height:3rem;"></div>
                     <p class="text-muted mt-2">Loading products...</p>
                 </div>
             <?php elseif($errorMessage): ?>
-                <div class="alert alert-danger text-center rounded-3 border-0 shadow-sm" <?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::processElementKey('prod-error', get_defined_vars()); ?>wire:key="prod-error">
+                <div class="alert alert-danger text-center rounded-3 border-0 shadow-sm" <?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::$currentLoop['key'] = 'prod-error'; ?>wire:key="prod-error">
                     <i class="fas fa-exclamation-triangle me-2"></i> <?php echo e($errorMessage); ?>
 
                 </div>
             <?php else: ?>
-                <div <?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::processElementKey('prod-main-content', get_defined_vars()); ?>wire:key="prod-main-content">
+                <div <?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::$currentLoop['key'] = 'prod-main-content'; ?>wire:key="prod-main-content">
                     
                     
                     <div class="prod-intro text-center mb-5" data-aos="fade-up" wire:ignore.self>
@@ -96,7 +96,7 @@
                                             <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::openLoop(); ?><?php endif; ?><?php $__currentLoopData = $filteredCategories; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $cat): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::startLoopIteration(); ?><?php endif; ?>
                                                 <button type="button" class="dropdown-item py-2 px-3 rounded-2 text-start w-100 <?php echo e($selectedCategory == $cat->pc_id ? 'bg-success text-white' : ''); ?>"
                                                         wire:click="selectCategory('<?php echo e($cat->pc_id); ?>', '<?php echo e($cat->pc_name); ?>')"
-                                                        @click="open = false" <?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::processElementKey('pcat-{{ $cat->pc_id }}', get_defined_vars()); ?>wire:key="pcat-<?php echo e($cat->pc_id); ?>"><?php echo e($cat->pc_name); ?></button>
+                                                        @click="open = false" <?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::$currentLoop['key'] = 'pcat-'.e($cat->pc_id).''; ?>wire:key="pcat-<?php echo e($cat->pc_id); ?>"><?php echo e($cat->pc_name); ?></button>
                                             <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::endLoop(); ?><?php endif; ?><?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::closeLoop(); ?><?php endif; ?>
                                             <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if($filteredCategories->count() === 0): ?>
                                                 <div class="text-muted text-center small py-2">No categories found</div>
@@ -119,12 +119,12 @@
                     </div>
                     
                     
-                    <div class="all-products" <?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::processElementKey('all-products-panel-{{ $selectedCategory }}-{{ md5($search) }}', get_defined_vars()); ?>wire:key="all-products-panel-<?php echo e($selectedCategory); ?>-<?php echo e(md5($search)); ?>">
+                    <div class="all-products" <?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::$currentLoop['key'] = 'all-products-panel-'.e($selectedCategory).'-'.e(md5($search)).''; ?>wire:key="all-products-panel-<?php echo e($selectedCategory); ?>-<?php echo e(md5($search)); ?>">
                         
                         <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if(count($products) > 0): ?>
                             <div class="row g-4">
                                 <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::openLoop(); ?><?php endif; ?><?php $__currentLoopData = $products; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $product): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::startLoopIteration(); ?><?php endif; ?>
-                                    <div class="col-lg-3 col-md-4 col-sm-6" data-aos="fade-up" data-aos-delay="<?php echo e($loop->index % 4 * 100); ?>" <?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::processElementKey('product-card-{{ $product->id }}', get_defined_vars()); ?>wire:key="product-card-<?php echo e($product->id); ?>">
+                                    <div class="col-lg-3 col-md-4 col-sm-6" data-aos="fade-up" data-aos-delay="<?php echo e($loop->index % 4 * 100); ?>" <?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::$currentLoop['key'] = 'product-card-'.e($product->id).''; ?>wire:key="product-card-<?php echo e($product->id); ?>">
                                         <div class="product-card">
                                             
                                             
@@ -181,7 +181,7 @@
                             </div>
                             
                             
-                            <div x-ref="loadMoreSentinel" class="text-center py-4" <?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::processElementKey('sentinel-wrapper', get_defined_vars()); ?>wire:key="sentinel-wrapper">
+                            <div x-ref="loadMoreSentinel" class="text-center py-4" <?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::$currentLoop['key'] = 'sentinel-wrapper'; ?>wire:key="sentinel-wrapper">
                                 <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if($hasMore): ?>
                                     <div wire:loading wire:target="loadMore" class="spinner-border text-success"></div>
                                     <button wire:click="loadMore" wire:loading.remove class="btn btn-outline-success rounded-pill px-5 py-2 fw-semibold mt-3">
@@ -193,7 +193,7 @@
                             </div>
                             
                         <?php else: ?>
-                            <div class="text-center py-5" data-aos="fade-up" <?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::processElementKey('no-products-found', get_defined_vars()); ?>wire:key="no-products-found">
+                            <div class="text-center py-5" data-aos="fade-up" <?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::$currentLoop['key'] = 'no-products-found'; ?>wire:key="no-products-found">
                                 <i class="fas fa-box-open fa-3x text-muted opacity-25 mb-3"></i>
                                 <h5 class="fw-bold">No Products Found</h5>
                                 <p class="text-muted">Try different search terms or select another category.</p>

@@ -39,16 +39,16 @@
         <div class="container">
             
             <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if($isLoading): ?>
-                <div class="text-center py-5" <?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::processElementKey('blog-loading', get_defined_vars()); ?>wire:key="blog-loading">
+                <div class="text-center py-5" <?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::$currentLoop['key'] = 'blog-loading'; ?>wire:key="blog-loading">
                     <div class="spinner-border text-success" style="width:3rem;height:3rem;"></div>
                 </div>
             <?php elseif($errorMessage): ?>
-                <div class="alert alert-danger text-center rounded-3 border-0 shadow-sm" <?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::processElementKey('blog-error', get_defined_vars()); ?>wire:key="blog-error">
+                <div class="alert alert-danger text-center rounded-3 border-0 shadow-sm" <?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::$currentLoop['key'] = 'blog-error'; ?>wire:key="blog-error">
                     <i class="fas fa-exclamation-triangle me-2"></i> <?php echo e($errorMessage); ?>
 
                 </div>
             <?php else: ?>
-                <div <?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::processElementKey('blog-main-content', get_defined_vars()); ?>wire:key="blog-main-content">
+                <div <?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::$currentLoop['key'] = 'blog-main-content'; ?>wire:key="blog-main-content">
                     
                     <div class="row g-5">
                         
@@ -66,9 +66,9 @@
                             
                             
                             <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if($posts->count() > 0): ?>
-                                <div class="blog-posts" <?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::processElementKey('blog-posts-{{ md5($search.$selectedCategory.$selectedTag) }}', get_defined_vars()); ?>wire:key="blog-posts-<?php echo e(md5($search.$selectedCategory.$selectedTag)); ?>">
+                                <div class="blog-posts" <?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::$currentLoop['key'] = 'blog-posts-'.e(md5($search.$selectedCategory.$selectedTag)).''; ?>wire:key="blog-posts-<?php echo e(md5($search.$selectedCategory.$selectedTag)); ?>">
                                     <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::openLoop(); ?><?php endif; ?><?php $__currentLoopData = $posts; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $post): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::startLoopIteration(); ?><?php endif; ?>
-                                        <div class="blog-post-card mb-4" data-aos="fade-up" <?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::processElementKey('post-{{ $post->id }}', get_defined_vars()); ?>wire:key="post-<?php echo e($post->id); ?>">
+                                        <div class="blog-post-card mb-4" data-aos="fade-up" <?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::$currentLoop['key'] = 'post-'.e($post->id).''; ?>wire:key="post-<?php echo e($post->id); ?>">
                                             <div class="row g-4">
                                                 <div class="col-md-5" wire:ignore>
                                                     <a href="<?php echo e(route('blog.detail', $post->bp_slug)); ?>" class="blog-post-img-link">

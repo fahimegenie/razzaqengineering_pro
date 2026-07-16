@@ -71,7 +71,7 @@
                                 <div class="col-lg-4 col-md-6">
                                     <div class="city-service-card">
                                         <div class="cs-img">
-                                            <img data-src="{{ asset('public/slider_image/'.$service->os_image) }}" 
+                                            <img data-src="{{ $service->os_image }}" 
                                                  alt="{{ $service->os_name }} in {{ $city->name }}"
                                                  class="lazy-img"
                                                  loading="lazy"
@@ -114,7 +114,7 @@
                             @foreach($projects->take(3) as $project)
                                 <div class="col-lg-4 col-md-6">
                                     <div class="project-mini-card">
-                                        <img src="{{ asset('public/p_image/'.$project->p_image) }}" 
+                                        <img src="{{ asset('p_image/'.$project->p_image) }}" 
                                              alt="{{ $project->p_title }}"
                                              style="height:200px;width:100%;object-fit:cover;border-radius:10px;">
                                         <h5 class="mt-2 fw-bold">{{ $project->p_title }}</h5>

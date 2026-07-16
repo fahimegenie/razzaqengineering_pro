@@ -43,17 +43,17 @@
             
             
             <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if($isLoading): ?>
-                <div class="text-center py-5" <?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::processElementKey('proj-loading-state', get_defined_vars()); ?>wire:key="proj-loading-state">
+                <div class="text-center py-5" <?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::$currentLoop['key'] = 'proj-loading-state'; ?>wire:key="proj-loading-state">
                     <div class="spinner-border text-success" style="width:3rem;height:3rem;"></div>
                     <p class="text-muted mt-2">Loading projects...</p>
                 </div>
             <?php elseif($errorMessage): ?>
-                <div class="alert alert-danger text-center rounded-3 shadow-sm border-0" <?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::processElementKey('proj-error-state', get_defined_vars()); ?>wire:key="proj-error-state">
+                <div class="alert alert-danger text-center rounded-3 shadow-sm border-0" <?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::$currentLoop['key'] = 'proj-error-state'; ?>wire:key="proj-error-state">
                     <i class="fas fa-exclamation-triangle me-2"></i> <?php echo e($errorMessage); ?>
 
                 </div>
             <?php else: ?>
-                <div <?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::processElementKey('proj-main-content', get_defined_vars()); ?>wire:key="proj-main-content">
+                <div <?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::$currentLoop['key'] = 'proj-main-content'; ?>wire:key="proj-main-content">
                     
                     
                     <div class="proj-filters" data-aos="fade-up" wire:ignore.self>
@@ -93,7 +93,7 @@
                                             <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::openLoop(); ?><?php endif; ?><?php $__currentLoopData = $filteredCategories; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $cat): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::startLoopIteration(); ?><?php endif; ?>
                                                 <button type="button" class="dropdown-item py-2 px-3 rounded-2 text-start w-100 <?php echo e($selectedCategory == $cat->pc_id ? 'bg-success text-white' : ''); ?>"
                                                         wire:click="selectCategory('<?php echo e($cat->pc_id); ?>', '<?php echo e($cat->pc_name); ?>')"
-                                                        @click="open = false" <?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::processElementKey('cat-opt-{{ $cat->pc_id }}', get_defined_vars()); ?>wire:key="cat-opt-<?php echo e($cat->pc_id); ?>"><?php echo e($cat->pc_name); ?></button>
+                                                        @click="open = false" <?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::$currentLoop['key'] = 'cat-opt-'.e($cat->pc_id).''; ?>wire:key="cat-opt-<?php echo e($cat->pc_id); ?>"><?php echo e($cat->pc_name); ?></button>
                                             <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::endLoop(); ?><?php endif; ?><?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::closeLoop(); ?><?php endif; ?>
                                             <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if($filteredCategories->count() === 0): ?>
                                                 <div class="text-muted text-center small py-2">No categories found</div>
@@ -127,7 +127,7 @@
                                             <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::openLoop(); ?><?php endif; ?><?php $__currentLoopData = $filteredCities; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $city): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::startLoopIteration(); ?><?php endif; ?>
                                                 <button type="button" class="dropdown-item py-2 px-3 rounded-2 text-start w-100 <?php echo e($selectedCity == $city->id ? 'bg-success text-white' : ''); ?>"
                                                         wire:click="selectCity('<?php echo e($city->id); ?>', '<?php echo e($city->name); ?>')"
-                                                        @click="open = false" <?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::processElementKey('city-opt-{{ $city->id }}', get_defined_vars()); ?>wire:key="city-opt-<?php echo e($city->id); ?>"><?php echo e($city->name); ?></button>
+                                                        @click="open = false" <?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::$currentLoop['key'] = 'city-opt-'.e($city->id).''; ?>wire:key="city-opt-<?php echo e($city->id); ?>"><?php echo e($city->name); ?></button>
                                             <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::endLoop(); ?><?php endif; ?><?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::closeLoop(); ?><?php endif; ?>
                                             <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if($filteredCities->count() === 0): ?>
                                                 <div class="text-muted text-center small py-2">No cities found</div>
@@ -160,11 +160,11 @@
                     
                     
                     <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if($featuredProjects->count() > 0 && empty($search) && $selectedCategory === 'all' && $selectedCity === 'all' && $selectedStatus === 'all'): ?>
-                        <div class="featured-projects mb-5" data-aos="fade-up" <?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::processElementKey('featured-projects-panel', get_defined_vars()); ?>wire:key="featured-projects-panel">
+                        <div class="featured-projects mb-5" data-aos="fade-up" <?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::$currentLoop['key'] = 'featured-projects-panel'; ?>wire:key="featured-projects-panel">
                             <h3 class="fw-bold mb-4"><i class="fas fa-star text-warning me-2"></i> Featured Projects</h3>
                             <div class="row g-4">
                                 <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::openLoop(); ?><?php endif; ?><?php $__currentLoopData = $featuredProjects; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $fp): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::startLoopIteration(); ?><?php endif; ?>
-                                    <div class="col-lg-4 col-md-6" <?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::processElementKey('fp-card-{{ $fp->id }}', get_defined_vars()); ?>wire:key="fp-card-<?php echo e($fp->id); ?>">
+                                    <div class="col-lg-4 col-md-6" <?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::$currentLoop['key'] = 'fp-card-'.e($fp->id).''; ?>wire:key="fp-card-<?php echo e($fp->id); ?>">
                                         <div class="project-card featured">
                                             <div class="project-card-img" wire:ignore>
                                                 <img src="<?php echo e(asset('p_image/'.$fp->p_image)); ?>" alt="<?php echo e($fp->p_title); ?>" class="img-fluid" loading="lazy">
@@ -177,7 +177,7 @@
                                                 <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if($fp->category): ?>
                                                     <span class="project-category"><?php echo e($fp->category->pc_name); ?></span>
                                                 <?php endif; ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
-                                                <h4><a href="<?php echo e(route('project.detail', ['slug' => $fp->slug] )); ?>"><?php echo e($fp->p_title); ?></a></h4>
+                                                <h4><a href="<?php echo e(route('project.detail', ['slug' => $fp->p_title] )); ?>"><?php echo e($fp->p_title); ?></a></h4>
                                                 <p><?php echo e(Str::limit($fp->p_short_description ?? $fp->p_description, 100)); ?></p>
                                                 <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if($fp->p_location): ?>
                                                     <div class="project-location"><i class="fas fa-map-marker-alt text-danger me-1"></i> <?php echo e($fp->p_location); ?></div>
@@ -191,7 +191,7 @@
                     <?php endif; ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
                     
                     
-                    <div class="all-projects" <?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::processElementKey('all-projects-panel-{{ $selectedCategory }}-{{ $selectedCity }}-{{ $selectedStatus }}-{{ md5($search) }}', get_defined_vars()); ?>wire:key="all-projects-panel-<?php echo e($selectedCategory); ?>-<?php echo e($selectedCity); ?>-<?php echo e($selectedStatus); ?>-<?php echo e(md5($search)); ?>">
+                    <div class="all-projects" <?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::$currentLoop['key'] = 'all-projects-panel-'.e($selectedCategory).'-'.e($selectedCity).'-'.e($selectedStatus).'-'.e(md5($search)).''; ?>wire:key="all-projects-panel-<?php echo e($selectedCategory); ?>-<?php echo e($selectedCity); ?>-<?php echo e($selectedStatus); ?>-<?php echo e(md5($search)); ?>">
                         <h3 class="fw-bold mb-4" data-aos="fade-up">
                             <i class="fas fa-folder-open text-success me-2"></i> 
                             <?php echo e($selectedCategory !== 'all' ? $selectedCategoryName : 'All Projects'); ?>
@@ -205,7 +205,7 @@
                         <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if(count($projects) > 0): ?>
                             <div class="row g-4">
                                 <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::openLoop(); ?><?php endif; ?><?php $__currentLoopData = $projects; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $project): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::startLoopIteration(); ?><?php endif; ?>
-                                    <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="<?php echo e($loop->index % 3 * 100); ?>" <?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::processElementKey('proj-card-{{ $project->id }}', get_defined_vars()); ?>wire:key="proj-card-<?php echo e($project->id); ?>">
+                                    <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="<?php echo e($loop->index % 3 * 100); ?>" <?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::$currentLoop['key'] = 'proj-card-'.e($project->id).''; ?>wire:key="proj-card-<?php echo e($project->id); ?>">
                                         <div class="project-card">
                                             <div class="project-card-img" wire:ignore>
                                                 <img src="<?php echo e(asset('p_image/'.$project->p_image)); ?>" alt="<?php echo e($project->p_title); ?>" class="img-fluid" loading="lazy">
@@ -217,7 +217,7 @@
                                                 <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if($project->category): ?>
                                                     <span class="project-category"><?php echo e($project->category->pc_name); ?></span>
                                                 <?php endif; ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
-                                                <h4><a href="<?php echo e(route('project.detail', ['slug' => $project->slug])); ?>"><?php echo e($project->p_title); ?></a></h4>
+                                                <h4><a href="<?php echo e(route('project.detail', ['slug' => $project->p_title])); ?>"><?php echo e($project->p_title); ?></a></h4>
                                                 <p><?php echo e(Str::limit($project->p_short_description ?? $project->p_description, 100)); ?></p>
                                                 <div class="project-meta">
                                                     <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if($project->p_location): ?>
@@ -228,7 +228,7 @@
                                                     <?php endif; ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
                                                 </div>
                                                 <div class="project-card-footer">
-                                                    <a href="<?php echo e(route('project.detail', ['slug' => $project->slug])); ?>" class="proj-link">View Details <i class="fas fa-arrow-right ms-1"></i></a>
+                                                    <a href="<?php echo e(route('project.detail', ['slug' => $project->p_title])); ?>" class="proj-link">View Details <i class="fas fa-arrow-right ms-1"></i></a>
                                                     <span class="proj-date"><i class="far fa-calendar-alt me-1"></i> <?php echo e($project->p_start_date ? $project->p_start_date->format('M Y') : 'N/A'); ?></span>
                                                 </div>
                                             </div>
@@ -238,7 +238,7 @@
                             </div>
                             
                             
-                            <div x-ref="loadMoreSentinel" class="text-center py-4" <?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::processElementKey('sentinel-wrapper', get_defined_vars()); ?>wire:key="sentinel-wrapper">
+                            <div x-ref="loadMoreSentinel" class="text-center py-4" <?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::$currentLoop['key'] = 'sentinel-wrapper'; ?>wire:key="sentinel-wrapper">
                                 <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if($hasMore): ?>
                                     <div wire:loading wire:target="loadMore" class="spinner-border text-success"></div>
                                     <button wire:click="loadMore" wire:loading.remove class="btn btn-outline-success rounded-pill px-5 py-2 fw-semibold mt-3">
@@ -250,7 +250,7 @@
                             </div>
                             
                         <?php else: ?>
-                            <div class="text-center py-5" data-aos="fade-up" <?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::processElementKey('no-projects-found', get_defined_vars()); ?>wire:key="no-projects-found">
+                            <div class="text-center py-5" data-aos="fade-up" <?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::$currentLoop['key'] = 'no-projects-found'; ?>wire:key="no-projects-found">
                                 <i class="fas fa-folder-open fa-3x text-muted opacity-25 mb-3"></i>
                                 <h5 class="fw-bold">No Projects Found</h5>
                                 <p class="text-muted">Try different search terms or adjust filters.</p>

@@ -54,6 +54,22 @@
                     </ul>
                 </li>
 
+                <!-- Fleet Management -->
+                <li class="nav-item">
+                    <a href="{{ route('admin.fleet.index') }}" class="nav-link {{ request()->routeIs('admin.fleet.*') ? 'active' : '' }}">
+                        <i class="nav-icon bi bi-truck"></i>
+                        <p>Fleet Management</p>
+                    </a>
+                </li>
+
+                <!-- Our Companies -->
+                <li class="nav-item">
+                    <a href="{{ route('admin.our-companies.index') }}" class="nav-link {{ request()->routeIs('admin.our-companies.*') ? 'active' : '' }}">
+                        <i class="nav-icon bi bi-building"></i>
+                        <p>Our Companies</p>
+                    </a>
+                </li>
+
                 <!-- Projects Management -->
                 <li class="nav-item {{ request()->is('admin/projects*') || request()->is('admin/project-categories*') ? 'menu-open' : '' }}">
                     <a href="#" class="nav-link {{ request()->is('admin/projects*') || request()->is('admin/project-categories*') ? 'active' : '' }}">
@@ -141,6 +157,31 @@
                     </ul>
                 </li>
 
+                <!-- Pages Management -->
+                <li class="nav-item {{ request()->is('admin/pages*') || request()->is('admin/settings/contact-us*') || request()->is('admin/settings/about-us*') ? 'menu-open' : '' }}">
+                    <a href="#" class="nav-link {{ request()->is('admin/pages*') || request()->is('admin/settings/contact-us*') || request()->is('admin/settings/about-us*') ? 'active' : '' }}">
+                        <i class="nav-icon bi bi-file-earmark-text"></i>
+                        <p>
+                            Pages
+                            <i class="nav-arrow bi bi-chevron-right"></i>
+                        </p>
+                    </a>
+                    <ul class="nav nav-treeview">
+                        <li class="nav-item">
+                            <a href="{{ route('admin.settings.contact-us') }}" class="nav-link {{ request()->routeIs('admin.settings.contact-us') ? 'active' : '' }}">
+                                <i class="nav-icon bi bi-circle"></i>
+                                <p>Contact Us Page</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{{ route('admin.settings.about-us') }}" class="nav-link {{ request()->routeIs('admin.settings.about-us') ? 'active' : '' }}">
+                                <i class="nav-icon bi bi-circle"></i>
+                                <p>About Us Page</p>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+
                 <!-- Gallery -->
                 <li class="nav-item">
                     <a href="{{ route('admin.gallery.index') }}" class="nav-link {{ request()->routeIs('admin.gallery.*') ? 'active' : '' }}">
@@ -181,14 +222,6 @@
                     </a>
                 </li>
 
-                <!-- City Service SEO -->
-                {{-- <li class="nav-item">
-                    <a href="{{ url('admin.city-seo.index') }}" class="nav-link {{ request()->routeIs('admin.city-seo.*') ? 'active' : '' }}">
-                        <i class="nav-icon bi bi-geo-alt"></i>
-                        <p>City SEO</p>
-                    </a>
-                </li> --}}
-
                 <!-- Slider -->
                 <li class="nav-item">
                     <a href="{{ route('admin.sliders.index') }}" class="nav-link {{ request()->routeIs('admin.slider.*') ? 'active' : '' }}">
@@ -225,18 +258,41 @@
                     </a>
                 </li>
 
-                <!-- Settings -->
-                <li class="nav-item">
-                    <a href="{{ route('admin.settings.index') }}" class="nav-link {{ request()->routeIs('admin.settings.*') ? 'active' : '' }}">
+                <!-- Settings Dropdown -->
+                <li class="nav-item {{ request()->is('admin/settings*') ? 'menu-open' : '' }}">
+                    <a href="#" class="nav-link {{ request()->is('admin/settings*') ? 'active' : '' }}">
                         <i class="nav-icon bi bi-gear"></i>
-                        <p>Settings</p>
+                        <p>
+                            Settings
+                            <i class="nav-arrow bi bi-chevron-right"></i>
+                        </p>
                     </a>
+                    <ul class="nav nav-treeview">
+                        <li class="nav-item">
+                            <a href="{{ route('admin.settings.index') }}" class="nav-link {{ request()->routeIs('admin.settings.index') ? 'active' : '' }}">
+                                <i class="nav-icon bi bi-circle"></i>
+                                <p>General Settings</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{{ route('admin.settings.contact-us') }}" class="nav-link {{ request()->routeIs('admin.settings.contact-us') ? 'active' : '' }}">
+                                <i class="nav-icon bi bi-circle"></i>
+                                <p>Contact Us Settings</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{{ route('admin.settings.about-us') }}" class="nav-link {{ request()->routeIs('admin.settings.about-us') ? 'active' : '' }}">
+                                <i class="nav-icon bi bi-circle"></i>
+                                <p>About Us Settings</p>
+                            </a>
+                        </li>
+                    </ul>
                 </li>
 
                 <!-- Users (if admin) -->
                 @if(auth()->user() && auth()->user()->is_admin)
                     <li class="nav-item">
-                        <a href="{{ url('admin.users.index') }}" class="nav-link {{ request()->routeIs('admin.users.*') ? 'active' : '' }}">
+                        <a href="{{ route('admin.users.index') }}" class="nav-link {{ request()->routeIs('admin.users.*') ? 'active' : '' }}">
                             <i class="nav-icon bi bi-person-badge"></i>
                             <p>Users</p>
                         </a>

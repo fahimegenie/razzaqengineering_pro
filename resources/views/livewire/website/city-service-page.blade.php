@@ -74,7 +74,7 @@
                                     @foreach($projects as $p)
                                         <div class="col-md-6">
                                             <div class="cs-project-card">
-                                                <img src="{{ asset('public/p_image/'.$p->p_image) }}" 
+                                                <img src="{{ asset('p_image/'.$p->p_image) }}" 
                                                      alt="{{ $p->p_title }}"
                                                      style="height:180px;width:100%;object-fit:cover;border-radius:10px;">
                                                 <h5 class="mt-2 fw-bold">{{ $p->p_title }}</h5>

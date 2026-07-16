@@ -3,24 +3,26 @@
 namespace App\Livewire\Admin\Quote;
 
 use Livewire\Component;
-use Livewire\WithFileUploads;
+use App\Traits\HandlesUploads; // Cleanup aur file uploading trait register kiya
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\Title;
 use Livewire\Attributes\Validate;
 use App\Models\QuoteRequest;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 
 #[Layout('components.layouts.admin-layout')]
 #[Title('Create Quote Request - Admin Panel')]
 class QuoteRequestForm extends Component
 {
-    use WithFileUploads;
+    use HandlesUploads; // Trait apply kiya (Contains WithFileUploads internally)
 
     public $quoteId = null;
     public $isEditing = false;
     public $isSaving = false;
     
     public $qr_attachment_file;
+    public $existing_attachment = null; // Purani attachment track karne ke liye
     public $attachmentPreview;
     
     #[Validate('required|string|max:255')]
@@ -98,15 +100,35 @@ class QuoteRequestForm extends Component
                 foreach (['qr_name','qr_email','qr_phone','qr_company','qr_service_type','qr_location','qr_details','qr_budget','qr_timeline','qr_source','qr_status','qr_admin_notes'] as $f) {
                     if (isset($quote->$f)) $this->$f = $quote->$f;
                 }
-                $this->attachmentPreview = $quote->attachment_url;
+                
+                // Track and resolve attachment url safely
+                $this->existing_attachment = $quote->qr_attachment;
+                if ($this->existing_attachment) {
+                    $this->attachmentPreview = Storage::disk('public')->url($this->existing_attachment);
+                } else {
+                    $this->attachmentPreview = $quote->attachment_url;
+                }
             }
         }
     }
 
     public function updatedQrAttachmentFile()
     {
-        $this->validateOnly('qr_attachment_file', ['qr_attachment_file' => 'file|max:10240|mimes:pdf,doc,docx,jpg,jpeg,png,zip']);
-        try { $this->attachmentPreview = $this->qr_attachment_file->temporaryUrl(); } catch (\Exception $e) {}
+        $this->validateOnly('qr_attachment_file', [
+            'qr_attachment_file' => 'file|max:10240|mimes:pdf,doc,docx,jpg,jpeg,png,zip'
+        ]);
+        
+        try { 
+            // temporaryUrl() sirf images ke liye stable chalta hai, non-image files crash na karein isliye safety check
+            $mimeType = $this->qr_attachment_file->getMimeType();
+            if (str_starts_with($mimeType, 'image/')) {
+                $this->attachmentPreview = $this->qr_attachment_file->temporaryUrl(); 
+            } else {
+                $this->attachmentPreview = $this->qr_attachment_file->getClientOriginalName();
+            }
+        } catch (\Exception $e) {
+            Log::error('Preview generation failed: ' . $e->getMessage());
+        }
     }
 
     public function removeAttachment()
@@ -132,14 +154,13 @@ class QuoteRequestForm extends Component
                 $quote->qr_user_agent = request()->userAgent();
             }
             
+            // Storage standard integration via uploadFile trait
             if ($this->qr_attachment_file) {
-                if ($quote->qr_attachment) @unlink(public_path('uploads/quote-attachments/' . $quote->qr_attachment));
-                $name = 'quote_' . time() . '_' . uniqid() . '.' . $this->qr_attachment_file->getClientOriginalExtension();
-                $path = public_path('uploads/quote-attachments');
-                if (!is_dir($path)) mkdir($path, 0777, true);
-                copy($this->qr_attachment_file->getRealPath(), $path . '/' . $name);
-                @unlink($this->qr_attachment_file->getRealPath());
-                $quote->qr_attachment = $name;
+                $quote->qr_attachment = $this->uploadFile(
+                    $this->qr_attachment_file, 
+                    'quote-attachments', 
+                    $this->existing_attachment
+                );
             }
             
             $quote->save();

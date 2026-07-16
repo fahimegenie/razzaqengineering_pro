@@ -1,11 +1,12 @@
-
 <div 
     x-data="{
         editor: null,
         editorId: '<?php echo e($editorId); ?>',
-        value: <?php if ((object) ('value') instanceof \Livewire\WireDirective) : ?>window.Livewire.find('<?php echo e($__livewire->getId()); ?>').entangle('<?php echo e('value'->value()); ?>')<?php echo e('value'->hasModifier('live') ? '.live' : ''); ?><?php else : ?>window.Livewire.find('<?php echo e($__livewire->getId()); ?>').entangle('<?php echo e('value'); ?>')<?php endif; ?>,
+        value: $wire.entangle('value'),
+        field: '<?php echo e($field); ?>',
         height: '<?php echo e($height); ?>',
         readOnly: <?php echo e($readOnly ? 'true' : 'false'); ?>,
+        isInternalUpdate: false,
         
         initEditor() {
             if (typeof ClassicEditor === 'undefined') {
@@ -24,12 +25,29 @@
                         editor.setData(this.value);
                     }
                     
+                    // When editor changes
+                    let debounceTimeout;
                     editor.model.document.on('change:data', () => {
-                        this.value = editor.getData();
+                        this.isInternalUpdate = true;
+                        const data = editor.getData();
+                        this.value = data;
+                        
+                        // Har keypress pe server request rokne ke liye debounce lagaya hy
+                        clearTimeout(debounceTimeout);
+                        debounceTimeout = setTimeout(() => {
+                            if (this.field) {
+                                $wire.call('updateField', { 
+                                    field: this.field, 
+                                    value: data 
+                                });
+                            }
+                            this.isInternalUpdate = false;
+                        }, 300); // 300ms ka gap
                     });
                     
+                    // When Alpine value changes
                     this.$watch('value', (newValue) => {
-                        if (editor.getData() !== newValue) {
+                        if (!this.isInternalUpdate && editor.getData() !== newValue) {
                             editor.setData(newValue || '');
                         }
                     });
@@ -84,21 +102,13 @@
                 return {
                     ...baseConfig,
                     toolbar: {
-                        items: [
-                            'heading', '|',
-                            'bold', 'italic', 'underline', '|',
-                            'link', '|',
-                            'bulletedList', 'numberedList', '|',
-                            'undo', 'redo'
-                        ]
+                        items: ['heading', '|', 'bold', 'italic', 'underline', '|', 'link', '|', 'bulletedList', 'numberedList', '|', 'undo', 'redo']
                     }
                 };
             <?php else: ?>
                 return {
                     ...baseConfig,
-                    toolbar: {
-                        items: ['bold', 'italic', 'underline', '|', 'bulletedList', 'numberedList']
-                    }
+                    toolbar: { items: ['bold', 'italic', 'underline', '|', 'bulletedList', 'numberedList'] }
                 };
             <?php endif; ?>
         },
@@ -111,6 +121,7 @@
     }"
     x-init="initEditor()"
     wire:ignore
+    x-on:cleanup.window="destroyEditor()"
 >
     <div class="ckeditor-wrapper">
         <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if($label): ?>

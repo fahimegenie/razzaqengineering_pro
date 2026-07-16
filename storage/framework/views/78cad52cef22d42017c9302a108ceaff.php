@@ -41,14 +41,14 @@ use Livewire\Volt\Component;
 <?php unset($__componentOriginal656e8c5ea4d9a4fa173298297bfe3f11); ?>
 <?php endif; ?>
 
-    <?php if (isset($component)) { $__componentOriginal9f64f32e90b9102968f2bc548315018c = $component; } ?>
-<?php if (isset($attributes)) { $__attributesOriginal9f64f32e90b9102968f2bc548315018c = $attributes; } ?>
-<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'components.modal','data' => ['name' => 'confirm-user-deletion','show' => $errors->isNotEmpty(),'focusable' => true]] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
+    <?php if (isset($component)) { $__componentOriginal89a573612f1f1cb2dd9fc072235d4356 = $component; } ?>
+<?php if (isset($attributes)) { $__attributesOriginal89a573612f1f1cb2dd9fc072235d4356 = $attributes; } ?>
+<?php $component = Mary\View\Components\Modal::resolve([] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
 <?php $component->withName('modal'); ?>
 <?php if ($component->shouldRender()): ?>
 <?php $__env->startComponent($component->resolveView(), $component->data()); ?>
 <?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
-<?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
+<?php $attributes = $attributes->except(\Mary\View\Components\Modal::ignoredParameterNames()); ?>
 <?php endif; ?>
 <?php $component->withAttributes(['name' => 'confirm-user-deletion','show' => \Illuminate\View\Compilers\BladeCompiler::sanitizeComponentAttribute($errors->isNotEmpty()),'focusable' => true]); ?>
 <?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::processComponentKey($component); ?>
@@ -190,12 +190,12 @@ use Livewire\Volt\Component;
         </form>
      <?php echo $__env->renderComponent(); ?>
 <?php endif; ?>
-<?php if (isset($__attributesOriginal9f64f32e90b9102968f2bc548315018c)): ?>
-<?php $attributes = $__attributesOriginal9f64f32e90b9102968f2bc548315018c; ?>
-<?php unset($__attributesOriginal9f64f32e90b9102968f2bc548315018c); ?>
+<?php if (isset($__attributesOriginal89a573612f1f1cb2dd9fc072235d4356)): ?>
+<?php $attributes = $__attributesOriginal89a573612f1f1cb2dd9fc072235d4356; ?>
+<?php unset($__attributesOriginal89a573612f1f1cb2dd9fc072235d4356); ?>
 <?php endif; ?>
-<?php if (isset($__componentOriginal9f64f32e90b9102968f2bc548315018c)): ?>
-<?php $component = $__componentOriginal9f64f32e90b9102968f2bc548315018c; ?>
-<?php unset($__componentOriginal9f64f32e90b9102968f2bc548315018c); ?>
+<?php if (isset($__componentOriginal89a573612f1f1cb2dd9fc072235d4356)): ?>
+<?php $component = $__componentOriginal89a573612f1f1cb2dd9fc072235d4356; ?>
+<?php unset($__componentOriginal89a573612f1f1cb2dd9fc072235d4356); ?>
 <?php endif; ?>
 </section><?php /**PATH /var/www/html/projects/saif/razzaq-engineering/resources/views/livewire/profile/delete-user-form.blade.php ENDPATH**/ ?>

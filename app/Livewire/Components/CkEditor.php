@@ -12,6 +12,7 @@ class CkEditor extends Component
     public $height = '400px';
     public $toolbar = 'full';
     public $value = '';
+    public $field = '';
     public $readOnly = false;
 
     public function mount(
@@ -20,6 +21,7 @@ class CkEditor extends Component
         $height = '400px',
         $toolbar = 'full',
         $value = '',
+        $field = '',
         $readOnly = false
     ) {
         $this->label = $label;
@@ -27,13 +29,32 @@ class CkEditor extends Component
         $this->height = $height;
         $this->toolbar = $toolbar;
         $this->value = $value;
+        $this->field = $field;
         $this->readOnly = $readOnly;
         $this->editorId = 'ckeditor_' . uniqid();
     }
 
     public function updatedValue($newValue)
     {
-        $this->dispatch('ckeditor-value-updated', value: $newValue);
+        // Still dispatch for backward compatibility
+        if ($this->field) {
+            $this->dispatch('ckeditor-value-updated', value: $newValue, field: $this->field);
+        }
+    }
+
+    /**
+     * Called from Alpine.js via $wire.call()
+     * This directly updates the parent component's property
+     */
+    public function updateField($data)
+    {
+        $field = $data['field'] ?? null;
+        $value = $data['value'] ?? null;
+        
+        if ($field) {
+            // Dispatch up to parent
+            $this->dispatch('ckeditor-value-updated', value: $value, field: $field);
+        }
     }
 
     public function render()

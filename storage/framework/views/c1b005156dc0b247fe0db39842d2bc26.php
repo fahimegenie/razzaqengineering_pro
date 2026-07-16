@@ -48,34 +48,34 @@
             
             
             <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if($isLoading): ?>
-                <div class="text-center py-5" <?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::processElementKey('gal-loading', get_defined_vars()); ?>wire:key="gal-loading">
+                <div class="text-center py-5" <?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::$currentLoop['key'] = 'gal-loading'; ?>wire:key="gal-loading">
                     <div class="spinner-border text-success" style="width:3rem;height:3rem;"></div>
                     <p class="text-muted mt-2">Loading gallery...</p>
                 </div>
                 
             
             <?php elseif($errorMessage): ?>
-                <div class="alert alert-danger text-center rounded-3 border-0 shadow-sm" <?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::processElementKey('gal-error', get_defined_vars()); ?>wire:key="gal-error">
+                <div class="alert alert-danger text-center rounded-3 border-0 shadow-sm" <?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::$currentLoop['key'] = 'gal-error'; ?>wire:key="gal-error">
                     <i class="fas fa-exclamation-triangle me-2"></i> <?php echo e($errorMessage); ?>
 
                 </div>
                 
             
             <?php else: ?>
-                <div <?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::processElementKey('gal-main-content', get_defined_vars()); ?>wire:key="gal-main-content">
+                <div <?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::$currentLoop['key'] = 'gal-main-content'; ?>wire:key="gal-main-content">
                     
                     
                     <div class="gal-filters" data-aos="fade-up" wire:ignore.self>
                         <div class="d-flex flex-wrap justify-content-center gap-2 mb-5">
                             <button class="gal-filter-btn <?php echo e($selectedCategory === 'all' ? 'active' : ''); ?>"
                                     wire:click="filterByCategory('all')"
-                                    <?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::processElementKey('filter-all', get_defined_vars()); ?>wire:key="filter-all">
+                                    <?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::$currentLoop['key'] = 'filter-all'; ?>wire:key="filter-all">
                                 <i class="fas fa-th me-1"></i> All
                             </button>
                             <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::openLoop(); ?><?php endif; ?><?php $__currentLoopData = $categories; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $cat): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::startLoopIteration(); ?><?php endif; ?>
                                 <button class="gal-filter-btn <?php echo e($selectedCategory === $cat ? 'active' : ''); ?>"
                                         wire:click="filterByCategory('<?php echo e($cat); ?>')"
-                                        <?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::processElementKey('filter-{{ Str::slug($cat) }}', get_defined_vars()); ?>wire:key="filter-<?php echo e(Str::slug($cat)); ?>">
+                                        <?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::$currentLoop['key'] = 'filter-'.e(Str::slug($cat)).''; ?>wire:key="filter-<?php echo e(Str::slug($cat)); ?>">
                                     <?php echo e($cat); ?>
 
                                 </button>
@@ -85,13 +85,13 @@
                     
                     
                     <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if($totalCount > 0): ?>
-                        <div class="gal-grid" <?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::processElementKey('gal-grid-{{ $selectedCategory }}', get_defined_vars()); ?>wire:key="gal-grid-<?php echo e($selectedCategory); ?>">
+                        <div class="gal-grid" <?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::$currentLoop['key'] = 'gal-grid-'.e($selectedCategory).''; ?>wire:key="gal-grid-<?php echo e($selectedCategory); ?>">
                             <div class="row g-3">
                                 <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::openLoop(); ?><?php endif; ?><?php $__currentLoopData = $filteredImages; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $index => $item): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::startLoopIteration(); ?><?php endif; ?>
                                     <div class="col-lg-3 col-md-4 col-sm-6" 
                                          data-aos="fade-up" 
                                          data-aos-delay="<?php echo e($index % 4 * 100); ?>"
-                                         <?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::processElementKey('gal-item-{{ $item->wg_id }}', get_defined_vars()); ?>wire:key="gal-item-<?php echo e($item->wg_id); ?>">
+                                         <?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::$currentLoop['key'] = 'gal-item-'.e($item->wg_id).''; ?>wire:key="gal-item-<?php echo e($item->wg_id); ?>">
                                         <div class="gal-item" @click="openLightbox(<?php echo e($index); ?>)">
                                             <div class="gal-img-wrap" wire:ignore>
                                                 <img src="<?php echo e(asset('wg_image/'.$item->wg_image)); ?>" 
@@ -114,7 +114,7 @@
                         </div>
                         
                         
-                        <div class="text-center mt-4" <?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::processElementKey('gal-count', get_defined_vars()); ?>wire:key="gal-count">
+                        <div class="text-center mt-4" <?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::$currentLoop['key'] = 'gal-count'; ?>wire:key="gal-count">
                             <p class="text-muted small">
                                 Showing <strong><?php echo e($totalCount); ?></strong> of <strong><?php echo e($galleries->count()); ?></strong> images
                                 <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if($selectedCategory !== 'all'): ?>
@@ -124,7 +124,7 @@
                         </div>
                         
                     <?php else: ?>
-                        <div class="text-center py-5" data-aos="fade-up" <?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::processElementKey('gal-empty', get_defined_vars()); ?>wire:key="gal-empty">
+                        <div class="text-center py-5" data-aos="fade-up" <?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::$currentLoop['key'] = 'gal-empty'; ?>wire:key="gal-empty">
                             <i class="fas fa-images fa-3x text-muted opacity-25 mb-3"></i>
                             <h5 class="fw-bold">No Images Found</h5>
                             <p class="text-muted">No images available in this category.</p>
@@ -143,7 +143,7 @@
          LIGHTBOX MODAL
          ============================================ -->
     <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if($activeImage): ?>
-        <div class="gal-lightbox" <?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::processElementKey('lightbox-{{ $activeImage->wg_id }}', get_defined_vars()); ?>wire:key="lightbox-<?php echo e($activeImage->wg_id); ?>" @keydown.escape.window="closeLightbox">
+        <div class="gal-lightbox" <?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::$currentLoop['key'] = 'lightbox-'.e($activeImage->wg_id).''; ?>wire:key="lightbox-<?php echo e($activeImage->wg_id); ?>" @keydown.escape.window="closeLightbox">
             <div class="gal-lightbox-backdrop" @click="closeLightbox"></div>
             <div class="gal-lightbox-content">
                 <button class="gal-lightbox-close" @click="closeLightbox">&times;</button>

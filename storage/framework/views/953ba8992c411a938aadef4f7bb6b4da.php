@@ -15,7 +15,7 @@
                     <div class="main-image-wrapper">
                         <div class="main-image-card">
                             <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if(!empty($com) && $com->oc_image1): ?>
-                                <img src="<?php echo e(asset('slider_image/'.$com->oc_image1)); ?>" 
+                                <img src="<?php echo e($com->oc_image1); ?>" 
                                      alt="Razzaq Engineering Services" 
                                      class="main-image" loading="lazy">
                             <?php else: ?>
@@ -28,7 +28,7 @@
                         
                         <div class="floating-image-card">
                             <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if(!empty($com) && $com->oc_image2): ?>
-                                <img src="<?php echo e(asset('slider_image/'.$com->oc_image2)); ?>" 
+                                <img src="<?php echo e($com->oc_image2); ?>" 
                                      alt="Our Work Quality" loading="lazy">
                             <?php else: ?>
                                 <img src="<?php echo e(asset('assets/images/about2.jpg')); ?>" 

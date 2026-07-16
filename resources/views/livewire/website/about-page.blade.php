@@ -61,7 +61,7 @@
                 <div class="col-lg-6" data-aos="fade-right">
                     <div class="about-img-wrapper">
                         @if(!empty($about) && !empty($about->a_image))
-                            <img src="{{ asset('public/images/'.$about->a_image) }}" 
+                            <img src="{{ asset('images/'.$about->a_image) }}" 
                                  alt="{{ $about->about_title ?? 'About Razzaq Engineering' }}"
                                  class="about-main-img"
                                  loading="lazy">
@@ -295,11 +295,11 @@
             </div>
             
             <div class="row g-4">
-                @foreach($team->take(4) as $member)
+                @foreach($team as $member)
                     <div class="col-lg-3 col-md-6" data-aos="fade-up" data-aos-delay="{{ $loop->index * 100 }}">
-                        <div class="team-card" wire:click="showMemberDetail({{ $member->ot_id }})" style="cursor:pointer;">
+                        <div class="team-card" wire:click="showMemberDetail({{ $member->id }})" style="cursor:pointer;">
                             <div class="team-img-wrap">
-                                <img src="{{ asset('public/images/'.$member->ot_image) }}" 
+                                <img src="{{ asset('ot_image/'.$member->ot_image) }}" 
                                      alt="{{ $member->ot_name }}" loading="lazy">
                                 <div class="team-overlay">
                                     <span>View Profile</span>
@@ -334,7 +334,7 @@
             <button class="modal-close-btn" wire:click="closeTeamModal">&times;</button>
             <div class="row g-4">
                 <div class="col-md-5">
-                    <img src="{{ asset('public/images/'.$selectedMember->ot_image) }}" 
+                    <img src="{{ asset('ot_image/'.$selectedMember->ot_image) }}" 
                          alt="{{ $selectedMember->ot_name }}"
                          class="w-100 rounded-3" style="max-height:350px;object-fit:cover;">
                 </div>

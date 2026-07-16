@@ -164,7 +164,7 @@
                                     <div class="col-lg-4 col-md-6" wire:key="fs-card-{{ $fs->id }}">
                                         <div class="service-card featured">
                                             <div class="service-card-img" wire:ignore>
-                                                <img src="{{ asset('slider_image/'.$fs->os_image) }}" 
+                                                <img src="{{ $fs->os_image }}" 
                                                     alt="{{ $fs->os_name }}" 
                                                     class="img-fluid"
                                                     loading="lazy">
@@ -201,7 +201,7 @@
                                     <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="{{ $loop->index % 3 * 100 }}" wire:key="service-card-{{ $service->id }}">
                                         <div class="service-card">
                                             <div class="service-card-img" wire:ignore>
-                                                <img src="{{ asset('slider_image/'.$service->os_image) }}" 
+                                                <img src="{{ $service->os_image }}" 
                                                      alt="{{ $service->os_name }}"
                                                      class="img-fluid"
                                                      loading="lazy">

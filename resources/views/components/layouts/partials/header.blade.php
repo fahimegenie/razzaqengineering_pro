@@ -100,20 +100,6 @@
                             <i class="fas fa-home me-1 d-lg-none"></i> Home
                         </a>
                     </li>
-                    
-                    <!-- About Us Dropdown -->
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle fw-semibold {{ request()->is('about-us','faq') ? 'active' : '' }}" href="#" data-bs-toggle="dropdown" aria-expanded="false">
-                            About Us
-                        </a>
-                        <ul class="dropdown-menu shadow border-0 rounded-3">
-                            <li><a class="dropdown-item {{ request()->is('about-us') ? 'active' : '' }}" href="{{ route('home.about') }}"><i class="fas fa-building me-2"></i> About Us</a></li>
-                            @if($showFaq)
-                            <li><a class="dropdown-item {{ request()->is('faq') ? 'active' : '' }}" href="{{ route('home.faq') }}"><i class="fas fa-question-circle me-2"></i> FAQ</a></li>
-                            @endif
-                        </ul>
-                    </li>
-                    
                     <!-- Services Dropdown -->
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle fw-semibold {{ request()->is('service*') ? 'active' : '' }}" href="#" data-bs-toggle="dropdown" aria-expanded="false">
@@ -195,7 +181,18 @@
                             Team
                         </a>
                     </li>
-                    
+                    <!-- About Us Dropdown -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle fw-semibold {{ request()->is('about-us','faq') ? 'active' : '' }}" href="#" data-bs-toggle="dropdown" aria-expanded="false">
+                            About Us
+                        </a>
+                        <ul class="dropdown-menu shadow border-0 rounded-3">
+                            <li><a class="dropdown-item {{ request()->is('about-us') ? 'active' : '' }}" href="{{ route('home.about') }}"><i class="fas fa-building me-2"></i> About Us</a></li>
+                            @if($showFaq)
+                            <li><a class="dropdown-item {{ request()->is('faq') ? 'active' : '' }}" href="{{ route('home.faq') }}"><i class="fas fa-question-circle me-2"></i> FAQ</a></li>
+                            @endif
+                        </ul>
+                    </li>
                     <!-- Contact -->
                     <li class="nav-item">
                         <a class="nav-link fw-semibold {{ request()->is('contact-us') ? 'active' : '' }}" href="{{ route('home.contact') }}">
@@ -235,23 +232,6 @@
                         <i class="fas fa-home me-3"></i> Home
                     </a>
                 </li>
-                
-                <!-- About Us -->
-                <li class="mobile-nav-item">
-                    <a class="mobile-nav-link has-submenu {{ request()->is('about-us','faq') ? 'active' : '' }}" data-bs-toggle="collapse" href="#mobAbout" role="button" aria-expanded="{{ request()->is('about-us','faq') ? 'true' : 'false' }}">
-                        <i class="fas fa-info-circle me-3"></i> About Us
-                        <i class="fas fa-chevron-down ms-auto sub-arrow"></i>
-                    </a>
-                    <div class="collapse {{ request()->is('about-us','faq') ? 'show' : '' }}" id="mobAbout">
-                        <ul class="mobile-submenu list-unstyled">
-                            <li><a href="{{ route('home.about') }}" class="mobile-submenu-link {{ request()->is('about-us') ? 'active' : '' }}">About Us</a></li>
-                            @if($showFaq)
-                            <li><a href="{{ route('home.faq') }}" class="mobile-submenu-link {{ request()->is('faq') ? 'active' : '' }}">FAQ</a></li>
-                            @endif
-                        </ul>
-                    </div>
-                </li>
-                
                 <!-- Services -->
                 <li class="mobile-nav-item">
                     <a class="mobile-nav-link has-submenu {{ request()->is('service*') ? 'active' : '' }}" data-bs-toggle="collapse" href="#mobServices" role="button" aria-expanded="{{ request()->is('service*') ? 'true' : 'false' }}">
@@ -321,7 +301,21 @@
                         <i class="fas fa-users me-3"></i> Team
                     </a>
                 </li>
-                
+                <!-- About Us -->
+                <li class="mobile-nav-item">
+                    <a class="mobile-nav-link has-submenu {{ request()->is('about-us','faq') ? 'active' : '' }}" data-bs-toggle="collapse" href="#mobAbout" role="button" aria-expanded="{{ request()->is('about-us','faq') ? 'true' : 'false' }}">
+                        <i class="fas fa-info-circle me-3"></i> About Us
+                        <i class="fas fa-chevron-down ms-auto sub-arrow"></i>
+                    </a>
+                    <div class="collapse {{ request()->is('about-us','faq') ? 'show' : '' }}" id="mobAbout">
+                        <ul class="mobile-submenu list-unstyled">
+                            <li><a href="{{ route('home.about') }}" class="mobile-submenu-link {{ request()->is('about-us') ? 'active' : '' }}">About Us</a></li>
+                            @if($showFaq)
+                            <li><a href="{{ route('home.faq') }}" class="mobile-submenu-link {{ request()->is('faq') ? 'active' : '' }}">FAQ</a></li>
+                            @endif
+                        </ul>
+                    </div>
+                </li>
                 <!-- Contact -->
                 <li class="mobile-nav-item">
                     <a href="{{ route('home.contact') }}" class="mobile-nav-link {{ request()->is('contact-us') ? 'active' : '' }}">

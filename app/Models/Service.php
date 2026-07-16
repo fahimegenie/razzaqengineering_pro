@@ -94,14 +94,9 @@ class Service extends Model
     public function getImageUrlAttribute(): string
     {
         if ($this->os_image) {
-            $paths = [
-                public_path('slider_image/' . $this->os_image),
-                public_path('storage/slider_image/' . $this->os_image),
-            ];
-            foreach ($paths as $path) {
-                if (file_exists($path)) {
-                    return asset(str_replace(public_path(), '', $path));
-                }
+            $path = asset('storage/'.$this->os_image);
+            if (file_exists($path)) {
+                return $path;
             }
         }
         return asset('images/placeholder-service.jpg');
@@ -110,13 +105,10 @@ class Service extends Model
     public function getBannerUrlAttribute(): string
     {
         if ($this->os_banner) {
-            $paths = [
-                public_path('slider_image/' . $this->os_banner),
-                public_path('storage/slider_image/' . $this->os_banner),
-            ];
-            foreach ($paths as $path) {
+            if ($this->os_banner) {
+                $path = asset('storage/'.$this->os_banner);
                 if (file_exists($path)) {
-                    return asset(str_replace(public_path(), '', $path));
+                    return $path;
                 }
             }
         }

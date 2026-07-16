@@ -31,10 +31,15 @@ class ContactUs extends Model
         ];
     }
 
-    public function getBannerUrlAttribute(): string
+    // public function getBannerUrlAttribute(): string
+    // {
+    //     return $this->banner_image 
+    //         ? asset('uploads/contact/' . $this->banner_image) 
+    //         : asset('images/contact-banner.jpg');
+    // }
+
+    public function getBannerUrlAttribute()
     {
-        return $this->banner_image 
-            ? asset('uploads/contact/' . $this->banner_image) 
-            : asset('images/contact-banner.jpg');
+        return $this->banner_image ? asset('storage/' . $this->banner_image) : null;
     }
 }

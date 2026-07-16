@@ -3,18 +3,19 @@
 namespace App\Livewire\Admin\Gallery;
 
 use Livewire\Component;
-use Livewire\WithFileUploads;
+use App\Traits\HandlesUploads; // Cleanup aur dynamic storage trait register kiya
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\Title;
 use Livewire\Attributes\Validate;
 use App\Models\WorkGallery;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 
 #[Layout('components.layouts.admin-layout')]
 #[Title('Gallery Item Form - Admin Panel')]
 class GalleryForm extends Component
 {
-    use WithFileUploads;
+    use HandlesUploads; // Trait apply kiya (Contains WithFileUploads internally)
 
     public $galleryId = null;
     public $isEditing = false;
@@ -22,6 +23,7 @@ class GalleryForm extends Component
     
     // Image
     public $wg_image;
+    public $existing_image = null; // Purani image database path track karne ke liye
     public $imagePreview;
     
     #[Validate('required|string|max:255')]
@@ -74,7 +76,13 @@ class GalleryForm extends Component
                     }
                 }
                 
-                $this->imagePreview = $item->image_url;
+                // Existing image track karna aur safe public URL resolve karna
+                $this->existing_image = $item->wg_image;
+                if ($this->existing_image) {
+                    $this->imagePreview = Storage::disk('public')->url($this->existing_image);
+                } else {
+                    $this->imagePreview = $item->image_url;
+                }
             }
         }
     }
@@ -128,41 +136,13 @@ class GalleryForm extends Component
             $gallery->sort_order = (int) ($this->sort_order ?? 0);
             $gallery->is_active = (bool) $this->is_active;
             
-            // Handle Image Upload
+            // Trait handles automatic storage integration and old file deletion safely
             if ($this->wg_image) {
-                // Delete old image
-                if ($gallery->wg_image) {
-                    $oldPaths = [
-                        public_path('gallery_images/' . $gallery->wg_image),
-                        public_path('uploads/gallery/' . $gallery->wg_image),
-                    ];
-                    foreach ($oldPaths as $oldPath) {
-                        if (file_exists($oldPath)) {
-                            @unlink($oldPath);
-                        }
-                    }
-                }
-                
-                $imageName = 'gallery_' . time() . '_' . uniqid() . '.' . $this->wg_image->getClientOriginalExtension();
-                $destinationPath = public_path('gallery_images');
-                
-                if (!is_dir($destinationPath)) {
-                    mkdir($destinationPath, 0777, true);
-                }
-                
-                $tempFile = $this->wg_image->getRealPath();
-                $targetFile = $destinationPath . '/' . $imageName;
-                
-                if (!file_exists($tempFile)) {
-                    throw new \Exception('Temporary file not found');
-                }
-                
-                if (!copy($tempFile, $targetFile)) {
-                    throw new \Exception('Failed to copy image to: ' . $targetFile);
-                }
-                
-                @unlink($tempFile);
-                $gallery->wg_image = $imageName;
+                $gallery->wg_image = $this->uploadFile(
+                    $this->wg_image, 
+                    'gallery', 
+                    $this->existing_image
+                );
             }
             
             $gallery->save();

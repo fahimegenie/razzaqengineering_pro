@@ -102,20 +102,6 @@
                             <i class="fas fa-home me-1 d-lg-none"></i> Home
                         </a>
                     </li>
-                    
-                    <!-- About Us Dropdown -->
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle fw-semibold <?php echo e(request()->is('about-us','faq') ? 'active' : ''); ?>" href="#" data-bs-toggle="dropdown" aria-expanded="false">
-                            About Us
-                        </a>
-                        <ul class="dropdown-menu shadow border-0 rounded-3">
-                            <li><a class="dropdown-item <?php echo e(request()->is('about-us') ? 'active' : ''); ?>" href="<?php echo e(route('home.about')); ?>"><i class="fas fa-building me-2"></i> About Us</a></li>
-                            <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if($showFaq): ?>
-                            <li><a class="dropdown-item <?php echo e(request()->is('faq') ? 'active' : ''); ?>" href="<?php echo e(route('home.faq')); ?>"><i class="fas fa-question-circle me-2"></i> FAQ</a></li>
-                            <?php endif; ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
-                        </ul>
-                    </li>
-                    
                     <!-- Services Dropdown -->
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle fw-semibold <?php echo e(request()->is('service*') ? 'active' : ''); ?>" href="#" data-bs-toggle="dropdown" aria-expanded="false">
@@ -200,7 +186,18 @@
                             Team
                         </a>
                     </li>
-                    
+                    <!-- About Us Dropdown -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle fw-semibold <?php echo e(request()->is('about-us','faq') ? 'active' : ''); ?>" href="#" data-bs-toggle="dropdown" aria-expanded="false">
+                            About Us
+                        </a>
+                        <ul class="dropdown-menu shadow border-0 rounded-3">
+                            <li><a class="dropdown-item <?php echo e(request()->is('about-us') ? 'active' : ''); ?>" href="<?php echo e(route('home.about')); ?>"><i class="fas fa-building me-2"></i> About Us</a></li>
+                            <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if($showFaq): ?>
+                            <li><a class="dropdown-item <?php echo e(request()->is('faq') ? 'active' : ''); ?>" href="<?php echo e(route('home.faq')); ?>"><i class="fas fa-question-circle me-2"></i> FAQ</a></li>
+                            <?php endif; ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
+                        </ul>
+                    </li>
                     <!-- Contact -->
                     <li class="nav-item">
                         <a class="nav-link fw-semibold <?php echo e(request()->is('contact-us') ? 'active' : ''); ?>" href="<?php echo e(route('home.contact')); ?>">
@@ -240,23 +237,6 @@
                         <i class="fas fa-home me-3"></i> Home
                     </a>
                 </li>
-                
-                <!-- About Us -->
-                <li class="mobile-nav-item">
-                    <a class="mobile-nav-link has-submenu <?php echo e(request()->is('about-us','faq') ? 'active' : ''); ?>" data-bs-toggle="collapse" href="#mobAbout" role="button" aria-expanded="<?php echo e(request()->is('about-us','faq') ? 'true' : 'false'); ?>">
-                        <i class="fas fa-info-circle me-3"></i> About Us
-                        <i class="fas fa-chevron-down ms-auto sub-arrow"></i>
-                    </a>
-                    <div class="collapse <?php echo e(request()->is('about-us','faq') ? 'show' : ''); ?>" id="mobAbout">
-                        <ul class="mobile-submenu list-unstyled">
-                            <li><a href="<?php echo e(route('home.about')); ?>" class="mobile-submenu-link <?php echo e(request()->is('about-us') ? 'active' : ''); ?>">About Us</a></li>
-                            <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if($showFaq): ?>
-                            <li><a href="<?php echo e(route('home.faq')); ?>" class="mobile-submenu-link <?php echo e(request()->is('faq') ? 'active' : ''); ?>">FAQ</a></li>
-                            <?php endif; ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
-                        </ul>
-                    </div>
-                </li>
-                
                 <!-- Services -->
                 <li class="mobile-nav-item">
                     <a class="mobile-nav-link has-submenu <?php echo e(request()->is('service*') ? 'active' : ''); ?>" data-bs-toggle="collapse" href="#mobServices" role="button" aria-expanded="<?php echo e(request()->is('service*') ? 'true' : 'false'); ?>">
@@ -326,7 +306,21 @@
                         <i class="fas fa-users me-3"></i> Team
                     </a>
                 </li>
-                
+                <!-- About Us -->
+                <li class="mobile-nav-item">
+                    <a class="mobile-nav-link has-submenu <?php echo e(request()->is('about-us','faq') ? 'active' : ''); ?>" data-bs-toggle="collapse" href="#mobAbout" role="button" aria-expanded="<?php echo e(request()->is('about-us','faq') ? 'true' : 'false'); ?>">
+                        <i class="fas fa-info-circle me-3"></i> About Us
+                        <i class="fas fa-chevron-down ms-auto sub-arrow"></i>
+                    </a>
+                    <div class="collapse <?php echo e(request()->is('about-us','faq') ? 'show' : ''); ?>" id="mobAbout">
+                        <ul class="mobile-submenu list-unstyled">
+                            <li><a href="<?php echo e(route('home.about')); ?>" class="mobile-submenu-link <?php echo e(request()->is('about-us') ? 'active' : ''); ?>">About Us</a></li>
+                            <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if($showFaq): ?>
+                            <li><a href="<?php echo e(route('home.faq')); ?>" class="mobile-submenu-link <?php echo e(request()->is('faq') ? 'active' : ''); ?>">FAQ</a></li>
+                            <?php endif; ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
+                        </ul>
+                    </div>
+                </li>
                 <!-- Contact -->
                 <li class="mobile-nav-item">
                     <a href="<?php echo e(route('home.contact')); ?>" class="mobile-nav-link <?php echo e(request()->is('contact-us') ? 'active' : ''); ?>">

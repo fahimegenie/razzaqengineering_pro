@@ -1,4 +1,19 @@
+{{-- resources/views/livewire/admin/faq/faq-form.blade.php --}}
 <div>
+    <!-- Loading Overlay -->
+    <div wire:loading.delay.longest wire:target="save"
+        class="position-fixed top-0 start-0 w-100 h-100 align-items-center justify-content-center" 
+        style="background: rgba(0,0,0,0.3); z-index: 99999; display: none !important;"
+        wire:loading.class="d-flex"
+        wire:loading.style="display: flex !important;">
+        <div class="bg-body p-4 rounded-3 shadow-lg text-center border border-secondary-subtle">
+            <div class="spinner-border text-primary mb-3" role="status">
+                <span class="visually-hidden">Saving...</span>
+            </div>
+            <p class="mb-0 fw-semibold">Saving FAQ...</p>
+        </div>
+    </div>
+
     <!-- Page Header -->
     <div class="app-content-header">
         <div class="container-fluid">
@@ -18,6 +33,14 @@
     </div>
 
     <div class="container-fluid">
+        @if($saveSuccess)
+        <div class="alert alert-success alert-dismissible fade show" role="alert" 
+             x-data="{show: true}" x-show="show" x-init="setTimeout(() => show = false, 3000)">
+            <i class="bi bi-check-circle me-2"></i>FAQ saved successfully!
+            <button type="button" class="btn-close" @click="show = false"></button>
+        </div>
+        @endif
+
         <form wire:submit="save">
             <div class="row g-3">
                 <!-- Main Form -->
@@ -31,10 +54,10 @@
                         <div class="card-body">
                             <!-- Question -->
                             <div class="mb-3">
-                                <label class="form-label required">Question</label>
+                                <label class="form-label fw-semibold required">Question</label>
                                 <input type="text" 
                                        class="form-control form-control-lg @error('faq_question') is-invalid @enderror" 
-                                       wire:model="faq_question" 
+                                       wire:model.live="faq_question" 
                                        placeholder="Enter the frequently asked question...">
                                 @error('faq_question')
                                     <div class="invalid-feedback">{{ $message }}</div>
@@ -42,14 +65,20 @@
                                 <small class="text-muted">Keep it clear and concise. Max 500 characters.</small>
                             </div>
                             
-                            <!-- Answer with CKEditor -->
+                            <!-- Answer with Reusable CKEditor Component -->
                             <div class="mb-3">
-                                <label class="form-label required">Answer</label>
-                                <div wire:ignore>
-                                    <textarea id="faq-answer-editor" class="form-control @error('faq_answer') is-invalid @enderror">{{ $faq_answer }}</textarea>
-                                </div>
+                                <label class="form-label fw-semibold required">Answer</label>
+                                <livewire:components.ck-editor 
+                                    label="Answer" 
+                                    placeholder="Provide a detailed answer to the question..." 
+                                    height="350px" 
+                                    toolbar="full" 
+                                    :value="$faq_answer"
+                                    field="faq_answer"
+                                    wire:model.live="faq_answer" 
+                                />
                                 @error('faq_answer')
-                                    <div class="invalid-feedback">{{ $message }}</div>
+                                    <small class="text-danger">{{ $message }}</small>
                                 @enderror
                                 <small class="text-muted">Provide comprehensive, helpful information. You can use formatting, lists, and links.</small>
                             </div>
@@ -60,23 +89,27 @@
                     <div class="card shadow-sm border-0 mb-3">
                         <div class="card-header bg-transparent">
                             <h3 class="card-title mb-0 fw-semibold">
-                                <i class="bi bi-eye me-2"></i>Preview
+                                <i class="bi bi-eye me-2"></i>Frontend Preview
                             </h3>
                         </div>
                         <div class="card-body">
                             <div class="accordion" id="faqPreview">
-                                <div class="accordion-item">
+                                <div class="accordion-item border rounded">
                                     <h2 class="accordion-header">
-                                        <button class="accordion-button" type="button">
-                                            {{ $faq_question ?: 'Question preview...' }}
+                                        <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#previewCollapse">
+                                            <i class="bi bi-question-circle text-primary me-2"></i>
+                                            <strong>{{ $faq_question ?: 'Question preview...' }}</strong>
                                         </button>
                                     </h2>
-                                    <div class="accordion-collapse collapse show">
-                                        <div class="accordion-body" id="faq-preview-content">
+                                    <div id="previewCollapse" class="accordion-collapse collapse show">
+                                        <div class="accordion-body" style="line-height: 1.8;">
                                             @if($faq_answer)
                                                 {!! $faq_answer !!}
                                             @else
-                                                <span class="text-muted fst-italic">Answer preview will appear here...</span>
+                                                <span class="text-muted fst-italic">
+                                                    <i class="bi bi-info-circle me-1"></i> 
+                                                    Answer preview will appear here as you type...
+                                                </span>
                                             @endif
                                         </div>
                                     </div>
@@ -105,7 +138,7 @@
                                     </span>
                                 </button>
                                 <a href="{{ route('admin.faq.index') }}" class="btn btn-outline-secondary">
-                                    <i class="bi bi-x-lg me-1"></i> Cancel
+                                    <i class="bi bi-arrow-left me-1"></i> Back to FAQ List
                                 </a>
                             </div>
                         </div>
@@ -114,12 +147,14 @@
                     <!-- Settings Card -->
                     <div class="card shadow-sm border-0 mb-3">
                         <div class="card-header bg-transparent">
-                            <h3 class="card-title mb-0 fw-semibold fs-6">Settings</h3>
+                            <h3 class="card-title mb-0 fw-semibold fs-6">
+                                <i class="bi bi-gear me-2"></i>Settings
+                            </h3>
                         </div>
                         <div class="card-body">
                             <!-- Category -->
                             <div class="mb-3">
-                                <label class="form-label">Category</label>
+                                <label class="form-label fw-semibold">Category</label>
                                 <input type="text" 
                                        class="form-control @error('faq_category') is-invalid @enderror" 
                                        wire:model="faq_category" 
@@ -140,7 +175,7 @@
                             
                             <!-- Sort Order -->
                             <div class="mb-3">
-                                <label class="form-label">Sort Order</label>
+                                <label class="form-label fw-semibold">Sort Order</label>
                                 <input type="number" 
                                        class="form-control @error('sort_order') is-invalid @enderror" 
                                        wire:model="sort_order" 
@@ -158,20 +193,50 @@
                                     <input class="form-check-input" type="checkbox" wire:model="is_active" id="isActive">
                                     <label class="form-check-label fw-semibold" for="isActive">Active</label>
                                 </div>
-                                <small class="text-muted">Only active FAQs will be displayed on website.</small>
+                                <small class="text-muted">Only active FAQs will be displayed on the website.</small>
                             </div>
                         </div>
                     </div>
                     
-                    <!-- Info Card -->
+                    <!-- FAQ Info Card -->
+                    <div class="card shadow-sm border-0 mb-3">
+                        <div class="card-header bg-transparent">
+                            <h3 class="card-title mb-0 fw-semibold fs-6">
+                                <i class="bi bi-info-circle me-2"></i>FAQ Info
+                            </h3>
+                        </div>
+                        <div class="card-body">
+                            <ul class="list-unstyled mb-0 small">
+                                <li class="mb-2">
+                                    <strong>Status:</strong> 
+                                    <span class="badge bg-{{ $is_active ? 'success' : 'secondary' }}">
+                                        {{ $is_active ? 'Active' : 'Inactive' }}
+                                    </span>
+                                </li>
+                                <li class="mb-2">
+                                    <strong>Category:</strong> 
+                                    {{ $faq_category ?: 'Not set' }}
+                                </li>
+                                <li class="mb-2">
+                                    <strong>Sort Order:</strong> 
+                                    {{ $sort_order }}
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <!-- Tips Card -->
                     <div class="card shadow-sm border-0 bg-light">
                         <div class="card-body">
-                            <h6 class="fw-semibold"><i class="bi bi-info-circle me-2"></i>Tips</h6>
+                            <h6 class="fw-semibold">
+                                <i class="bi bi-lightbulb text-warning me-2"></i>Tips for Good FAQs
+                            </h6>
                             <ul class="small text-muted mb-0 ps-3">
-                                <li>Write questions from customer's perspective</li>
-                                <li>Keep answers clear and helpful</li>
-                                <li>Use categories to organize FAQs</li>
-                                <li>Update FAQs regularly</li>
+                                <li class="mb-1">Write questions from customer's perspective</li>
+                                <li class="mb-1">Keep answers clear and helpful</li>
+                                <li class="mb-1">Use categories to organize FAQs</li>
+                                <li class="mb-1">Update FAQs regularly</li>
+                                <li class="mb-1">Include links to relevant pages</li>
                             </ul>
                         </div>
                     </div>
@@ -181,141 +246,65 @@
     </div>
 </div>
 
-@push('scripts')
-<!-- CKEditor 5 -->
-<script src="https://cdn.ckeditor.com/ckeditor5/40.2.0/classic/ckeditor.js"></script>
-
-<script>
-    document.addEventListener('livewire:initialized', () => {
-        let faqEditor = null;
-        
-        function initFaqEditor() {
-            const editorElement = document.getElementById('faq-answer-editor');
-            if (!editorElement) return;
-            
-            // Destroy existing editor if any
-            if (faqEditor) {
-                faqEditor.destroy().catch(() => {});
-                faqEditor = null;
-            }
-            
-            ClassicEditor
-                .create(editorElement, {
-                    toolbar: {
-                        items: [
-                            'heading', '|',
-                            'bold', 'italic', 'underline', 'strikethrough', '|',
-                            'link', 'blockQuote', '|',
-                            'bulletedList', 'numberedList', '|',
-                            'outdent', 'indent', '|',
-                            'imageUpload', 'insertTable', '|',
-                            'undo', 'redo', '|',
-                            'fontSize', 'fontColor', 'highlight', '|',
-                            'alignment', '|',
-                            'removeFormat'
-                        ]
-                    },
-                    image: {
-                        toolbar: [
-                            'imageTextAlternative',
-                            'imageStyle:full',
-                            'imageStyle:side'
-                        ]
-                    },
-                    table: {
-                        contentToolbar: [
-                            'tableColumn',
-                            'tableRow',
-                            'mergeTableCells'
-                        ]
-                    },
-                    simpleUpload: {
-                        uploadUrl: '{{ route("admin.upload.image") }}',
-                        headers: {
-                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || ''
-                        }
-                    },
-                    placeholder: 'Provide a detailed answer to the question...'
-                })
-                .then(editor => {
-                    faqEditor = editor;
-                    
-                    // Sync content to Livewire via hidden input approach
-                    editor.model.document.on('change:data', () => {
-                        const data = editor.getData();
-                        
-                        // Update Livewire property directly
-                        @this.set('faq_answer', data, false);
-                        
-                        // Update preview
-                        const previewContent = document.getElementById('faq-preview-content');
-                        if (previewContent) {
-                            previewContent.innerHTML = data || '<span class="text-muted fst-italic">Answer preview will appear here...</span>';
-                        }
-                    });
-                })
-                .catch(error => {
-                    console.error('CKEditor Error:', error);
-                });
-        }
-        
-        // Initialize on page load
-        initFaqEditor();
-        
-        // Re-initialize on Livewire update
-        Livewire.hook('morph.updated', ({ el, component }) => {
-            if (component.name === 'admin.faq.faq-form') {
-                setTimeout(initFaqEditor, 100);
-            }
-        });
-    });
-</script>
-
+@push('styles')
 <style>
-    .ck-editor__editable {
-        min-height: 250px;
-        max-height: 400px;
-    }
-    
-    @media (max-width: 768px) {
-        .ck-editor__editable {
-            min-height: 200px;
-            max-height: 300px;
-        }
+    .required::after {
+        content: ' *';
+        color: #dc3545;
     }
     
     /* Preview accordion styling */
-    #faq-preview-content {
+    .accordion-body {
         line-height: 1.8;
     }
     
-    #faq-preview-content ul,
-    #faq-preview-content ol {
+    .accordion-body ul,
+    .accordion-body ol {
         padding-left: 20px;
     }
     
-    #faq-preview-content blockquote {
+    .accordion-body blockquote {
         border-left: 4px solid #0d6efd;
         padding-left: 15px;
         margin: 10px 0;
         color: #666;
+        background: #f8f9fa;
+        padding: 10px 15px;
+        border-radius: 0 8px 8px 0;
     }
     
-    #faq-preview-content table {
+    .accordion-body table {
         width: 100%;
         border-collapse: collapse;
         margin: 10px 0;
     }
     
-    #faq-preview-content table td,
-    #faq-preview-content table th {
+    .accordion-body table td,
+    .accordion-body table th {
         border: 1px solid #ddd;
         padding: 8px;
     }
     
-    #faq-preview-content img {
+    .accordion-body table th {
+        background: #f8f9fa;
+        font-weight: 600;
+    }
+    
+    .accordion-body img {
         max-width: 100%;
         height: auto;
+        border-radius: 8px;
+    }
+    
+    .accordion-body a {
+        color: #0056b3;
+        text-decoration: underline;
+    }
+    
+    @media (max-width: 768px) {
+        .accordion-body {
+            font-size: 0.9rem;
+        }
     }
 </style>
 @endpush

@@ -3,7 +3,7 @@
 namespace App\Livewire\Admin\Projects;
 
 use Livewire\Component;
-use Livewire\WithFileUploads;
+use App\Traits\HandlesUploads; // Trait ko apply kiya
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\Title;
 use Livewire\Attributes\Validate;
@@ -11,18 +11,20 @@ use App\Models\Project;
 use App\Models\ProjectCategory;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 
 #[Layout('components.layouts.admin-layout')]
 #[Title('Project Form - Admin Panel')]
 class ProjectForm extends Component
 {
-    use WithFileUploads;
+    use HandlesUploads; // Trait integrate ho gaya (WithFileUploads included hai)
 
     public $projectId = null;
     public $isEditing = false;
     public $isSaving = false;
     
     public $p_image;
+    public $existing_image = null; // Main project image tracker
     public $imagePreview;
     public $galleryImages = [];
     public $galleryPreviews = [];
@@ -105,8 +107,20 @@ class ProjectForm extends Component
                     $this->p_end_date = $project->p_end_date->format('Y-m-d');
                 }
                 
-                $this->existingGallery = $project->gallery_urls;
-                $this->imagePreview = $project->image_url;
+                // Main image aur existing gallery track karna
+                $this->existing_image = $project->p_image;
+
+                if ($this->existing_image) {
+                    $this->imagePreview = Storage::disk('public')->url($this->existing_image);
+                } else {
+                    $this->imagePreview = $project->image_url;
+                }
+
+                // Gallery files decoded array format me handle karna
+                if ($project->p_gallery) {
+                    $decoded = is_array($project->p_gallery) ? $project->p_gallery : json_decode($project->p_gallery, true);
+                    $this->existingGallery = $decoded ?? [];
+                }
             }
         }
     }
@@ -123,8 +137,9 @@ class ProjectForm extends Component
     public function updatedPImage()
     {
         $this->validateOnly('p_image', ['p_image' => 'image|max:5120']);
-        try { $this->imagePreview = $this->p_image->temporaryUrl(); } 
-        catch (\Exception $e) {}
+        try { 
+            $this->imagePreview = $this->p_image->temporaryUrl(); 
+        } catch (\Exception $e) {}
     }
 
     public function updatedGalleryImages()
@@ -132,7 +147,9 @@ class ProjectForm extends Component
         $this->validateOnly('galleryImages.*', ['galleryImages.*' => 'image|max:2048']);
         $this->galleryPreviews = [];
         foreach ($this->galleryImages as $image) {
-            try { $this->galleryPreviews[] = $image->temporaryUrl(); } catch (\Exception $e) {}
+            try { 
+                $this->galleryPreviews[] = $image->temporaryUrl(); 
+            } catch (\Exception $e) {}
         }
     }
 
@@ -148,6 +165,11 @@ class ProjectForm extends Component
 
     public function removeExistingGalleryImage($index)
     {
+        $imageToDelete = $this->existingGallery[$index] ?? null;
+        if ($imageToDelete) {
+            // Storage se purani gallery image physically clean karna
+            $this->deleteFile($imageToDelete);
+        }
         unset($this->existingGallery[$index]);
         $this->existingGallery = array_values($this->existingGallery);
     }
@@ -183,32 +205,17 @@ class ProjectForm extends Component
             $project->is_active = (bool) $this->is_active;
             $project->is_featured = (bool) $this->is_featured;
             
-            // Main Image
+            // Main Image Upload (Standard handlesUploads integration)
             if ($this->p_image) {
-                if ($project->p_image) @unlink(public_path('uploads/projects/' . $project->p_image));
-                
-                $imageName = 'proj_' . time() . '_' . uniqid() . '.' . $this->p_image->getClientOriginalExtension();
-                $destinationPath = public_path('uploads/projects');
-                if (!is_dir($destinationPath)) mkdir($destinationPath, 0777, true);
-                
-                $tempFile = $this->p_image->getRealPath();
-                copy($tempFile, $destinationPath . '/' . $imageName);
-                @unlink($tempFile);
-                $project->p_image = $imageName;
+                $project->p_image = $this->uploadFile($this->p_image, 'projects', $this->existing_image);
             }
             
-            // Gallery Images
+            // Gallery Images Upload
             $galleryData = array_values($this->existingGallery);
             if (count($this->galleryImages) > 0) {
-                $galleryPath = public_path('uploads/projects/gallery');
-                if (!is_dir($galleryPath)) mkdir($galleryPath, 0777, true);
-                
                 foreach ($this->galleryImages as $image) {
-                    $galleryName = 'gal_' . time() . '_' . uniqid() . '.' . $image->getClientOriginalExtension();
-                    $tempFile = $image->getRealPath();
-                    copy($tempFile, $galleryPath . '/' . $galleryName);
-                    @unlink($tempFile);
-                    $galleryData[] = $galleryName;
+                    // Ek ek gallery image upload aur path collection
+                    $galleryData[] = $this->uploadFile($image, 'projects/gallery');
                 }
             }
             $project->p_gallery = json_encode($galleryData);
