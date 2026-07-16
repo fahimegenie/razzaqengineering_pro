@@ -10,7 +10,7 @@
 
         <div class="card shadow-sm border-0"><div class="table-responsive"><table class="table table-hover mb-0"><thead class="table-light"><tr><th width="60">Img</th><th>Title</th><th>Service</th><th>Points</th><th>Order</th><th width="120">Actions</th></tr></thead><tbody>
             @forelse($details as $d)<tr>
-                <td><img src="{{ $d->image_one_url }}" style="width:50px;height:40px;object-fit:cover;border-radius:4px;"></td>
+                <td><img src="{{ $d->image1_url }}" style="width:50px;height:40px;object-fit:cover;border-radius:4px;"></td>
                 <td><strong>{{ Str::limit($d->sd_title, 50) }}</strong></td>
                 <td><span class="badge bg-info">{{ $d->service->os_name ?? 'N/A' }}</span></td>
                 <td><small>{{ collect([$d->sd_t1,$d->sd_t2,$d->sd_t3])->filter()->implode(', ') ?: '—' }}</small></td>

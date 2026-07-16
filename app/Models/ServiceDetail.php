@@ -37,20 +37,22 @@ class ServiceDetail extends Model
         return $this->belongsTo(Service::class, 'os_id', 'id');
     }
 
-    public function getImageOneUrlAttribute(): string
+    public function getImage1UrlAttribute(): string
     {
         if ($this->sd_image1) {
             $path = asset('storage/'.$this->sd_image1);
-            if (file_exists($path)) return $path;
+            if (file_exists(storage_path('app/public/'.$this->sd_image1))){
+                return $path;
+            }
         }
         return asset('images/placeholder-service-detail.jpg');
     }
 
-    public function getImageTwoUrlAttribute(): string
+    public function getImage2UrlAttribute(): string
     {
         if ($this->sd_image2) {
             $path = asset('storage/'.$this->sd_image2);
-            if (file_exists($path)) return $path;
+            if (file_exists(storage_path('app/public/'.$this->sd_image2))) return $path;
         }
         return asset('images/placeholder-service-detail.jpg');
     }

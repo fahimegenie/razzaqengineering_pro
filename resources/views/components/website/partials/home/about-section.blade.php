@@ -15,7 +15,7 @@
                     <div class="main-image-wrapper">
                         <div class="main-image-card">
                             @if(!empty($com) && $com->oc_image1)
-                                <img src="{{ $com->oc_image1 }}" 
+                                <img src="{{ $com->image1_url }}" 
                                      alt="Razzaq Engineering Services" 
                                      class="main-image" loading="lazy">
                             @else
@@ -28,7 +28,7 @@
                         {{-- Floating Small Image --}}
                         <div class="floating-image-card">
                             @if(!empty($com) && $com->oc_image2)
-                                <img src="{{ $com->oc_image2 }}" 
+                                <img src="{{ $com->image2_url }}" 
                                      alt="Our Work Quality" loading="lazy">
                             @else
                                 <img src="{{ asset('assets/images/about2.jpg') }}" 
@@ -42,7 +42,7 @@
                                 <i class="fas fa-award"></i>
                             </div>
                             <div class="exp-info">
-                                <span class="exp-number"><span class="counter-num" data-target="15">0</span>+</span>
+                                <span class="exp-number"><span class="counter-num" data-target="15">{{ $com->established_year }}</span>+</span>
                                 <span class="exp-subtitle">Years Experience</span>
                             </div>
                         </div>
@@ -70,7 +70,7 @@
                     {{-- Short Description --}}
                     <p class="section-desc-pro">
                         @if(!empty($com))
-                            {{ Str::limit(strip_tags($com->oc_description), 250) }}
+                            {!! Str::limit(strip_tags($com->oc_description), 250) !!}
                         @else
                             With over 15 years of industry leadership, we deliver professional RCC core cutting, diamond drilling, wall saw cutting, plumbing & fire fighting services across Pakistan.
                         @endif

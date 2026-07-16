@@ -55,7 +55,7 @@
                                     {{ $key == 0 ? 'id=defaultServiceTab' : '' }}>
                                 <span class="tab-icon">
                                     @if($service->os_icon)
-                                        <img src="{{ $service->os_icon }}" 
+                                        <img src="{{ $service->icon_url }}" 
                                              alt="{{ $service->os_name }}" 
                                              width="28" height="28"
                                              loading="lazy">
@@ -107,13 +107,13 @@
                                 <div class="col-lg-6">
                                     <div class="service-images-grid">
                                         <div class="service-img-main">
-                                            <img src="{{ $detail->sd_image1 }}" 
+                                            <img src="{{ $detail->image1_url }}" 
                                                  alt="{{ $detail->sd_title }}"
                                                  class="service-img"
                                                  loading="lazy">
                                         </div>
                                         <div class="service-img-secondary">
-                                            <img src="{{ $detail->sd_image2 }}" 
+                                            <img src="{{ $detail->image2_url }}" 
                                                  alt="{{ $detail->sd_title }} - Detail"
                                                  class="service-img"
                                                  loading="lazy">

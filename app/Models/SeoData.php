@@ -116,8 +116,9 @@ class SeoData extends Model
     public function getOgImageUrlAttribute(): string
     {
         if ($this->seo_og_image) {
-            $path = public_path('uploads/seo/' . $this->seo_og_image);
-            if (file_exists($path)) return asset('uploads/seo/' . $this->seo_og_image);
+            if (file_exists(storage_path('app/public/'.$this->seo_og_image))){
+                return asset('storage/'.$this->seo_og_image);
+            }
         }
         return asset('images/og-default.jpg');
     }
@@ -125,8 +126,9 @@ class SeoData extends Model
     public function getTwitterImageUrlAttribute(): string
     {
         if ($this->seo_twitter_image) {
-            $path = public_path('uploads/seo/' . $this->seo_twitter_image);
-            if (file_exists($path)) return asset('uploads/seo/' . $this->seo_twitter_image);
+            if (file_exists(storage_path('app/public/'.$this->seo_twitter_image))){
+                return asset('storage/'.$this->seo_twitter_image);
+            }
         }
         return $this->og_image_url;
     }

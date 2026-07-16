@@ -91,7 +91,7 @@
                                     <?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::$currentLoop['key'] = 'tab-btn-'.e($service->id).''; ?>wire:key="tab-btn-<?php echo e($service->id); ?>">
                                 <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if($service->os_icon): ?>
                                     <span class="sd-tab-icon">
-                                        <img src="<?php echo e(asset('slider_image/'.$service->os_icon)); ?>" 
+                                        <img src="<?php echo e($service->icon_url); ?>" 
                                              alt="<?php echo e($service->os_name); ?>" width="24" height="24" loading="lazy">
                                     </span>
                                 <?php endif; ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
@@ -120,12 +120,12 @@
                                 <div class="col-lg-6">
                                     <div class="sd-images-grid">
                                         <div class="sd-img-main">
-                                            <img src="<?php echo e(asset('slider_image/'.$currentDetail->sd_image1)); ?>" 
+                                            <img src="<?php echo e($currentDetail->image1_url); ?>" 
                                                  alt="<?php echo e($currentDetail->sd_title); ?>" class="img-fluid rounded-3">
                                         </div>
                                         <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if($currentDetail->sd_image2): ?>
                                             <div class="sd-img-secondary">
-                                                <img src="<?php echo e(asset('slider_image/'.$currentDetail->sd_image2)); ?>" 
+                                                <img src="<?php echo e($currentDetail->image2_url); ?>" 
                                                      alt="<?php echo e($currentDetail->sd_title); ?>" class="img-fluid rounded-3">
                                             </div>
                                         <?php endif; ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
@@ -198,7 +198,7 @@
                                         </div>
                                         <div class="col-lg-5">
                                             <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if($currentAdvantages->first() && $currentAdvantages->first()->sa_image): ?>
-                                                <img src="<?php echo e(asset('sa_image/'.$currentAdvantages->first()->sa_image)); ?>" 
+                                                <img src="<?php echo e(asset('storage/'.$currentAdvantages->first()->sa_image)); ?>" 
                                                      alt="Service Advantage" 
                                                      class="sd-adv-img rounded-4 shadow-lg" loading="lazy">
                                             <?php endif; ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>

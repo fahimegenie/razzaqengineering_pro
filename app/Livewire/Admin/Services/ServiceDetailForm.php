@@ -84,13 +84,13 @@ class ServiceDetailForm extends Component
 
                 // Previews load karne ka safe tarika
                 if ($this->existing_sd_image1) {
-                    $this->image1Preview = Storage::disk('public')->url($this->existing_sd_image1);
+                    $this->image1Preview = $detail->image1_url;
                 } else {
-                    $this->image1Preview = $detail->image_one_url; // Fallback to model accessor if exists
+                    $this->image1Preview = $detail->image1_url; // Fallback to model accessor if exists
                 }
 
                 if ($this->existing_sd_image2) {
-                    $this->image2Preview = Storage::disk('public')->url($this->existing_sd_image2);
+                    $this->image2Preview = $detail->image2_url;
                 } else {
                     $this->image2Preview = $detail->image_two_url; // Fallback to model accessor if exists
                 }

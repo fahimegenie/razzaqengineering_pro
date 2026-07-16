@@ -67,18 +67,9 @@ class WorkGallery extends Model
     public function getImageUrlAttribute(): string
     {
         if ($this->wg_image) {
-            // Check multiple possible paths
-            $paths = [
-                public_path('wg_image/' . $this->wg_image),
-                public_path('uploads/gallery/' . $this->wg_image),
-                public_path('storage/gallery/' . $this->wg_image),
-            ];
-            
-            foreach ($paths as $path) {
-                if (file_exists($path)) {
-                    return asset(str_replace(public_path(), '', $path));
-                }
-            }
+             if (file_exists(storage_path('app/public/'.$this->wg_image))) {
+            return asset('storage/'.$this->wg_image);
+           }
         }
         
         // Default placeholder

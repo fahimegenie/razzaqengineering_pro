@@ -88,15 +88,9 @@ class Project extends Model
     public function getImageUrlAttribute(): string
     {
         if ($this->p_image) {
-            $paths = [
-                public_path('p_image/' . $this->p_image),
-                public_path('storage/p_image/' . $this->p_image),
-            ];
-            foreach ($paths as $path) {
-                if (file_exists($path)) {
-                    return asset(str_replace(public_path(), '', $path));
-                }
-            }
+             if (file_exists(storage_path('app/public/'.$this->p_image))) {
+            return asset('storage/'.$this->p_image);
+           }
         }
         return asset('images/placeholder-project.jpg');
     }

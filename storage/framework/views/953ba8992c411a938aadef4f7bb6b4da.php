@@ -15,7 +15,7 @@
                     <div class="main-image-wrapper">
                         <div class="main-image-card">
                             <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if(!empty($com) && $com->oc_image1): ?>
-                                <img src="<?php echo e($com->oc_image1); ?>" 
+                                <img src="<?php echo e($com->image1_url); ?>" 
                                      alt="Razzaq Engineering Services" 
                                      class="main-image" loading="lazy">
                             <?php else: ?>
@@ -28,7 +28,7 @@
                         
                         <div class="floating-image-card">
                             <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if(!empty($com) && $com->oc_image2): ?>
-                                <img src="<?php echo e($com->oc_image2); ?>" 
+                                <img src="<?php echo e($com->image2_url); ?>" 
                                      alt="Our Work Quality" loading="lazy">
                             <?php else: ?>
                                 <img src="<?php echo e(asset('assets/images/about2.jpg')); ?>" 
@@ -42,7 +42,7 @@
                                 <i class="fas fa-award"></i>
                             </div>
                             <div class="exp-info">
-                                <span class="exp-number"><span class="counter-num" data-target="15">0</span>+</span>
+                                <span class="exp-number"><span class="counter-num" data-target="15"><?php echo e($com->established_year); ?></span>+</span>
                                 <span class="exp-subtitle">Years Experience</span>
                             </div>
                         </div>
@@ -71,7 +71,7 @@
                     
                     <p class="section-desc-pro">
                         <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if(!empty($com)): ?>
-                            <?php echo e(Str::limit(strip_tags($com->oc_description), 250)); ?>
+                            <?php echo Str::limit(strip_tags($com->oc_description), 250); ?>
 
                         <?php else: ?>
                             With over 15 years of industry leadership, we deliver professional RCC core cutting, diamond drilling, wall saw cutting, plumbing & fire fighting services across Pakistan.

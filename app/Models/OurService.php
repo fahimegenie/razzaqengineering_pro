@@ -83,22 +83,23 @@ class OurService extends Model
 
     public function getImageUrlAttribute(): string
     {
-        return $this->os_image 
-            ? asset('uploads/services/' . $this->os_image) 
-            : asset('images/placeholder-service.jpg');
+        if (file_exists(storage_path('app/public/' . $this->os_image))) {
+            return asset('storage/services/' . $this->os_image);
+        }
+        return asset('images/placeholder-service.jpg');
     }
 
     public function getIconUrlAttribute(): string
     {
         return $this->os_icon 
-            ? asset('uploads/services/icons/' . $this->os_icon) 
+            ? asset('storage/services/icons/' . $this->os_icon) 
             : '';
     }
 
     public function getBannerUrlAttribute(): string
     {
         return $this->os_banner 
-            ? asset('uploads/services/banners/' . $this->os_banner) 
+            ? asset('storage/services/banners/' . $this->os_banner) 
             : $this->image_url;
     }
 

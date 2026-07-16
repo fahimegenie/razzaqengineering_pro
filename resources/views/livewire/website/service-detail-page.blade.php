@@ -89,7 +89,7 @@
                                     wire:key="tab-btn-{{ $service->id }}">
                                 @if($service->os_icon)
                                     <span class="sd-tab-icon">
-                                        <img src="{{ $service->os_icon }}" 
+                                        <img src="{{ $service->icon_url }}" 
                                              alt="{{ $service->os_name }}" width="24" height="24" loading="lazy">
                                     </span>
                                 @endif
@@ -118,12 +118,12 @@
                                 <div class="col-lg-6">
                                     <div class="sd-images-grid">
                                         <div class="sd-img-main">
-                                            <img src="{{ $currentDetail->sd_image1 }}" 
+                                            <img src="{{ $currentDetail->image1_url }}" 
                                                  alt="{{ $currentDetail->sd_title }}" class="img-fluid rounded-3">
                                         </div>
                                         @if($currentDetail->sd_image2)
                                             <div class="sd-img-secondary">
-                                                <img src="{{ $currentDetail->sd_image2 }}" 
+                                                <img src="{{ $currentDetail->image2_url }}" 
                                                      alt="{{ $currentDetail->sd_title }}" class="img-fluid rounded-3">
                                             </div>
                                         @endif
@@ -196,7 +196,7 @@
                                         </div>
                                         <div class="col-lg-5">
                                             @if($currentAdvantages->first() && $currentAdvantages->first()->sa_image)
-                                                <img src="{{ asset('sa_image/'.$currentAdvantages->first()->sa_image) }}" 
+                                                <img src="{{ asset('storage/'.$currentAdvantages->first()->sa_image) }}" 
                                                      alt="Service Advantage" 
                                                      class="sd-adv-img rounded-4 shadow-lg" loading="lazy">
                                             @endif

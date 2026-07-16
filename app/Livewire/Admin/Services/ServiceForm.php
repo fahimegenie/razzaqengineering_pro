@@ -107,11 +107,12 @@ class ServiceForm extends Component
 
                 // Previews load karne ka safe tarika (bina static URLs ke)
                 if ($this->existing_os_image) {
-                    $this->imagePreview = Storage::disk('public')->url($this->existing_os_image);
+                    $this->imagePreview = $service->image_url;
                 }
                 if ($this->existing_os_banner) {
-                    $this->bannerPreview = Storage::disk('public')->url($this->existing_os_banner);
+                    $this->bannerPreview = $service->banner_url;
                 }
+                
             }
         }
     }

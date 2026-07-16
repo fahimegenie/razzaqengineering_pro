@@ -70,18 +70,9 @@ class OurTeam extends Model
     public function getImageUrlAttribute(): string
     {
         if ($this->ot_image) {
-            // Check multiple possible paths
-            $paths = [
-                public_path('team_images/' . $this->ot_image),
-                public_path('uploads/team/' . $this->ot_image),
-                public_path('storage/team/' . $this->ot_image),
-            ];
-            
-            foreach ($paths as $path) {
-                if (file_exists($path)) {
-                    return asset(str_replace(public_path(), '', $path));
-                }
-            }
+           if (file_exists(storage_path('app/public/'.$this->ot_image))) {
+            return asset('storage/'.$this->ot_image);
+           }
         }
         
         // Default avatar

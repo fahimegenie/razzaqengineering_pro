@@ -6,20 +6,18 @@ namespace App\Livewire\Admin\OurCompany;
 use App\Models\OurCompany;
 use Livewire\Component;
 use Livewire\WithPagination;
-use Livewire\WithFileUploads;
+use App\Traits\HandlesUploads; // Custom Trait Import
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\Title;
 use Livewire\Attributes\Rule;
 use Livewire\Attributes\Computed;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Str;
 
 #[Layout('components.layouts.admin-layout')]
 #[Title('Our Companies - Admin Panel')]
 class OurCompanyManager extends Component
 {
-    use WithPagination, WithFileUploads;
+    use HandlesUploads;
 
     // ============================================
     // LIST PROPERTIES
@@ -247,7 +245,9 @@ class OurCompanyManager extends Component
                 $item = new OurCompany();
             }
 
-            // Handle image uploads
+            // --- TRAIT BASED UPLOAD (No custom path or manual delete logic) ---
+            
+            // 1. Company images dynamic upload handle
             $imageFields = [
                 'oc_image1' => 'oc_image1',
                 'oc_image2' => 'oc_image2',
@@ -257,25 +257,25 @@ class OurCompanyManager extends Component
 
             foreach ($imageFields as $property => $dbField) {
                 if ($this->$property) {
-                    // Delete old image
-                    if ($this->isEditing && $item->$dbField) {
-                        Storage::disk('public')->delete('uploads/company/' . $item->$dbField);
+                    $oldPath = $this->isEditing ? $item->$dbField : null;
+                    
+                    // Direct Trait call -> It manages old image deletion, generation & Linux permissions
+                    $uploadedPath = $this->uploadFile($this->$property, 'company', $oldPath);
+                    if ($uploadedPath) {
+                        $data[$dbField] = $uploadedPath;
                     }
-                    $filename = 'company_' . $dbField . '_' . time() . '_' . Str::random(6) . '.' . $this->$property->getClientOriginalExtension();
-                    $this->$property->storeAs('uploads/company', $filename, 'public');
-                    $data[$dbField] = $filename;
                 }
             }
 
-            // Handle CEO image
+            // 2. CEO image upload handle
             if ($this->ceo_image) {
-                if ($this->isEditing && $item->ceo_image) {
-                    Storage::disk('public')->delete('uploads/company/ceo/' . $item->ceo_image);
+                $oldCeoPath = $this->isEditing ? $item->ceo_image : null;
+                $uploadedCeoPath = $this->uploadFile($this->ceo_image, 'company/ceo', $oldCeoPath);
+                if ($uploadedCeoPath) {
+                    $data['ceo_image'] = $uploadedCeoPath;
                 }
-                $filename = 'ceo_' . time() . '_' . Str::random(6) . '.' . $this->ceo_image->getClientOriginalExtension();
-                $this->ceo_image->storeAs('uploads/company/ceo', $filename, 'public');
-                $data['ceo_image'] = $filename;
             }
+            // ------------------------------------------------------------------
 
             if ($this->isEditing) {
                 $item->update($data);
@@ -315,16 +315,18 @@ class OurCompanyManager extends Component
         try {
             $item = OurCompany::find($this->deleteItemId);
             if ($item) {
-                // Delete images
+                // Trait functions used for clean files removal
                 for ($i = 1; $i <= 4; $i++) {
                     $field = "oc_image{$i}";
                     if ($item->$field) {
-                        Storage::disk('public')->delete('uploads/company/' . $item->$field);
+                        $this->deleteFile($item->$field);
                     }
                 }
+                
                 if ($item->ceo_image) {
-                    Storage::disk('public')->delete('uploads/company/ceo/' . $item->ceo_image);
+                    $this->deleteFile($item->ceo_image);
                 }
+                
                 $item->delete();
                 $this->dispatch('toast', type: 'success', title: 'Deleted!', message: 'Company deleted successfully.');
             }
@@ -354,11 +356,16 @@ class OurCompanyManager extends Component
         if ($item) {
             $field = "oc_image{$imageNumber}";
             if ($item->$field) {
-                Storage::disk('public')->delete('uploads/company/' . $item->$field);
+                $this->deleteFile($item->$field);
                 $item->update([$field => null]);
             }
             $previewField = "image{$imageNumber}Preview";
             $this->$previewField = null;
+            
+            // Temp input state clear
+            $tempProp = "oc_image{$imageNumber}";
+            $this->$tempProp = null;
+
             $this->dispatch('toast', type: 'success', title: 'Removed!', message: "Image {$imageNumber} removed.");
         }
     }
@@ -367,9 +374,10 @@ class OurCompanyManager extends Component
     {
         $item = OurCompany::find($itemId);
         if ($item && $item->ceo_image) {
-            Storage::disk('public')->delete('uploads/company/ceo/' . $item->ceo_image);
+            $this->deleteFile($item->ceo_image);
             $item->update(['ceo_image' => null]);
             $this->ceoImagePreview = null;
+            $this->ceo_image = null;
             $this->dispatch('toast', type: 'success', title: 'Removed!', message: 'CEO image removed.');
         }
     }
@@ -388,9 +396,13 @@ class OurCompanyManager extends Component
         foreach ($items as $item) {
             for ($i = 1; $i <= 4; $i++) {
                 $field = "oc_image{$i}";
-                if ($item->$field) Storage::disk('public')->delete('uploads/company/' . $item->$field);
+                if ($item->$field) {
+                    $this->deleteFile($item->$field);
+                }
             }
-            if ($item->ceo_image) Storage::disk('public')->delete('uploads/company/ceo/' . $item->ceo_image);
+            if ($item->ceo_image) {
+                $this->deleteFile($item->ceo_image);
+            }
             $item->delete();
         }
         

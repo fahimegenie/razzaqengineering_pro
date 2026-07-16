@@ -166,7 +166,7 @@
                                     <div class="col-lg-4 col-md-6" <?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::$currentLoop['key'] = 'fs-card-'.e($fs->id).''; ?>wire:key="fs-card-<?php echo e($fs->id); ?>">
                                         <div class="service-card featured">
                                             <div class="service-card-img" wire:ignore>
-                                                <img src="<?php echo e(asset('slider_image/'.$fs->os_image)); ?>" 
+                                                <img src="<?php echo e($fs->image_url); ?>" 
                                                     alt="<?php echo e($fs->os_name); ?>" 
                                                     class="img-fluid"
                                                     loading="lazy">
@@ -205,7 +205,7 @@
                                     <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="<?php echo e($loop->index % 3 * 100); ?>" <?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::$currentLoop['key'] = 'service-card-'.e($service->id).''; ?>wire:key="service-card-<?php echo e($service->id); ?>">
                                         <div class="service-card">
                                             <div class="service-card-img" wire:ignore>
-                                                <img src="<?php echo e(asset('slider_image/'.$service->os_image)); ?>" 
+                                                <img src="<?php echo e($service->image_url); ?>" 
                                                      alt="<?php echo e($service->os_name); ?>"
                                                      class="img-fluid"
                                                      loading="lazy">

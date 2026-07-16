@@ -74,7 +74,7 @@ class ServiceAdvantageForm extends Component
 
                 // Previews load karne ka safe tarika
                 if ($this->existing_sa_image) {
-                    $this->imagePreview = Storage::disk('public')->url($this->existing_sa_image);
+                    $this->imagePreview = $adv->image_url;
                 } else {
                     $this->imagePreview = $adv->image_url; // Fallback to model accessor
                 }

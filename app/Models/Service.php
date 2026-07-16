@@ -95,7 +95,7 @@ class Service extends Model
     {
         if ($this->os_image) {
             $path = asset('storage/'.$this->os_image);
-            if (file_exists($path)) {
+            if (file_exists(storage_path('app/public/'.$this->os_image))) {
                 return $path;
             }
         }
@@ -107,13 +107,20 @@ class Service extends Model
         if ($this->os_banner) {
             if ($this->os_banner) {
                 $path = asset('storage/'.$this->os_banner);
-                if (file_exists($path)) {
+                if (file_exists(storage_path('app/public/'.$this->os_banner))) {
                     return $path;
                 }
             }
         }
         return $this->image_url;
     }
+    public function getIconUrlAttribute(): string
+    {
+        return $this->os_icon 
+            ? asset('storage/services/icons/' . $this->os_icon) 
+            : '';
+    }
+
 
     public function getShortDescriptionAttribute($value): string
     {

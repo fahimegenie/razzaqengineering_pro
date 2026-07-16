@@ -79,11 +79,11 @@ class OurCompany extends Model
             for ($i = 1; $i <= 4; $i++) {
                 $field = "oc_image{$i}";
                 if ($model->$field) {
-                    Storage::disk('public')->delete('uploads/company/' . $model->$field);
+                    Storage::disk('public')->delete('company/' . $model->$field);
                 }
             }
             if ($model->ceo_image) {
-                Storage::disk('public')->delete('uploads/company/ceo/' . $model->ceo_image);
+                Storage::disk('public')->delete('company/ceo/' . $model->ceo_image);
             }
         });
     }
@@ -96,13 +96,9 @@ class OurCompany extends Model
     {
         $imageField = "oc_image{$imageNumber}";
         if ($this->$imageField) {
-            $path = 'slider_image/' . $this->$imageField;
-            if (Storage::disk('public')->exists($path)) {
-                return asset('storage/' . $path);
-            }
-            // Fallback paths
-            if (file_exists(public_path('slider_image/' . $this->$imageField))) {
-                return asset('slider_image/' . $this->$imageField);
+            $path = asset('storage/' . $this->$imageField);
+            if (storage_path($this->$imageField)) {
+                return $path;
             }
         }
         return asset('images/placeholder-company.jpg');
@@ -131,12 +127,9 @@ class OurCompany extends Model
     public function getCeoImageUrlAttribute(): string
     {
         if ($this->ceo_image) {
-            $path = 'uploads/company/ceo/' . $this->ceo_image;
-            if (Storage::disk('public')->exists($path)) {
-                return asset('storage/' . $path);
-            }
-            if (file_exists(public_path('images/' . $this->ceo_image))) {
-                return asset('images/' . $this->ceo_image);
+            $path = asset('storage/' . $this->ceo_image);
+            if (file_exists(storage_path('app/public/'.$this->ceo_image))) {
+                return $path;
             }
         }
         return asset('images/placeholder-ceo.jpg');

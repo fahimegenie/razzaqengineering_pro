@@ -55,7 +55,7 @@
                                     <?php echo e($key == 0 ? 'id=defaultServiceTab' : ''); ?>>
                                 <span class="tab-icon">
                                     <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if($service->os_icon): ?>
-                                        <img src="<?php echo e($service->os_icon); ?>" 
+                                        <img src="<?php echo e($service->icon_url); ?>" 
                                              alt="<?php echo e($service->os_name); ?>" 
                                              width="28" height="28"
                                              loading="lazy">
@@ -107,13 +107,13 @@
                                 <div class="col-lg-6">
                                     <div class="service-images-grid">
                                         <div class="service-img-main">
-                                            <img src="<?php echo e($detail->sd_image1); ?>" 
+                                            <img src="<?php echo e($detail->image1_url); ?>" 
                                                  alt="<?php echo e($detail->sd_title); ?>"
                                                  class="service-img"
                                                  loading="lazy">
                                         </div>
                                         <div class="service-img-secondary">
-                                            <img src="<?php echo e($detail->sd_image2); ?>" 
+                                            <img src="<?php echo e($detail->image2_url); ?>" 
                                                  alt="<?php echo e($detail->sd_title); ?> - Detail"
                                                  class="service-img"
                                                  loading="lazy">
