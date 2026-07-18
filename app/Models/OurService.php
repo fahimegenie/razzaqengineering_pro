@@ -83,8 +83,8 @@ class OurService extends Model
 
     public function getImageUrlAttribute(): string
     {
-        if (file_exists(storage_path('app/public/' . $this->os_image))) {
-            return asset('storage/services/' . $this->os_image);
+        if (file_exists(public_path($this->os_image))) {
+            return asset($this->os_image);
         }
         return asset('images/placeholder-service.jpg');
     }

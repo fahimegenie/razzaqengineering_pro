@@ -37,9 +37,9 @@
                         <div class="director-exp-badge">
                             <span class="exp-years">
                                 @if(!empty($com) && !empty($com->established_year))
-                                    {{ date('Y') - $com->established_year }}+
+                                    {{ max(0, now()->year - $com->established_year) }}+
                                 @else
-                                    15+
+                                    24+
                                 @endif
                             </span>
                             <span class="exp-text">Years of<br>Excellence</span>

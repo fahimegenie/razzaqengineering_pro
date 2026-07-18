@@ -76,7 +76,7 @@
                                 <div class="col-lg-4 col-md-6">
                                     <div class="city-service-card">
                                         <div class="cs-img">
-                                            <img data-src="<?php echo e(asset('slider_image/'.$service->os_image)); ?>" 
+                                            <img data-src="<?php echo e($service->os_image); ?>" 
                                                  alt="<?php echo e($service->os_name); ?> in <?php echo e($city->name); ?>"
                                                  class="lazy-img"
                                                  loading="lazy"
@@ -121,7 +121,7 @@
                             <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::openLoop(); ?><?php endif; ?><?php $__currentLoopData = $projects->take(3); $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $project): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::startLoopIteration(); ?><?php endif; ?>
                                 <div class="col-lg-4 col-md-6">
                                     <div class="project-mini-card">
-                                        <img src="<?php echo e(asset('p_image/'.$project->p_image)); ?>" 
+                                        <img src="<?php echo e($project->image_url); ?>" 
                                              alt="<?php echo e($project->p_title); ?>"
                                              style="height:200px;width:100%;object-fit:cover;border-radius:10px;">
                                         <h5 class="mt-2 fw-bold"><?php echo e($project->p_title); ?></h5>

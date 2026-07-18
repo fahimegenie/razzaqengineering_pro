@@ -194,7 +194,7 @@
                                     @endif
                                 </h3>
                                 @if(!empty($contact) && !empty($contact->form_description))
-                                    <p class="form-subtitle">{{ $contact->form_description }}</p>
+                                    <p class="form-subtitle">{!! $contact->form_description !!}</p>
                                 @endif
                                 
                                 {{-- Error --}}

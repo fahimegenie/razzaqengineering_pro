@@ -134,7 +134,7 @@
                                 <div class="col-lg-6">
                                     <span class="sd-badge">Service Details</span>
                                     <h2 class="sd-title"><?php echo e($currentDetail->sd_title); ?></h2>
-                                    <p class="sd-description"><?php echo e($currentDetail->sd_description); ?></p>
+                                    <p class="sd-description"><?php echo $currentDetail->sd_description; ?></p>
                                     
                                     <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if($currentDetail->sd_t1 || $currentDetail->sd_t2 || $currentDetail->sd_t3): ?>
                                         <div class="sd-features">
@@ -178,7 +178,7 @@
                                             <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::openLoop(); ?><?php endif; ?><?php $__currentLoopData = $currentAdvantages; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $adv): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::startLoopIteration(); ?><?php endif; ?>
                                                 <div class="sd-adv-block" <?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::$currentLoop['key'] = 'adv-block-'.e($adv->id).''; ?>wire:key="adv-block-<?php echo e($adv->id); ?>">
                                                     <h3><?php echo e($adv->sa_title); ?></h3>
-                                                    <p><?php echo e($adv->sa_description); ?></p>
+                                                    <p><?php echo $adv->sa_description; ?></p>
                                                     <ul class="sd-adv-list">
                                                         <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if($adv->sa_t1): ?>
                                                             <li><i class="fas fa-check"></i> <?php echo e($adv->sa_t1); ?></li>
@@ -198,7 +198,7 @@
                                         </div>
                                         <div class="col-lg-5">
                                             <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if($currentAdvantages->first() && $currentAdvantages->first()->sa_image): ?>
-                                                <img src="<?php echo e(asset('storage/'.$currentAdvantages->first()->sa_image)); ?>" 
+                                                <img src="<?php echo e(asset($currentAdvantages->first()->sa_image)); ?>" 
                                                      alt="Service Advantage" 
                                                      class="sd-adv-img rounded-4 shadow-lg" loading="lazy">
                                             <?php endif; ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>

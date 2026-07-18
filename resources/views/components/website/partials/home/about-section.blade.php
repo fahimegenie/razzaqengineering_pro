@@ -42,7 +42,13 @@
                                 <i class="fas fa-award"></i>
                             </div>
                             <div class="exp-info">
-                                <span class="exp-number"><span class="counter-num" data-target="15">{{ $com->established_year }}</span>+</span>
+                                <span class="exp-number"><span class="counter-num" data-target="15">
+                                    @if(!empty($com) && !empty($com->established_year))
+                                        {{ max(0, now()->year - $com->established_year) }}+
+                                    @else
+                                        24+
+                                    @endif
+                                </span></span>
                                 <span class="exp-subtitle">Years Experience</span>
                             </div>
                         </div>

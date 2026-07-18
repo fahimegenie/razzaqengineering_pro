@@ -6,11 +6,14 @@ use Livewire\Component;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\Title;
 use App\Models\SeoData;
+use App\Traits\HasDynamicSEO;
 
-#[Layout('components.layouts.app-layout')]
+#[Layout('components.layouts.app-layout', ['seo' => []])]
 #[Title('Quote Received - Razzaq Engineering')]
 class QuoteThankYou extends Component
 {
+    use HasDynamicSEO;
+
     public $quoteId = null;
     public $quoteName = 'Valued Customer';
     public $services = [];
@@ -18,6 +21,9 @@ class QuoteThankYou extends Component
 
     public function mount($id = null, $name = null)
     {
+
+        $this->initializeSEO('thanksyou');
+
         // Accept data from session or URL parameters
         $this->quoteId = $id ?? session('quote_id');
         $this->quoteName = $name ?? session('quote_name', 'Valued Customer');
@@ -38,6 +44,7 @@ class QuoteThankYou extends Component
 
     public function render()
     {
-        return view('livewire.website.quote-thank-you');
+        $seo = $this->getSeoData();
+        return view('livewire.website.quote-thank-you')->layoutData(['seo' => $seo]);
     }
 }

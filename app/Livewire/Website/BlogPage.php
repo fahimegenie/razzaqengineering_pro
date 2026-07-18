@@ -12,13 +12,14 @@ use App\Models\BlogTag;
 use App\Models\SeoData;
 use App\Models\Service;
 use App\Models\ProductCategory;
+use App\Traits\HasDynamicSEO;
 use Illuminate\Support\Facades\Log;
 
-#[Layout('components.layouts.app-layout')]
+#[Layout('components.layouts.app-layout', ['seo' => []])]
 #[Title('Blog - Razzaq Engineering Services')]
 class BlogPage extends Component
 {
-    use WithPagination;
+    use WithPagination, HasDynamicSEO;
 
     public $search = '';
     public $selectedCategory = 'all';
@@ -42,6 +43,8 @@ class BlogPage extends Component
     {
         try {
             $this->isLoading = true;
+
+            $this->initializeSEO('blog');
 
             // Handle category from URL
             if ($category) {
@@ -155,8 +158,10 @@ class BlogPage extends Component
 
     public function render()
     {
+        $seo = $this->getSeoData();
+        
         return view('livewire.website.blog-page', [
             'posts' => $this->posts,
-        ]);
+        ])->layoutData(['seo' => $seo]);
     }
 }

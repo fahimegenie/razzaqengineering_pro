@@ -183,15 +183,14 @@ class AboutUs extends Model
         return Attribute::make(
             get: function () {
                 if ($this->a_image) {
-                    $path = 'about/' . $this->a_image;
-                    if (file_exists(storage_path('app/public/' . $path))) {
-                        return asset('uploads/' . $path);
+                    if (file_exists(public_path($this->a_image))) {
+                        return asset($this->a_image);
                     }
-                    if (file_exists(storage_path('app/public/' . $this->a_image))) {
-                        return asset('images/' . $this->a_image);
+                    if (file_exists(public_path($this->a_image))) {
+                        return asset($this->a_image);
                     }
-                    if (file_exists(storage_path('app/public/' . $this->a_image))) {
-                        return asset('slider_image/' . $this->a_image);
+                    if (file_exists(public_path($this->a_image))) {
+                        return asset($this->a_image);
                     }
                 }
                 return asset('assets/images/placeholder-about.jpg');
@@ -207,12 +206,11 @@ class AboutUs extends Model
         return Attribute::make(
             get: function () {
                 if ($this->about_banner) {
-                    $path = 'about/' . $this->about_banner;
-                    if (file_exists(storage_path('app/public/' . $path))) {
-                        return asset('uploads/' . $path);
+                    if (file_exists(public_path($this->about_banner))) {
+                        return asset($this->about_banner);
                     }
-                    if (file_exists(storage_path('app/public/' . $this->about_banner))) {
-                        return asset('images/' . $this->about_banner);
+                    if (file_exists(public_path($this->about_banner))) {
+                        return asset( $this->about_banner);
                     }
                 }
                 return $this->image_url;
@@ -228,15 +226,14 @@ class AboutUs extends Model
         return Attribute::make(
             get: function () {
                 if ($this->ceo_image) {
-                    $path = 'about/' . $this->ceo_image;
-                    if (file_exists(storage_path('app/public/' . $path))) {
-                        return asset('uploads/' . $path);
+                    if (file_exists(public_path($this->ceo_image))) {
+                        return asset($this->ceo_image);
                     }
-                    if (file_exists(storage_path('app/public/' . $this->ceo_image))) {
-                        return asset('images/' . $this->ceo_image);
+                    if (file_exists(public_path($this->ceo_image))) {
+                        return asset($this->ceo_image);
                     }
-                    if (file_exists(storage_path('app/public/' . $this->ceo_image))) {
-                        return asset('slider_image/' . $this->ceo_image);
+                    if (file_exists(public_path($this->ceo_image))) {
+                        return asset($this->ceo_image);
                     }
                 }
                 return asset('assets/images/placeholder-ceo.jpg');
@@ -252,11 +249,11 @@ class AboutUs extends Model
         return Attribute::make(
             get: function () {
                 return collect($this->about_gallery ?? [])->map(function ($image) {
-                    if (file_exists(storage_path('app/public/' . $image))) {
-                        return asset('uploads/about/gallery/' . $image);
+                    if (file_exists(public_path($image))) {
+                        return asset($image);
                     }
-                    if (file_exists(storage_path('app/public/' . $image))) {
-                        return asset('images/' . $image);
+                    if (file_exists(public_path($image))) {
+                        return asset($image);
                     }
                     return asset('assets/images/placeholder-gallery.jpg');
                 })->toArray();
@@ -273,8 +270,8 @@ class AboutUs extends Model
             get: function () {
                 if ($this->og_image) {
                     $path = 'about/' . $this->og_image;
-                    if (file_exists(storage_path('app/public/' . $path))) {
-                        return asset('uploads/' . $path);
+                    if (file_exists(public_path($path))) {
+                        return asset($path);
                     }
                 }
                 return $this->image_url;

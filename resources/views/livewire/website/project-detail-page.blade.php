@@ -130,7 +130,7 @@
                             
                             {{-- Main Image --}}
                             <div class="pdp-main-image" wire:ignore>
-                                <img src="{{ asset('p_image/'.$project->p_image) }}" 
+                                <img src="{{ $project->image_url }}" 
                                      alt="{{ $project->p_title }}" 
                                      class="img-fluid rounded-3 shadow-sm" 
                                      loading="lazy">

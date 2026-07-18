@@ -96,7 +96,7 @@
             
             @if(!empty($sd) && count($sd) > 0)
                 @foreach($sd as $key => $detail)
-                    <div id="service-{{ $detail->id }}" 
+                    <div id="service-{{ $detail->os_id }}" 
                          class="tab-panel {{ $key == 0 ? 'active' : '' }}" 
                          style="{{ $key == 0 ? 'display: block;' : 'display: none;' }}">
                         

@@ -11,12 +11,15 @@ use App\Models\ServiceAdvantage;
 use App\Models\SeoData;
 use App\Models\ProductCategory;
 use App\Models\PdfFile;
+use App\Traits\HasDynamicSEO;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 
-#[Layout('components.layouts.app-layout')]
+#[Layout('components.layouts.app-layout', ['seo' => []])]
 class ServiceDetailPage extends Component
 {
+    use HasDynamicSEO;
+    
     public $serviceName = null;
     public $activeTab = null; // Yeh Hamesha Service Model ki ID hold karega
     
@@ -28,6 +31,8 @@ class ServiceDetailPage extends Component
     {
         try {
             $this->serviceName = $name;
+
+            $this->initializeSEO('service_detail');
             
             // 1. Load active services
             $services = Service::active()->ordered()->get();
@@ -83,6 +88,8 @@ class ServiceDetailPage extends Component
                 ->get();
         }
 
+        $seo = $this->getSeoData();
+        
         return view('livewire.website.service-detail-page', [
             'services' => $services,
             'currentDetail' => $currentDetail,
@@ -90,6 +97,6 @@ class ServiceDetailPage extends Component
             'pdffile' => PdfFile::active()->first(),
             'seo' => SeoData::where('seo_page_type', $this->serviceName ?? 'Service_detail')->first(),
             'pc' => ProductCategory::active()->select('pc_name')->get(),
-        ]);
+        ])->layoutData(['seo' => $seo]);
     }
 }

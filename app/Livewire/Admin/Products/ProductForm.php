@@ -102,7 +102,7 @@ class ProductForm extends Component
                 // Existing image loading safely
                 $this->existing_image = $product->p_image;
                 if ($this->existing_image) {
-                    $this->imagePreview = Storage::disk('public')->url($this->existing_image);
+                    $this->imagePreview = $product->image_url;
                 } else {
                     $this->imagePreview = $product->image_url;
                 }

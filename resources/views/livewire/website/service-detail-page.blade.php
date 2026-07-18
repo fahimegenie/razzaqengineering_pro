@@ -132,7 +132,7 @@
                                 <div class="col-lg-6">
                                     <span class="sd-badge">Service Details</span>
                                     <h2 class="sd-title">{{ $currentDetail->sd_title }}</h2>
-                                    <p class="sd-description">{{ $currentDetail->sd_description }}</p>
+                                    <p class="sd-description">{!! $currentDetail->sd_description !!}</p>
                                     
                                     @if($currentDetail->sd_t1 || $currentDetail->sd_t2 || $currentDetail->sd_t3)
                                         <div class="sd-features">
@@ -176,7 +176,7 @@
                                             @foreach($currentAdvantages as $adv)
                                                 <div class="sd-adv-block" wire:key="adv-block-{{ $adv->id }}">
                                                     <h3>{{ $adv->sa_title }}</h3>
-                                                    <p>{{ $adv->sa_description }}</p>
+                                                    <p>{!! $adv->sa_description !!}</p>
                                                     <ul class="sd-adv-list">
                                                         @if($adv->sa_t1)
                                                             <li><i class="fas fa-check"></i> {{ $adv->sa_t1 }}</li>
@@ -196,7 +196,7 @@
                                         </div>
                                         <div class="col-lg-5">
                                             @if($currentAdvantages->first() && $currentAdvantages->first()->sa_image)
-                                                <img src="{{ asset('storage/'.$currentAdvantages->first()->sa_image) }}" 
+                                                <img src="{{ asset($currentAdvantages->first()->sa_image) }}" 
                                                      alt="Service Advantage" 
                                                      class="sd-adv-img rounded-4 shadow-lg" loading="lazy">
                                             @endif

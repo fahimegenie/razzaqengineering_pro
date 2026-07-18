@@ -124,7 +124,7 @@ class ProjectCategoryForm extends Component
             if ($this->pc_image) {
                 $category->pc_image = $this->uploadFile(
                     $this->pc_image, 
-                    'project-categories', 
+                    'projects-categories', 
                     $this->existing_image
                 );
             }

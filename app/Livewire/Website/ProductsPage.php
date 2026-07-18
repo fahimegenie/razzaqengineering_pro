@@ -9,13 +9,16 @@ use App\Models\Product;
 use App\Models\ProductCategory;
 use App\Models\SeoData;
 use App\Models\Service;
+use App\Traits\HasDynamicSEO;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 
-#[Layout('components.layouts.app-layout')]
+#[Layout('components.layouts.app-layout', ['seo' => []])]
 #[Title('Our Products - Razzaq Engineering Services')]
 class ProductsPage extends Component
 {
+    use HasDynamicSEO;
+    
     public $search = '';
     public $selectedCategory = 'all';
     public $selectedCategoryName = 'All Products';
@@ -43,6 +46,9 @@ class ProductsPage extends Component
     {
         // try {
             $this->isLoading = true;
+
+            $this->initializeSEO('products');
+
             $this->urlCategory = $pc_name;
 
             $this->seo = SeoData::where('seo_page_type', 'product')->first();
@@ -158,8 +164,9 @@ class ProductsPage extends Component
 
     public function render()
     {
+        $seo = $this->getSeoData();
         return view('livewire.website.products-page', [
             'filteredCategories' => $this->filteredCategories,
-        ]);
+        ])->layoutData(['seo' => $seo]);
     }
 }

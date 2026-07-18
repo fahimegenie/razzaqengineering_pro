@@ -95,8 +95,8 @@ class Product extends Model
     public function getImageUrlAttribute(): string
     {
         if ($this->p_image) {
-           if (file_exists(storage_path('app/public/'.$this->p_image))) {
-            return asset('storage/'.$this->p_image);
+           if (file_exists(public_path($this->p_image))) {
+            return asset($this->p_image);
            }
         }
         return asset('images/placeholder-product.jpg');

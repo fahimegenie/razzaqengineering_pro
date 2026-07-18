@@ -134,7 +134,7 @@
                             </div>
                             <div class="card-body">
                                 <h5 class="card-title mb-1">{{ $item->oc_title }}</h5>
-                                <p class="text-muted small mb-2">{{ $item->short_description }}</p>
+                                <p class="text-muted small mb-2">{!! $item->short_description !!}</p>
                                 <div class="d-flex flex-wrap gap-2 mb-2">
                                     @if($item->established_year)
                                         <span class="badge bg-info"><i class="bi bi-calendar me-1"></i>Est. {{ $item->established_year }}</span>

@@ -70,8 +70,8 @@ class OurTeam extends Model
     public function getImageUrlAttribute(): string
     {
         if ($this->ot_image) {
-           if (file_exists(storage_path('app/public/'.$this->ot_image))) {
-            return asset('storage/'.$this->ot_image);
+           if (file_exists(public_path($this->ot_image))) {
+            return asset($this->ot_image);
            }
         }
         

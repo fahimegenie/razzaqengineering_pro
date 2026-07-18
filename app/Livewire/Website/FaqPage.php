@@ -8,11 +8,14 @@ use Livewire\Attributes\Title;
 use App\Models\Faq;
 use App\Models\SeoData;
 use App\Models\Setting;
+use App\Traits\HasDynamicSEO;
 
-#[Layout('components.layouts.app-layout')]
+#[Layout('components.layouts.app-layout', ['seo' => []])]
 #[Title('FAQ - Razzaq Engineering Services')]
 class FaqPage extends Component
 {
+    use HasDynamicSEO;
+    
     public $isLoading = true;
     public $selectedCategory = 'all';
     public $faqs = [];
@@ -22,8 +25,10 @@ class FaqPage extends Component
     public function mount()
     {
         $settings = Setting::getCached();
+
+        $this->initializeSEO('faq');
         
-        $this->seo = SeoData::where('seo_page_type', 'Faq')->first();
+        // $this->seo = SeoData::where('seo_page_type', 'Faq')->first();
         
         // Load only active FAQs, ordered by sort_order
         $this->faqs = Faq::where('is_active', 1)
@@ -65,6 +70,7 @@ class FaqPage extends Component
 
     public function render()
     {
-        return view('livewire.website.faq-page');
+        $seo = $this->getSeoData();
+        return view('livewire.website.faq-page')->layoutData(['seo' => $seo]);
     }
 }

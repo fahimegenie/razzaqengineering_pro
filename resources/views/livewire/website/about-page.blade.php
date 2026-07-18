@@ -177,7 +177,7 @@
                                 <div class="col-md-7">
                                     <div class="m-tab-text">
                                         @if(!empty($about) && !empty($about->mission_description))
-                                            <p>{{ $about->mission_description }}</p>
+                                            <p>{!! $about->mission_description !!}</p>
                                         @else
                                             <p>To provide exceptional engineering services through innovation, quality workmanship, and unwavering commitment to client satisfaction across Pakistan.</p>
                                         @endif
@@ -206,7 +206,7 @@
                                 <div class="col-md-7">
                                     <div class="m-tab-text">
                                         @if(!empty($about) && !empty($about->vision_description))
-                                            <p>{{ $about->vision_description }}</p>
+                                            <p>{!! $about->vision_description !!}</p>
                                         @else
                                             <p>To become the leading engineering services provider across South Asia, recognized for technical expertise and sustainable construction practices.</p>
                                         @endif
@@ -235,7 +235,7 @@
                                 <div class="col-md-7">
                                     <div class="m-tab-text">
                                         @if(!empty($about) && !empty($about->values_description))
-                                            <p>{{ $about->values_description }}</p>
+                                            <p>{!! $about->values_description !!}</p>
                                         @else
                                             <div class="values-list-inline">
                                                 <span><i class="fas fa-check-circle"></i> Safety First</span>
@@ -341,7 +341,7 @@
                 <div class="col-md-7">
                     <h3 class="fw-bold">{{ $selectedMember->ot_name }}</h3>
                     <p class="text-success fw-semibold">{{ $selectedMember->ot_designation }}</p>
-                    <p class="text-muted">{{ $selectedMember->ot_description }}</p>
+                    <p class="text-muted">{!! $selectedMember->ot_description !!}</p>
                     @if($selectedMember->ot_email)
                         <p><i class="fas fa-envelope text-success me-2"></i> {{ $selectedMember->ot_email }}</p>
                     @endif

@@ -87,11 +87,11 @@ class FleetItem extends Model
     public function getImageUrlAttribute()
     {
         if ($this->image) {
-            return asset('storage/' . $this->image);
+            return asset($this->image);
         }
         
         if ($this->primaryMedia) {
-            return asset('storage/' . $this->primaryMedia->file_path);
+            return asset($this->primaryMedia->file_path);
         }
         
         return asset('images/placeholder-fleet.jpg');

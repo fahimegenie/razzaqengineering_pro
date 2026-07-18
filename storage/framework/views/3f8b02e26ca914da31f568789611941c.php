@@ -207,7 +207,7 @@
             <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if(auth()->guard()->check()): ?>
             <li class="nav-item dropdown user-menu">
                 <a href="#" class="nav-link dropdown-toggle d-flex align-items-center gap-2" data-bs-toggle="dropdown">
-                    <img src="<?php echo e(Auth::user()->avatar ? asset('storage/' . Auth::user()->avatar) : asset('admin_assets/assets/img/default-avatar.png')); ?>" 
+                    <img src="<?php echo e(Auth::user()->avatar ? asset(Auth::user()->avatar) : asset('admin_assets/assets/img/default-avatar.png')); ?>" 
                          class="user-image rounded-circle shadow-sm" 
                          alt="<?php echo e(Auth::user()->name); ?>"
                          style="width: 32px; height: 32px; object-fit: cover;">
@@ -216,7 +216,7 @@
                 <ul class="dropdown-menu dropdown-menu-lg dropdown-menu-end shadow">
                     <!-- User Header -->
                     <li class="user-header text-bg-primary rounded-top">
-                        <img src="<?php echo e(Auth::user()->avatar ? asset('storage/' . Auth::user()->avatar) : asset('admin_assets/assets/img/default-avatar.png')); ?>" 
+                        <img src="<?php echo e(Auth::user()->avatar ? asset(Auth::user()->avatar) : asset('admin_assets/assets/img/default-avatar.png')); ?>" 
                              class="rounded-circle shadow mb-2" 
                              alt="<?php echo e(Auth::user()->name); ?>"
                              style="width: 80px; height: 80px; object-fit: cover;">

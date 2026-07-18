@@ -12,15 +12,16 @@ use App\Models\SeoData;
 use App\Models\ProductCategory;
 use App\Models\Project;
 use App\Models\QuoteRequest;
+use App\Traits\HasDynamicSEO;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Log;
 
-#[Layout('components.layouts.app-layout')]
+#[Layout('components.layouts.app-layout', ['seo' => []])]
 #[Title('Get a Free Quote - Razzaq Engineering Services')]
 class QuotePage extends Component
 {
     // HandlesUploads use kiya hai kyunki iske andar WithFileUploads already mojood hai
-    use HandlesUploads;
+    use HandlesUploads, HasDynamicSEO;
 
     // ============================================
     // FORM PROPERTIES - Step 1: Personal Info
@@ -81,6 +82,9 @@ class QuotePage extends Component
     // ============================================
     public function mount()
     {
+
+        $this->initializeSEO('quote');
+
         // Pre-fill if user is logged in (optional)
         if (auth()->check()) {
             $this->full_name = auth()->user()->name ?? '';
@@ -384,6 +388,8 @@ class QuotePage extends Component
     // ============================================
     public function render()
     {
+        $seo = $this->getSeoData();
+        
         return view('livewire.website.quote-page', [
             'services' => $this->servicesList,
             'seo' => $this->seoData,
@@ -393,6 +399,6 @@ class QuotePage extends Component
             'budgetRanges' => $this->budgetRanges,
             'timelineOptions' => $this->timelineOptions,
             'referralSources' => $this->referralSources,
-        ]);
+        ])->layoutData(['seo' => $seo]);
     }
 }

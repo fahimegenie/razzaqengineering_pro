@@ -10,11 +10,14 @@ use App\Models\ProjectCategory;
 use App\Models\SeoData;
 use App\Models\ProductCategory;
 use App\Models\Service;
+use App\Traits\HasDynamicSEO;
 use Illuminate\Support\Facades\Log;
 
-#[Layout('components.layouts.app-layout')]
+#[Layout('components.layouts.app-layout', ['seo' => []])]
 class ProjectDetailPage extends Component
 {
+    use HasDynamicSEO;
+    
     public $projectSlug = null;
     public $project = null;
     public $relatedProjects = [];
@@ -31,6 +34,9 @@ class ProjectDetailPage extends Component
     {
         // try {
             $this->isLoading = true;
+
+            $this->initializeSEO('project_detail');
+
             $this->projectSlug = $slug;
 
             if ($slug) {
@@ -150,6 +156,7 @@ class ProjectDetailPage extends Component
     #[Title('Project Details - Razzaq Engineering Services')]
     public function render()
     {
-        return view('livewire.website.project-detail-page');
+        $seo = $this->getSeoData();
+        return view('livewire.website.project-detail-page')->layoutData(['seo' => $seo]);
     }
 }

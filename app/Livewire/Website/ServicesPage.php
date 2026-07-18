@@ -9,11 +9,15 @@ use App\Models\Service;
 use App\Models\SeoData;
 use App\Models\ProductCategory;
 use App\Models\City;
+use App\Traits\HasDynamicSEO;
 
-#[Layout('components.layouts.app-layout')]
+#[Layout('components.layouts.app-layout', ['seo' => []])]
 #[Title('Our Services - Razzaq Engineering Services')]
 class ServicesPage extends Component
 {
+
+    use HasDynamicSEO;
+
     public $search = '';
     public $selectedCity = 'all';
     public $selectedCityName = 'All Cities';
@@ -36,6 +40,8 @@ class ServicesPage extends Component
     {
         try {
             $this->isLoading = true;
+
+            $this->initializeSEO('services');
             
             $this->seo = SeoData::where('seo_page_type', 'Service')->first();
             $this->cities = City::active()->orderBy('sort_order')->get();
@@ -184,9 +190,10 @@ class ServicesPage extends Component
 
     public function render()
     {
+        $seo = $this->getSeoData();
         return view('livewire.website.services-page', [
             'cityServiceLinks' => $this->cityServiceLinks,
             'filteredCities' => $this->filteredCities,
-        ]);
+        ])->layoutData(['seo' => $seo]);
     }
 }

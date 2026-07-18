@@ -9,12 +9,15 @@ use App\Models\Testimonial;
 use App\Models\SeoData;
 use App\Models\Service;
 use App\Models\ProductCategory;
+use App\Traits\HasDynamicSEO;
 use Illuminate\Support\Facades\Log;
 
-#[Layout('components.layouts.app-layout')]
+#[Layout('components.layouts.app-layout', ['seo' => []])]
 #[Title('Testimonials - Razzaq Engineering Services')]
 class TestimonialsPage extends Component
 {
+    use HasDynamicSEO;
+    
     public $isLoading = true;
     public $errorMessage = '';
     public $search = '';
@@ -40,6 +43,8 @@ class TestimonialsPage extends Component
     {
         try {
             $this->isLoading = true;
+            
+            $this->initializeSEO('testimonials');
 
             $this->seo = SeoData::where('seo_page_type', 'Testimonial')->first();
             $this->testimonials = Testimonial::active()->ordered()->get();
@@ -153,6 +158,7 @@ class TestimonialsPage extends Component
 
     public function render()
     {
-        return view('livewire.website.testimonials-page');
+        $seo = $this->getSeoData();
+        return view('livewire.website.testimonials-page')->layoutData(['seo' => $seo]);
     }
 }

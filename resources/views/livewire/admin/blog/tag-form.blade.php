@@ -76,7 +76,7 @@
                                 {{ $bt_name ?: 'Tag Name' }}
                             </span>
                             @if($bt_description)
-                                <p class="text-muted small mt-2">{{ $bt_description }}</p>
+                                <p class="text-muted small mt-2">{!! $bt_description !!}</p>
                             @endif
                         </div>
                     </div>

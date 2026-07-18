@@ -40,9 +40,8 @@ class ServiceDetail extends Model
     public function getImage1UrlAttribute(): string
     {
         if ($this->sd_image1) {
-            $path = asset('storage/'.$this->sd_image1);
-            if (file_exists(storage_path('app/public/'.$this->sd_image1))){
-                return $path;
+            if (file_exists(public_path($this->sd_image1))){
+                return asset($this->sd_image1);
             }
         }
         return asset('images/placeholder-service-detail.jpg');
@@ -51,8 +50,7 @@ class ServiceDetail extends Model
     public function getImage2UrlAttribute(): string
     {
         if ($this->sd_image2) {
-            $path = asset('storage/'.$this->sd_image2);
-            if (file_exists(storage_path('app/public/'.$this->sd_image2))) return $path;
+            if (file_exists(public_path($this->sd_image2))) return asset($this->sd_image2);
         }
         return asset('images/placeholder-service-detail.jpg');
     }

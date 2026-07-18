@@ -43,8 +43,8 @@ class ServiceAdvantage extends Model
     public function getImageUrlAttribute(): string
     {
         if ($this->sa_image) {
-            if (file_exists(storage_path('app/public/'.$this->sa_image))){
-                return asset('storage/'.$this->sa_image);
+            if (file_exists(public_path($this->sa_image))){
+                return asset($this->sa_image);
             }
         }
         return asset('images/placeholder-advantage.jpg');

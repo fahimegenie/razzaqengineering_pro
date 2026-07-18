@@ -12,12 +12,15 @@ use App\Models\BlogComment;
 use App\Models\SeoData;
 use App\Models\Service;
 use App\Models\ProductCategory;
+use App\Traits\HasDynamicSEO;
 use Illuminate\Support\Facades\Log;
 
-#[Layout('components.layouts.app-layout')]
+#[Layout('components.layouts.app-layout', ['seo' => []])]
 class BlogDetailPage extends Component
 {
-    // Sirf simple string/scalar values ko public banayein
+
+    use HasDynamicSEO;
+
     public $slug;
     public $isLoading = false;
     public $errorMessage = '';
@@ -30,7 +33,8 @@ class BlogDetailPage extends Component
     public function mount($slug)
     {
         $this->slug = $slug;
-
+        
+        $this->initializeSEO('blog_detail');
         // Views increment call mount mein hi theek hai taake page hit par sirf ek baar chale
         try {
             $post = BlogPost::where('bp_slug', $slug)->published()->first();
@@ -141,6 +145,8 @@ class BlogDetailPage extends Component
             ->limit(4)
             ->get();
 
+        $seo = $this->getSeoData();
+
         return view('livewire.website.blog-detail-page', [
             'post'         => $post,
             'comments'     => $comments,
@@ -151,6 +157,6 @@ class BlogDetailPage extends Component
             'services'     => Service::active()->ordered()->get(),
             'pc'           => ProductCategory::active()->select('pc_name')->get(),
             'seo'          => SeoData::where('seo_page_type', 'Blog_detail')->first(),
-        ]);
+        ])->layoutData(['seo' => $seo]);
     }
 }

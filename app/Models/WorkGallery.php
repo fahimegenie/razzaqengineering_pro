@@ -67,8 +67,8 @@ class WorkGallery extends Model
     public function getImageUrlAttribute(): string
     {
         if ($this->wg_image) {
-             if (file_exists(storage_path('app/public/'.$this->wg_image))) {
-            return asset('storage/'.$this->wg_image);
+             if (file_exists(public_path($this->wg_image))) {
+            return asset($this->wg_image);
            }
         }
         

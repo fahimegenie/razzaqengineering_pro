@@ -12,12 +12,15 @@ use App\Models\Service;
 use App\Models\ProductCategory;
 use App\Models\Team;
 use App\Models\Testimonial;
+use App\Traits\HasDynamicSEO;
 use Illuminate\Support\Facades\Log;
 
-#[Layout('components.layouts.app-layout')]
+#[Layout('components.layouts.app-layout', ['seo' => []])]
 #[Title('About Us - Razzaq Engineering Services')]
 class AboutPage extends Component
 {
+    use HasDynamicSEO;
+
     public $about;
     public $seo;
     public $services;
@@ -38,6 +41,7 @@ class AboutPage extends Component
 
     public function mount()
     {
+        $this->initializeSEO('about');
         $this->loadData();
     }
 
@@ -128,6 +132,8 @@ class AboutPage extends Component
 
     public function render()
     {
+        $seo = $this->getSeoData();
+        
         return view('livewire.website.about-page', [
             'about' => $this->about,
             'seo' => $this->seo,
@@ -137,6 +143,6 @@ class AboutPage extends Component
             'testimonials' => $this->testimonials,
             'stats' => $this->stats,
             'whyChooseUs' => $this->whyChooseUs,
-        ]);
+        ])->layoutData(['seo' => $seo]);
     }
 }

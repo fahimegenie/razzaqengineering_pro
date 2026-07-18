@@ -169,7 +169,7 @@
                         
                         @if($item->wg_description)
                             <p class="card-text text-muted small flex-grow-1">
-                                {{ $item->short_description }}
+                                {!! $item->short_description !!}
                             </p>
                         @endif
                         
@@ -263,7 +263,7 @@
                             
                             @if($viewItem->wg_description)
                                 <h6 class="fw-bold">Description:</h6>
-                                <p class="text-muted">{{ $viewItem->wg_description }}</p>
+                                <p class="text-muted">{!! $viewItem->wg_description !!}</p>
                             @endif
                             
                             <hr>

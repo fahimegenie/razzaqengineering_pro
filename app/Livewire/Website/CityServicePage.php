@@ -11,11 +11,14 @@ use App\Models\Project;
 use App\Models\Testimonial;
 use App\Models\SeoData;
 use App\Models\ProductCategory;
+use App\Traits\HasDynamicSEO;
 use Illuminate\Support\Facades\Log;
 
-#[Layout('components.layouts.app-layout')]
+#[Layout('components.layouts.app-layout', ['seo' => []])]
 class CityServicePage extends Component
 {
+    use HasDynamicSEO;
+    
     public $city;
     public $service;
     public $cityService;
@@ -33,6 +36,8 @@ class CityServicePage extends Component
     {
         try {
             $this->isLoading = true;
+
+            $this->initializeSEO('city_service');
             
             // ✅ Find city by slug
             $this->city = City::where('slug', $city)
@@ -138,6 +143,7 @@ class CityServicePage extends Component
 
     public function render()
     {
-        return view('livewire.website.city-service-page');
+        $seo = $this->getSeoData();
+        return view('livewire.website.city-service-page')->layoutData(['seo' => $seo]);
     }
 }

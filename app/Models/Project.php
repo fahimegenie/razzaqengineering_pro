@@ -88,9 +88,9 @@ class Project extends Model
     public function getImageUrlAttribute(): string
     {
         if ($this->p_image) {
-             if (file_exists(storage_path('app/public/'.$this->p_image))) {
-            return asset('storage/'.$this->p_image);
-           }
+            if (file_exists(public_path($this->p_image))) {
+                return asset($this->p_image);
+            }
         }
         return asset('images/placeholder-project.jpg');
     }
@@ -98,8 +98,8 @@ class Project extends Model
     public function getGalleryUrlsAttribute(): array
     {
         return collect($this->p_gallery ?? [])->map(function ($image) {
-            if (file_exists(public_path('uploads/projects/gallery/' . $image))) {
-                return asset('uploads/projects/gallery/' . $image);
+            if (file_exists(public_path($image))) {
+                return asset($image);
             }
             return null;
         })->filter()->values()->toArray();

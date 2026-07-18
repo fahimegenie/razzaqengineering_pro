@@ -51,14 +51,14 @@
 <?php endif; ?>
 <?php if (isset($component)) { $__componentOriginal314ecba2aaa43e7f8a0a316bab0eadff = $component; } ?>
 <?php if (isset($attributes)) { $__attributesOriginal314ecba2aaa43e7f8a0a316bab0eadff = $attributes; } ?>
-<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'components.website.partials.home.service-section','data' => ['services' => $services,'sd' => $sd]] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
+<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'components.website.partials.home.service-section','data' => ['services' => $services,'sd' => $sd,'os' => $os]] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
 <?php $component->withName('website.partials.home.service-section'); ?>
 <?php if ($component->shouldRender()): ?>
 <?php $__env->startComponent($component->resolveView(), $component->data()); ?>
 <?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
 <?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
 <?php endif; ?>
-<?php $component->withAttributes(['services' => \Illuminate\View\Compilers\BladeCompiler::sanitizeComponentAttribute($services),'sd' => \Illuminate\View\Compilers\BladeCompiler::sanitizeComponentAttribute($sd)]); ?>
+<?php $component->withAttributes(['services' => \Illuminate\View\Compilers\BladeCompiler::sanitizeComponentAttribute($services),'sd' => \Illuminate\View\Compilers\BladeCompiler::sanitizeComponentAttribute($sd),'os' => \Illuminate\View\Compilers\BladeCompiler::sanitizeComponentAttribute($os)]); ?>
 <?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::processComponentKey($component); ?>
 
 <?php echo $__env->renderComponent(); ?>
@@ -117,14 +117,14 @@
 <?php endif; ?>
 <?php if (isset($component)) { $__componentOriginalf4f7511220f15591c9f4c34433e0002b = $component; } ?>
 <?php if (isset($attributes)) { $__attributesOriginalf4f7511220f15591c9f4c34433e0002b = $attributes; } ?>
-<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'components.website.partials.home.director-message-section','data' => []] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
+<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'components.website.partials.home.director-message-section','data' => ['com' => $com]] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
 <?php $component->withName('website.partials.home.director-message-section'); ?>
 <?php if ($component->shouldRender()): ?>
 <?php $__env->startComponent($component->resolveView(), $component->data()); ?>
 <?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
 <?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
 <?php endif; ?>
-<?php $component->withAttributes([]); ?>
+<?php $component->withAttributes(['com' => \Illuminate\View\Compilers\BladeCompiler::sanitizeComponentAttribute($com)]); ?>
 <?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::processComponentKey($component); ?>
 
 <?php echo $__env->renderComponent(); ?>

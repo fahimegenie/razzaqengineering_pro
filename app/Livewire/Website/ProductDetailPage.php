@@ -9,12 +9,16 @@ use App\Models\Product;
 use App\Models\ProductCategory;
 use App\Models\SeoData;
 use App\Models\Service;
+use App\Traits\HasDynamicSEO;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 
-#[Layout('components.layouts.app-layout')]
+#[Layout('components.layouts.app-layout', ['seo' => []])]
 class ProductDetailPage extends Component
 {
+
+    use HasDynamicSEO;
+    
     public $productSlug = null;
     public $product = null;
     public $relatedProducts = [];
@@ -33,6 +37,8 @@ class ProductDetailPage extends Component
         try {
             $this->isLoading = true;
             $this->productSlug = $slug;
+
+            $this->initializeSEO('product_detail');
 
             if ($slug) {
                 // Find product by multiple conditions
@@ -170,6 +176,7 @@ class ProductDetailPage extends Component
     #[Title('Product Details - Razzaq Engineering Services')]
     public function render()
     {
-        return view('livewire.website.product-detail-page');
+        $seo = $this->getSeoData();
+        return view('livewire.website.product-detail-page')->layoutData(['seo' => $seo]);
     }
 }

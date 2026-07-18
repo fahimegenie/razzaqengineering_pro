@@ -62,7 +62,7 @@ class ProductCategoryForm extends Component
                 $this->existing_image = $category->pc_image;
 
                 if ($this->existing_image) {
-                    $this->imagePreview = Storage::disk('public')->url($this->existing_image);
+                    $this->imagePreview = $category->image_url;
                 } else {
                     $this->imagePreview = $category->image_url;
                 }

@@ -12,13 +12,16 @@ use App\Models\SeoData;
 use App\Models\Service;
 use App\Models\ProductCategory;
 use App\Models\ContactMessage;
+use App\Traits\HasDynamicSEO;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 
-#[Layout('components.layouts.app-layout')]
+#[Layout('components.layouts.app-layout', ['seo' => []])]
 #[Title('Contact Us - Razzaq Engineering Services')]
 class ContactPage extends Component
 {
+    use HasDynamicSEO;
+    
     // ============================================
     // PUBLIC PROPERTIES
     // ============================================
@@ -69,6 +72,8 @@ class ContactPage extends Component
     {
         try {
             $this->isLoading = true;
+
+            $this->initializeSEO('contact');
             
             $this->seo = SeoData::where('seo_page_type', 'Contact')->first();
             $this->contact = ContactUs::first();
@@ -159,6 +164,7 @@ class ContactPage extends Component
     // ============================================
     public function render()
     {
-        return view('livewire.website.contact-page');
+        $seo = $this->getSeoData();
+        return view('livewire.website.contact-page')->layoutData(['seo' => $seo]);
     }
 }

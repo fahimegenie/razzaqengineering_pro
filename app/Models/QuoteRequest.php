@@ -99,8 +99,8 @@ class QuoteRequest extends Model
     public function getAttachmentUrlAttribute(): ?string
     {
         if ($this->qr_attachment) {
-             if (file_exists(storage_path('app/public/'.$this->qr_attachment))) {
-            return asset('storage/'.$this->qr_attachment);
+             if (file_exists(public_path($this->qr_attachment))) {
+            return asset($this->qr_attachment);
            }
         }
 

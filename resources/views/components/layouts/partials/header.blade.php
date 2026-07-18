@@ -10,7 +10,7 @@
         $navProducts = App\Models\ProductCategory::active()->get();
         
         // Determine logo
-        $logo = $settings->logo_url ?? asset('assets/images/logo-black.png');
+        $logo = $settings->logo ? $settings->logo_url : asset('assets/images/logo-black.png');
         
         // Social links array
         $socialLinks = [];

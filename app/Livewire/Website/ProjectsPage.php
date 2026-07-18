@@ -10,11 +10,14 @@ use App\Models\ProjectCategory;
 use App\Models\SeoData;
 use App\Models\ProductCategory;
 use App\Models\City;
+use App\Traits\HasDynamicSEO;
 
-#[Layout('components.layouts.app-layout')]
+#[Layout('components.layouts.app-layout', ['seo' => []])]
 #[Title('Our Projects - Razzaq Engineering Services')]
 class ProjectsPage extends Component
 {
+    use HasDynamicSEO;
+
     public $search = '';
     public $selectedCategory = 'all';
     public $selectedCategoryName = 'All Projects';
@@ -54,6 +57,8 @@ class ProjectsPage extends Component
     {
         try {
             $this->isLoading = true;
+
+            $this->initializeSEO('projects');
             
             $this->seo = SeoData::where('seo_page_type', 'Projects')->first();
             $this->categories = ProjectCategory::active()->ordered()->get();
@@ -183,9 +188,10 @@ class ProjectsPage extends Component
 
     public function render()
     {
+        $seo = $this->getSeoData();
         return view('livewire.website.projects-page', [
             'filteredCategories' => $this->filteredCategories,
             'filteredCities' => $this->filteredCities,
-        ]);
+        ])->layoutData(['seo' => $seo]);
     }
 }

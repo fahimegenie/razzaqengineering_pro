@@ -12,6 +12,7 @@ class AppLayout extends Component
      */
     public function render(): View
     {
+        dd('dsdfsad');
         return view('layouts.app');
     }
 }

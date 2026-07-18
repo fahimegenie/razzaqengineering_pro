@@ -42,7 +42,13 @@
                                 <i class="fas fa-award"></i>
                             </div>
                             <div class="exp-info">
-                                <span class="exp-number"><span class="counter-num" data-target="15"><?php echo e($com->established_year); ?></span>+</span>
+                                <span class="exp-number"><span class="counter-num" data-target="15">
+                                    <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if(!empty($com) && !empty($com->established_year)): ?>
+                                        <?php echo e(max(0, now()->year - $com->established_year)); ?>+
+                                    <?php else: ?>
+                                        24+
+                                    <?php endif; ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
+                                </span></span>
                                 <span class="exp-subtitle">Years Experience</span>
                             </div>
                         </div>

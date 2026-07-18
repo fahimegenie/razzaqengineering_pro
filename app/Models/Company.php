@@ -46,27 +46,27 @@ class Company extends Model
     // Accessors (Virtual Attributes)
     public function getImage1UrlAttribute()
     {
-        return $this->oc_image1 ? asset('storage/'.$this->oc_image1) : asset('images/default-company.jpg');
+        return $this->oc_image1 ? asset($this->oc_image1) : asset('images/default-company.jpg');
     }
     
     public function getImage2UrlAttribute()
     {
-        return $this->oc_image2 ? asset('storage/'.$this->oc_image2) : asset('images/default-company.jpg');
+        return $this->oc_image2 ? asset($this->oc_image2) : asset('images/default-company.jpg');
     }
     
     public function getImage3UrlAttribute()
     {
-        return $this->oc_image3 ? asset('storage/'.$this->oc_image3) : asset('images/default-company.jpg');
+        return $this->oc_image3 ? asset($this->oc_image3) : asset('images/default-company.jpg');
     }
     
     public function getImage4UrlAttribute()
     {
-        return $this->oc_image4 ? asset('storage/'.$this->oc_image4) : asset('images/default-company.jpg');
+        return $this->oc_image4 ? asset($this->oc_image4) : asset('images/default-company.jpg');
     }
     
     public function getCeoImageUrlAttribute()
     {
-        return $this->ceo_image ? asset('storage/'.$this->ceo_image) : asset('images/default-avatar.jpg');
+        return $this->ceo_image ? asset($this->ceo_image) : asset('images/default-avatar.jpg');
     }
     
     // Helper Methods

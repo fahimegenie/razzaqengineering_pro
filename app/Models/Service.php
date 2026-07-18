@@ -94,9 +94,8 @@ class Service extends Model
     public function getImageUrlAttribute(): string
     {
         if ($this->os_image) {
-            $path = asset('storage/'.$this->os_image);
-            if (file_exists(storage_path('app/public/'.$this->os_image))) {
-                return $path;
+            if (file_exists(public_path($this->os_image))) {
+                return asset($this->os_image);
             }
         }
         return asset('images/placeholder-service.jpg');
@@ -106,9 +105,8 @@ class Service extends Model
     {
         if ($this->os_banner) {
             if ($this->os_banner) {
-                $path = asset('storage/'.$this->os_banner);
-                if (file_exists(storage_path('app/public/'.$this->os_banner))) {
-                    return $path;
+                if (file_exists(public_path($this->os_banner))) {
+                    return asset($this->os_banner);
                 }
             }
         }
@@ -117,7 +115,7 @@ class Service extends Model
     public function getIconUrlAttribute(): string
     {
         return $this->os_icon 
-            ? asset('storage/services/icons/' . $this->os_icon) 
+            ? asset($this->os_icon) 
             : '';
     }
 

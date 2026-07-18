@@ -20,7 +20,6 @@
         "robsontenorio/mary": "^2.9",
         "romanzipp/laravel-seo": "^2.9",
         "spatie/laravel-permission": "^8.3",
-        "spatie/laravel-sitemap": "^8.2",
         "spatie/laravel-sluggable": "^4.0",
         "unisharp/laravel-filemanager": "^2.15"
     },

@@ -39,7 +39,9 @@
                                 </div>
                                 <div class="city-info">
                                     <span class="city-name"><?php echo e($city['name']); ?></span>
-                                    <span class="city-status">Service Available</span>
+                                    <span class="city-status">
+                                        <?php echo e(in_array(strtolower($city['name']), ['lahore', 'karachi', 'islamabad']) ? 'Main Office' : 'Service Available'); ?>                                        
+                                    </span>
                                 </div>
                                 <i class="fas fa-check-circle city-check"></i>
                             </div>

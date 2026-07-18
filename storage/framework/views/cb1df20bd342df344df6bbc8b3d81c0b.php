@@ -37,9 +37,9 @@
                         <div class="director-exp-badge">
                             <span class="exp-years">
                                 <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if(!empty($com) && !empty($com->established_year)): ?>
-                                    <?php echo e(date('Y') - $com->established_year); ?>+
+                                    <?php echo e(max(0, now()->year - $com->established_year)); ?>+
                                 <?php else: ?>
-                                    15+
+                                    24+
                                 <?php endif; ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
                             </span>
                             <span class="exp-text">Years of<br>Excellence</span>

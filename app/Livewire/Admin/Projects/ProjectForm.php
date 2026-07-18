@@ -111,7 +111,7 @@ class ProjectForm extends Component
                 $this->existing_image = $project->p_image;
 
                 if ($this->existing_image) {
-                    $this->imagePreview = Storage::disk('public')->url($this->existing_image);
+                    $this->imagePreview = $project->image_url;
                 } else {
                     $this->imagePreview = $project->image_url;
                 }

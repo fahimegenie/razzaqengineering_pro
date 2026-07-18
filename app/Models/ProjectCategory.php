@@ -56,9 +56,9 @@ class ProjectCategory extends Model
     public function getImageUrlAttribute(): string
     {
         if ($this->pc_image) {
-             if (file_exists(storage_path('app/public/'.$this->pc_image))) {
-            return asset('storage/'.$this->pc_image);
-           }
+            if (file_exists(public_path($this->pc_image))) {
+                return asset($this->pc_image);
+            }
         }
         return asset('images/placeholder-category.jpg');
     }

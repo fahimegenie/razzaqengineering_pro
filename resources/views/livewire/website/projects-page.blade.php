@@ -210,7 +210,7 @@
                                     <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="{{ $loop->index % 3 * 100 }}" wire:key="proj-card-{{ $project->id }}">
                                         <div class="project-card">
                                             <div class="project-card-img" wire:ignore>
-                                                <img src="{{ asset('p_image/'.$project->p_image) }}" alt="{{ $project->p_title }}" class="img-fluid" loading="lazy">
+                                                <img src="{{ $project->image_url }}" alt="{{ $project->p_title }}" class="img-fluid" loading="lazy">
                                                 @if($project->p_status)
                                                     <span class="status-tag status-{{ $project->p_status }}">{{ ucfirst($project->p_status) }}</span>
                                                 @endif

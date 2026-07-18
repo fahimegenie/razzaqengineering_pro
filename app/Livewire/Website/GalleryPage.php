@@ -9,12 +9,15 @@ use App\Models\WorkGallery;
 use App\Models\SeoData;
 use App\Models\Service;
 use App\Models\ProductCategory;
+use App\Traits\HasDynamicSEO;
 use Illuminate\Support\Facades\Log;
 
-#[Layout('components.layouts.app-layout')]
+#[Layout('components.layouts.app-layout', ['seo' => []])]
 #[Title('Gallery - Razzaq Engineering Services')]
 class GalleryPage extends Component
 {
+    use HasDynamicSEO;
+    
     public $selectedCategory = 'all';
     public $selectedCategoryName = 'All';
     public $isLoading = true;
@@ -34,6 +37,8 @@ class GalleryPage extends Component
     {
         try {
             $this->isLoading = true;
+
+            $this->initializeSEO('gallery');
 
             $this->seo = SeoData::where('seo_page_type', 'Gallery')->first();
             
@@ -135,6 +140,7 @@ class GalleryPage extends Component
 
     public function render()
     {
-        return view('livewire.website.gallery-page');
+        $seo = $this->getSeoData();
+        return view('livewire.website.gallery-page')->layoutData(['seo' => $seo]);
     }
 }

@@ -22,7 +22,7 @@
                                 
                                 
                                 <div class="project-card-img">
-                                    <img src="<?php echo e(asset('p_image/'.$project->p_image)); ?>" 
+                                    <img src="<?php echo e($project->image_url); ?>" 
                                          alt="<?php echo e($project->p_title); ?>" 
                                          class="project-img"
                                          loading="lazy">

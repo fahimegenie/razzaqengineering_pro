@@ -9,12 +9,15 @@ use App\Models\OurTeam;
 use App\Models\SeoData;
 use App\Models\Service;
 use App\Models\ProductCategory;
+use App\Traits\HasDynamicSEO;
 use Illuminate\Support\Facades\Log;
 
-#[Layout('components.layouts.app-layout')]
+#[Layout('components.layouts.app-layout', ['seo' => []])]
 #[Title('Our Team - Razzaq Engineering Services')]
 class TeamPage extends Component
 {
+    use HasDynamicSEO;
+    
     public $isLoading = true;
     public $errorMessage = '';
     public $search = '';
@@ -30,6 +33,8 @@ class TeamPage extends Component
     {
         try {
             $this->isLoading = true;
+
+            $this->initializeSEO('team');
 
             $this->seo = SeoData::where('seo_page_type', 'Team')->first();
             $this->teamMembers = OurTeam::active()->ordered()->get();
@@ -87,8 +92,9 @@ class TeamPage extends Component
 
     public function render()
     {
+        $seo = $this->getSeoData();
         return view('livewire.website.team-page', [
             'filteredMembers' => $this->filteredMembers,
-        ]);
+        ])->layoutData(['seo' => $seo]);
     }
 }

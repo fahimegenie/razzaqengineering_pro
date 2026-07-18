@@ -40,6 +40,6 @@ class ContactUs extends Model
 
     public function getBannerUrlAttribute()
     {
-        return $this->banner_image ? asset('storage/' . $this->banner_image) : null;
+        return $this->banner_image ? asset($this->banner_image) : null;
     }
 }

@@ -183,7 +183,7 @@
                         
                         @if($selectedMember->ot_description)
                             <div class="team-modal-desc mb-3">
-                                <p class="text-muted">{{ $selectedMember->ot_description }}</p>
+                                <p class="text-muted">{!! $selectedMember->ot_description !!}</p>
                             </div>
                         @endif
                         

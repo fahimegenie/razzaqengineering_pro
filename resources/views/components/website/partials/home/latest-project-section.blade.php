@@ -22,7 +22,7 @@
                                 
                                 {{-- Image --}}
                                 <div class="project-card-img">
-                                    <img src="{{ asset('p_image/'.$project->p_image) }}" 
+                                    <img src="{{ $project->image_url }}" 
                                          alt="{{ $project->p_title }}" 
                                          class="project-img"
                                          loading="lazy">

@@ -366,12 +366,20 @@ class GeneralSettings extends Component
             $settings = Setting::first();
             
             if ($settings) {
+                // Only set fields that exist in THIS component
+                $componentProperties = array_keys(get_class_vars(self::class));
+                
                 foreach ($settings->getFillable() as $field) {
+                    // Check if property exists in THIS component
                     if (property_exists($this, $field)) {
-                        $this->$field = $settings->$field ?? '';
+                        // Also check if it's a component property (not a system property)
+                        if (in_array($field, $componentProperties)) {
+                            $this->$field = $settings->$field ?? '';
+                        }
                     }
                 }
                 
+                // Set preview URLs
                 $this->logoPreview = $settings->logo_url ?? '';
                 $this->logoDarkPreview = $settings->logo_dark_url ?? '';
                 $this->logoLightPreview = $settings->logo_light_url ?? '';

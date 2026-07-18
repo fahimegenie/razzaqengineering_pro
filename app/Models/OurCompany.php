@@ -96,9 +96,8 @@ class OurCompany extends Model
     {
         $imageField = "oc_image{$imageNumber}";
         if ($this->$imageField) {
-            $path = asset('storage/' . $this->$imageField);
-            if (storage_path($this->$imageField)) {
-                return $path;
+            if (file_exists(public_path($this->$imageField))) {
+                return asset($this->$imageField);;
             }
         }
         return asset('images/placeholder-company.jpg');
@@ -127,9 +126,8 @@ class OurCompany extends Model
     public function getCeoImageUrlAttribute(): string
     {
         if ($this->ceo_image) {
-            $path = asset('storage/' . $this->ceo_image);
-            if (file_exists(storage_path('app/public/'.$this->ceo_image))) {
-                return $path;
+            if (file_exists(public_path($this->ceo_image))) {
+                return asset($this->ceo_image);
             }
         }
         return asset('images/placeholder-ceo.jpg');
