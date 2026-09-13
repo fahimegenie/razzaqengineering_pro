@@ -23,6 +23,7 @@ class ServiceDetail extends Model
         'sd_image2',
         'sd_features',
         'sort_order',
+        'sd_slug',
     ];
 
     protected $casts = [

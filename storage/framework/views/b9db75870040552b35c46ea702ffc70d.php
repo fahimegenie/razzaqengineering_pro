@@ -1,0 +1,1 @@
+<?php echo $slot; ?><?php /**PATH /var/www/html/projects/saif/razzaq-engineering/resources/views/components/layouts/sitemap-layout.blade.php ENDPATH**/ ?>

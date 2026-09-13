@@ -112,8 +112,8 @@
                             <li><hr class="dropdown-divider"></li>
                             <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::openLoop(); ?><?php endif; ?><?php $__currentLoopData = $navServices; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $svc): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::startLoopIteration(); ?><?php endif; ?>
                                 <li>
-                                    <a class="dropdown-item <?php echo e(request()->is('service-detail/'.Str::slug($svc->os_name)) ? 'active' : ''); ?>" 
-                                       href="<?php echo e(url('service-detail/'.str_replace(' ','-',$svc->os_name))); ?>">
+                                    <a class="dropdown-item <?php echo e(request()->is('services/'.Str::slug($svc->os_name)) ? 'active' : ''); ?>" 
+                                       href="<?php echo e(url('services/'.$svc->os_slug)); ?>">
                                         <?php echo e($svc->os_name); ?>
 
                                     </a>
@@ -139,7 +139,7 @@
                                         <li class="dropdown-header fw-bold bg-light py-2 small text-uppercase text-dark"><?php echo e($cat->pc_name); ?></li>
                                         <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::openLoop(); ?><?php endif; ?><?php $__currentLoopData = $projs; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $proj): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::startLoopIteration(); ?><?php endif; ?>
                                             <li>
-                                                <a class="dropdown-item ps-4" href="<?php echo e(route('project.detail', ['slug' => $proj->p_title] )); ?>">
+                                                <a class="dropdown-item ps-4" <?php if(!empty($proj->p_slug)): ?> href="<?php echo e(route('project.detail', ['slug' => $proj->p_slug] )); ?>" <?php else: ?> href="#" <?php endif; ?>>
                                                     <i class="fas fa-angle-right me-2 small"></i> <?php echo e(Str::limit($proj->p_title, 30)); ?>
 
                                                 </a>
@@ -155,14 +155,14 @@
                     <!-- Products Dropdown -->
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle fw-semibold <?php echo e(request()->is('products/*') ? 'active' : ''); ?>" href="#" data-bs-toggle="dropdown" aria-expanded="false">
-                            Products
+                            Products  
                         </a>
                         <ul class="dropdown-menu shadow border-0 rounded-3">
                             <li><a class="dropdown-item" href="<?php echo e(url('products')); ?>"><i class="fas fa-th-list me-2"></i> All Products</a></li>
                             <li><hr class="dropdown-divider"></li>
                             <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::openLoop(); ?><?php endif; ?><?php $__currentLoopData = $navProducts; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $pcat): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::startLoopIteration(); ?><?php endif; ?>
                                 <li>
-                                    <a class="dropdown-item" href="<?php echo e(route('product.detail', ['slug' => str_replace(' ','-',$pcat->pc_name)])); ?>">
+                                    <a class="dropdown-item" href="<?php echo e(route('products.category', ['pc_slug' => $pcat->pc_slug])); ?>">
                                         <?php echo e($pcat->pc_name); ?>
 
                                     </a>
@@ -247,7 +247,7 @@
                         <ul class="mobile-submenu list-unstyled">
                             <li><a href="<?php echo e(route('home.services')); ?>" class="mobile-submenu-link">All Services</a></li>
                             <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::openLoop(); ?><?php endif; ?><?php $__currentLoopData = $navServices; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $svc): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::startLoopIteration(); ?><?php endif; ?>
-                                <li><a href="<?php echo e(url('service-detail/'.str_replace(' ','-',$svc->os_name))); ?>" class="mobile-submenu-link"><?php echo e($svc->os_name); ?></a></li>
+                                <li><a href="<?php echo e(url('services/'.$svc->os_slug)); ?>" class="mobile-submenu-link"><?php echo e($svc->os_name); ?></a></li>
                             <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::endLoop(); ?><?php endif; ?><?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::closeLoop(); ?><?php endif; ?>
                         </ul>
                     </div>
@@ -285,7 +285,7 @@
                         <ul class="mobile-submenu list-unstyled">
                             <li><a href="<?php echo e(url('products/p')); ?>" class="mobile-submenu-link">All Products</a></li>
                             <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::openLoop(); ?><?php endif; ?><?php $__currentLoopData = $navProducts; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $pcat): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::startLoopIteration(); ?><?php endif; ?>
-                                <li><a href="<?php echo e(url('products/'.str_replace(' ','-',$pcat->pc_name))); ?>" class="mobile-submenu-link"><?php echo e($pcat->pc_name); ?></a></li>
+                                <li><a href="<?php echo e(url('products/'.$pcat->p_slug)); ?>" class="mobile-submenu-link"><?php echo e($pcat->pc_name); ?></a></li>
                             <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::endLoop(); ?><?php endif; ?><?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::closeLoop(); ?><?php endif; ?>
                         </ul>
                     </div>

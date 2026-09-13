@@ -455,11 +455,11 @@ class GeneralSettings extends Component
             // HANDLE FILE UPLOADS USING TRAIT
             // ============================================
             $uploadFields = [
-                'logoFile'      => ['dbField' => 'logo',       'directory' => 'uploads/settings'],
-                'logoDarkFile'  => ['dbField' => 'logo_dark',  'directory' => 'uploads/settings'],
-                'logoLightFile' => ['dbField' => 'logo_light', 'directory' => 'uploads/settings'],
-                'faviconFile'   => ['dbField' => 'favicon',    'directory' => 'uploads/settings'],
-                'ogImageFile'   => ['dbField' => 'og_image',   'directory' => 'uploads/settings'],
+                'logoFile'      => ['dbField' => 'logo',       'directory' => 'settings'],
+                'logoDarkFile'  => ['dbField' => 'logo_dark',  'directory' => 'settings'],
+                'logoLightFile' => ['dbField' => 'logo_light', 'directory' => 'settings'],
+                'faviconFile'   => ['dbField' => 'favicon',    'directory' => 'settings'],
+                'ogImageFile'   => ['dbField' => 'og_image',   'directory' => 'settings'],
             ];
             
             foreach ($uploadFields as $property => $config) {
@@ -473,7 +473,7 @@ class GeneralSettings extends Component
                     
                     if ($newPath) {
                         // Extract just the filename for DB storage
-                        $settings->{$config['dbField']} = basename($newPath);
+                        $settings->{$config['dbField']} = $newPath;
                     }
                 }
             }
@@ -646,7 +646,14 @@ class GeneralSettings extends Component
      */
     private function safeSetField($model, $field, $value, $type = 'string', $maxLength = null)
     {
-        if (!Schema::hasColumn('settings', $field)) {
+        // Skip the Schema::hasColumn check to avoid the MySQL error
+        // Check if the column exists by trying to access it
+        try {
+            // Check if column exists by using the model's getAttribute
+            // If the column doesn't exist, it will throw an exception
+            $model->getAttribute($field);
+        } catch (\Exception $e) {
+            // Column doesn't exist, skip it
             return;
         }
         

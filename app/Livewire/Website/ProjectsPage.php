@@ -20,7 +20,7 @@ class ProjectsPage extends Component
 
     public $search = '';
     public $selectedCategory = 'all';
-    public $selectedCategoryName = 'All Projects';
+    public $selectedCategoryName = 'All Categories';
     public $selectedCity = 'all';
     public $selectedCityName = 'All Cities';
     public $selectedStatus = 'all';
@@ -34,40 +34,25 @@ class ProjectsPage extends Component
     public $pc = [];
     public $featuredProjects = [];
     public $totalCount = 0;
-
     public $loadedCount = 6;
     public $hasMore = true;
 
-    // Dropdown states
     public $showCategoryDropdown = false;
     public $categorySearch = '';
     public $showCityDropdown = false;
     public $citySearch = '';
 
-    // Status options
-    public $statusOptions = [
-        'all' => 'All Status',
-        'completed' => 'Completed',
-        'ongoing' => 'Ongoing',
-        'planning' => 'Planning',
-        'on-hold' => 'On Hold',
-    ];
-
     public function mount()
     {
         try {
             $this->isLoading = true;
-
             $this->initializeSEO('projects');
-            
             $this->seo = SeoData::where('seo_page_type', 'Projects')->first();
             $this->categories = ProjectCategory::active()->ordered()->get();
             $this->cities = City::active()->orderBy('sort_order')->get();
             $this->pc = ProductCategory::active()->select('pc_name')->get();
             $this->featuredProjects = Project::active()->featured()->ordered()->limit(6)->get();
-            
             $this->fetchProjects();
-            
             $this->isLoading = false;
         } catch (\Exception $e) {
             $this->errorMessage = 'Failed to load projects.';
@@ -76,10 +61,6 @@ class ProjectsPage extends Component
         }
     }
 
-    // ============================================
-    // COMPUTED PROPERTIES
-    // ============================================
-    
     public function getFilteredCategoriesProperty()
     {
         if (empty($this->categorySearch)) return $this->categories;
@@ -92,9 +73,6 @@ class ProjectsPage extends Component
         return $this->cities->filter(fn($city) => stripos($city->name, $this->citySearch) !== false);
     }
 
-    // ============================================
-    // DATA FETCH
-    // ============================================
     private function fetchProjects()
     {
         $query = Project::active()->ordered();
@@ -114,7 +92,10 @@ class ProjectsPage extends Component
         }
 
         if ($this->selectedCity !== 'all') {
-            $query->where('p_location', 'like', '%' . City::find($this->selectedCity)->name . '%');
+            $city = City::find($this->selectedCity);
+            if ($city) {
+                $query->where('p_location', 'like', '%' . $city->name . '%');
+            }
         }
 
         if ($this->selectedStatus !== 'all') {
@@ -126,10 +107,6 @@ class ProjectsPage extends Component
         $this->hasMore = $this->loadedCount < $this->totalCount;
     }
 
-    // ============================================
-    // ACTIONS
-    // ============================================
-    
     public function selectCategory($catId, $catName)
     {
         $this->selectedCategory = (string) $catId;
@@ -178,7 +155,7 @@ class ProjectsPage extends Component
     {
         $this->search = '';
         $this->selectedCategory = 'all';
-        $this->selectedCategoryName = 'All Projects';
+        $this->selectedCategoryName = 'All Categories';
         $this->selectedCity = 'all';
         $this->selectedCityName = 'All Cities';
         $this->selectedStatus = 'all';

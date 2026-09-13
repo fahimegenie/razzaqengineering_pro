@@ -172,40 +172,40 @@ class Setting extends Model
     // ============================================
     public function getLogoUrlAttribute(): string
     {
-        if ($this->logo && file_exists(public_path('uploads/settings/' . $this->logo))) {
-            return asset('uploads/settings/' . $this->logo);
+        if ($this->logo && file_exists(public_path($this->logo))) {
+            return asset($this->logo);
         }
         return asset('images/default-logo.png');
     }
 
     public function getLogoDarkUrlAttribute(): string
     {
-        if ($this->logo_dark && file_exists(public_path('uploads/settings/' . $this->logo_dark))) {
-            return asset('uploads/settings/' . $this->logo_dark);
+        if ($this->logo_dark && file_exists(public_path($this->logo_dark))) {
+            return asset($this->logo_dark);
         }
         return $this->logo_url;
     }
 
     public function getLogoLightUrlAttribute(): string
     {
-        if ($this->logo_light && file_exists(public_path('uploads/settings/' . $this->logo_light))) {
-            return asset('uploads/settings/' . $this->logo_light);
+        if ($this->logo_light && file_exists(public_path($this->logo_light))) {
+            return asset($this->logo_light);
         }
         return $this->logo_url;
     }
 
     public function getFaviconUrlAttribute(): string
     {
-        if ($this->favicon && file_exists(public_path('uploads/settings/' . $this->favicon))) {
-            return asset('uploads/settings/' . $this->favicon);
+        if ($this->favicon && file_exists(public_path($this->favicon))) {
+            return asset($this->favicon);
         }
         return asset('favicon.ico');
     }
 
     public function getOgImageUrlAttribute(): string
     {
-        if ($this->og_image && file_exists(public_path('uploads/settings/' . $this->og_image))) {
-            return asset('uploads/settings/' . $this->og_image);
+        if ($this->og_image && file_exists(public_path($this->og_image))) {
+            return asset($this->og_image);
         }
         return $this->logo_url;
     }

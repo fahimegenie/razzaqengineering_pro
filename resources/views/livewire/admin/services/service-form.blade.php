@@ -8,7 +8,115 @@
                     <div class="card shadow-sm border-0 mb-3"><div class="card-header bg-transparent"><h3 class="card-title mb-0 fw-semibold"><i class="bi bi-info-circle me-2"></i>Service Information</h3></div><div class="card-body"><div class="row g-3">
                         <div class="col-12"><label class="form-label required">Service Name</label><input type="text" class="form-control form-control-lg @error('os_name') is-invalid @enderror" wire:model.live="os_name" placeholder="Enter service name...">@error('os_name')<div class="invalid-feedback">{{ $message }}</div>@enderror</div>
                         <div class="col-md-8"><label class="form-label">Slug</label><div class="input-group"><input type="text" class="form-control" wire:model="os_slug"><button type="button" class="btn btn-outline-secondary" wire:click="generateSlug"><i class="bi bi-arrow-repeat"></i> Generate</button></div></div>
-                        <div class="col-md-4"><label class="form-label">Bootstrap Icon</label><select class="form-select" wire:model="os_icon"><option value="">-- Select Icon --</option>@foreach($iconOptions as $val => $label)<option value="{{ $val }}">{{ $label }} ({{ $val }})</option>@endforeach</select></div>
+                        {{-- <div class="col-md-4">
+                            <label class="form-label">Bootstrap Icon</label>
+                            <select class="form-select" wire:model="os_icon">
+                                <option value="">-- Select Icon --</option>
+                                @foreach($iconOptions as $val => $label)
+                                    <option value="{{ $val }}">
+                                        {{ $label }} ({{ $val }})  
+                                        <i class="{{$val}}"></i>
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div> --}}
+                        <div class="col-md-4">
+                            <label class="form-label">Bootstrap Icon</label>
+
+                            <div class="dropdown">
+
+                                <button 
+                                    type="button"
+                                    class="btn btn-outline-secondary w-100 d-flex align-items-center justify-content-between"
+                                    data-bs-toggle="dropdown"
+                                    aria-expanded="false">
+
+                                    @if($os_icon)
+
+                                        <span class="d-flex align-items-center">
+                                            <i class="{{ $os_icon }} fs-5 me-2 text-primary"></i>
+
+                                            <span>
+                                                {{ $iconOptions[$os_icon] ?? 'Selected Icon' }}
+                                            </span>
+                                        </span>
+
+                                    @else
+
+                                        <span>
+                                            <i class="bi bi-image me-2"></i>
+                                            Select Icon
+                                        </span>
+
+                                    @endif
+
+                                    <i class="bi bi-chevron-down"></i>
+
+                                </button>
+
+
+                                <ul class="dropdown-menu w-100 shadow-sm"
+                                    style="max-height:350px; overflow-y:auto;">
+
+
+                                    @foreach($iconOptions as $val => $label)
+
+                                        <li>
+
+                                            <button 
+                                                type="button"
+                                                class="dropdown-item d-flex align-items-center"
+                                                wire:click="$set('os_icon', '{{ $val }}')">
+
+
+                                                <i class="{{ $val }} fs-5 text-primary me-3"></i>
+
+
+                                                <div>
+                                                    <div class="fw-semibold">
+                                                        {{ $label }}
+                                                    </div>
+
+                                                    <small class="text-muted">
+                                                        {{ $val }}
+                                                    </small>
+                                                </div>
+
+
+                                            </button>
+
+                                        </li>
+
+                                    @endforeach
+
+
+                                </ul>
+
+                            </div>
+
+
+                            {{-- Selected Icon Preview --}}
+                            @if($os_icon)
+
+                                <div class="mt-3 p-3 border rounded text-center bg-light">
+
+                                    <i class="{{ $os_icon }} display-5 text-primary"></i>
+
+
+                                    <div class="fw-semibold mt-2">
+                                        {{ $os_name ?: 'Service Name' }}
+                                    </div>
+
+
+                                    <small class="text-muted">
+                                        {{ $os_icon }}
+                                    </small>
+
+                                </div>
+
+                            @endif
+
+                        </div>
                         <div class="col-12"><label class="form-label">Short Description</label><textarea class="form-control" rows="2" wire:model="os_short_description" placeholder="Brief summary..."></textarea></div>
                     </div></div></div>
 

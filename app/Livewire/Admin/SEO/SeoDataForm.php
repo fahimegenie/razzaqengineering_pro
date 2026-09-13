@@ -677,9 +677,9 @@ class SeoDataForm extends Component
                 $service = $this->selected_service_id ? ServiceDetail::find($this->selected_service_id) : null;
                 $city = $this->selected_city_id ? City::find($this->selected_city_id) : null;
                 if ($service && $city) {
-                    return "{$baseUrl}/{$city->slug}/{$service->slug}";
+                    return "{$baseUrl}/{$city->slug}/{$service->sd_slug}";
                 } elseif ($service) {
-                    return "{$baseUrl}/service-detail/{$service->slug}";
+                    return "{$baseUrl}/services/{$service->sd_slug}";
                 }
                 return $baseUrl;
             case 'city':

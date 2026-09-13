@@ -21,13 +21,12 @@ return new class extends Migration
 
                 $table->text('p_description')->nullable();
                 $table->text('p_short_description')->nullable();
-
                 $table->string('p_image')->nullable();
-
                 $table->string('p_price')->nullable();
+                $table->string('price_to')->nullable();
                 $table->string('p_contact')->nullable();
                 $table->string('pc_type')->nullable();
-
+                $table->string('brand_name')->nullable();
                 $table->unsignedBigInteger('product_category_id')->nullable();
 
                 $table->json('p_gallery')->nullable();

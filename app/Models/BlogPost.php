@@ -181,4 +181,11 @@ class BlogPost extends Model
     {
         return 'bp_slug';
     }
+
+    public function scopeActive(Builder $query): void
+    {
+        $query->where('bp_status', 'published')
+            ->where('published_at', '<=', now());
+    }
+
 }

@@ -16,7 +16,6 @@ use Illuminate\Support\Str;
 #[Layout('components.layouts.app-layout', ['seo' => []])]
 class ProductDetailPage extends Component
 {
-
     use HasDynamicSEO;
     
     public $productSlug = null;
@@ -37,15 +36,13 @@ class ProductDetailPage extends Component
         try {
             $this->isLoading = true;
             $this->productSlug = $slug;
-
             $this->initializeSEO('product_detail');
 
             if ($slug) {
-                // Find product by multiple conditions
                 $this->product = $this->findProduct($slug);
 
                 if (!$this->product) {
-                    $this->errorMessage = 'Product not found. Please check the URL or browse our <a href="' . url('products/p') . '">products</a>.';
+                    $this->errorMessage = 'Product not found. Please check the URL or browse our <a href="' . route('products') . '">products</a>.';
                     $this->isLoading = false;
                     return;
                 }
@@ -64,31 +61,34 @@ class ProductDetailPage extends Component
                         : json_decode($this->product->p_specifications, true) ?? [];
                 }
 
-                // Get related products (same category)
+                // Get related products
                 $this->relatedProducts = Product::active()
-                    ->where('p_id', '!=', $this->product->id)
+                    ->where('id', '!=', $this->product->id)
                     ->where(function ($q) {
-                        $q->where('pc_type', $this->product->pc_type)
-                          ->orWhere('product_category_id', $this->product->product_category_id);
+                        if ($this->product->pc_type) {
+                            $q->where('pc_type', $this->product->pc_type);
+                        }
+                        if ($this->product->product_category_id) {
+                            $q->orWhere('product_category_id', $this->product->product_category_id);
+                        }
                     })
                     ->orderBy('created_at', 'DESC')
                     ->limit(4)
                     ->get();
 
-                // Load other data
                 $this->productCategories = ProductCategory::active()->get();
                 $this->services = Service::active()->ordered()->get();
                 $this->seo = SeoData::where('seo_page_type', 'Product - ' . $this->product->p_name)->first();
                 $this->pc = ProductCategory::active()->select('pc_name')->get();
 
             } else {
-                $this->errorMessage = 'No product specified. Please <a href="' . url('products/p') . '">browse our products</a>.';
+                $this->errorMessage = 'No product specified. Please <a href="' . route('products') . '">browse our products</a>.';
             }
 
             $this->isLoading = false;
 
         } catch (\Exception $e) {
-            $this->errorMessage = 'Failed to load product details. Please try again.';
+            $this->errorMessage = 'Failed to load product details.';
             $this->isLoading = false;
             Log::error('ProductDetail error: ' . $e->getMessage());
         }
@@ -96,46 +96,89 @@ class ProductDetailPage extends Component
 
     /**
      * Find product by multiple possible matches
+     * Priority: ProductCategory slug → Product slug → Name → ID → Fuzzy
      */
     private function findProduct($slug)
     {
-        // 1. Direct slug match
+        Log::info('Finding product with slug: ' . $slug);
+        
+        // ============================================
+        // STEP 1: CHECK PRODUCT CATEGORY SLUG FIRST
+        // ============================================
+        $category = ProductCategory::where('pc_slug', $slug)->first();
+
+        if ($category) {
+            
+            $product = Product::active()
+                ->where(function ($q) use ($category) {
+                    $q->where('product_category_id', $category->id)
+                      ->orWhere('pc_type', 'like', '%' . $category->pc_name . '%');
+                })
+                ->orderBy('sort_order', 'ASC')
+                ->orderBy('id', 'ASC')
+                ->first();
+            
+            if ($product) {
+                Log::info('Product found via category: ' . $product->p_name);
+                return $product;
+            }
+        }
+
+        // ============================================
+        // STEP 2: CHECK PRODUCT SLUG/ID/NAME
+        // ============================================
+        
+        // Direct slug match
         $product = Product::where('p_slug', $slug)->first();
         if ($product) return $product;
 
-        // 2. Numeric ID match
+        // Numeric ID match
         if (is_numeric($slug)) {
-            $product = Product::where('p_id', (int) $slug)->first();
+            $product = Product::where('id', (int)$slug)->first();
             if ($product) return $product;
         }
 
-        // 3. Convert slug to name format and match
+        // Convert slug to name format
         $nameFormat = str_replace('-', ' ', $slug);
         
+        // Exact name match
         $product = Product::where('p_name', $nameFormat)->first();
         if ($product) return $product;
 
-        // 4. Case-insensitive name match
+        // Case-insensitive name match
         $product = Product::whereRaw('LOWER(p_name) = ?', [strtolower($nameFormat)])->first();
         if ($product) return $product;
 
-        // 5. Name LIKE match
+        // Name LIKE match
         $product = Product::where('p_name', 'like', '%' . $nameFormat . '%')->first();
         if ($product) return $product;
 
-        // 6. Slug comparison
-        $product = Product::whereRaw("REPLACE(LOWER(p_name), ' ', '-') = ?", [strtolower($slug)])->first();
+        // Slug LIKE match
+        $product = Product::where('p_slug', 'like', '%' . $slug . '%')->first();
         if ($product) return $product;
 
-        // 7. Fuzzy search
+        // Generated slug comparison
+        $product = Product::whereRaw("LOWER(REPLACE(p_name, ' ', '-')) = ?", [strtolower($slug)])->first();
+        if ($product) return $product;
+
+        // pc_type match
+        $nameCapitalized = ucwords($nameFormat);
+        $product = Product::where('pc_type', 'like', '%' . $nameCapitalized . '%')
+            ->orWhere('pc_type', 'like', '%' . $nameFormat . '%')
+            ->orderBy('sort_order', 'ASC')
+            ->first();
+        if ($product) return $product;
+
+        // Fuzzy search
         $product = Product::where('p_name', 'like', '%' . $slug . '%')
             ->orWhere('p_slug', 'like', '%' . $slug . '%')
+            ->orWhere('pc_type', 'like', '%' . $slug . '%')
             ->first();
         
         return $product;
     }
 
-    /**
+     /**
      * Open gallery modal
      */
     public function openGallery($imageIndex)

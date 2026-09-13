@@ -135,7 +135,10 @@ trait HasDynamicSEO
      */
     public function getSeoData(): array
     {
-        return $this->seoData->toSEOArray();
+        if(!empty($this->seoData)){
+            return $this->seoData->toSEOArray();
+        }
+        return [];
     }
     
     /**

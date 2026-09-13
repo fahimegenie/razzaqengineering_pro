@@ -68,7 +68,7 @@
                     </div>
                     <div class="industry-content">
                         <h3 class="industry-title">Industrial</h3>
-                        <p class="industry-text">Factory plants, warehouses & heavy manufacturing facilities with specialized concrete & anchoring solutions.</p>
+                        <p class="industry-text">Factory plants, warehouses & heavy manufacturing facilities with specialized concrete Cutting & anchoring solutions.</p>
                     </div>
                     <div class="industry-hover-line"></div>
                     <div class="industry-number">03</div>
@@ -88,7 +88,7 @@
                     </div>
                     <div class="industry-content">
                         <h3 class="industry-title">Commercial</h3>
-                        <p class="industry-text">Shopping malls, hospitals & high-rise office towers with professional plumbing & fire fighting systems.</p>
+                        <p class="industry-text">Shopping malls, hospitals & high-rise office towers with professional Core Cutting , Wall Saw Cutting , Zero Vibration Concrete Cutting .</p>
                     </div>
                     <div class="industry-hover-line"></div>
                     <div class="industry-number">04</div>

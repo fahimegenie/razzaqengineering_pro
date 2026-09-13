@@ -4,28 +4,37 @@ use App\Http\Controllers\Auth\VerifyEmailController;
 use Illuminate\Support\Facades\Route;
 use Livewire\Volt\Volt;
 
+// ============================================
+// GUEST ROUTES - Only Login
+// ============================================
 Route::middleware('guest')->group(function () {
-    Volt::route('register', 'pages.auth.register')
-        ->name('register');
-
+    // Only login route - custom login page
     Volt::route('login', 'pages.auth.login')
         ->name('login');
 
-    Volt::route('forgot-password', 'pages.auth.forgot-password')
-        ->name('password.request');
-
-    Volt::route('reset-password/{token}', 'pages.auth.reset-password')
-        ->name('password.reset');
+    // Redirect all other auth routes to login
+    Route::get('register', fn() => redirect()->route('login'))->name('register');
+    Route::post('register', fn() => redirect()->route('login'));
+    
+    Route::get('forgot-password', fn() => redirect()->route('login'))->name('password.request');
+    Route::post('forgot-password', fn() => redirect()->route('login'))->name('password.email');
+    
+    Route::get('reset-password/{token}', fn() => redirect()->route('login'))->name('password.reset');
+    Route::post('reset-password', fn() => redirect()->route('login'))->name('password.update');
 });
 
+// ============================================
+// AUTHENTICATED ROUTES
+// ============================================
 Route::middleware('auth')->group(function () {
-    Volt::route('verify-email', 'pages.auth.verify-email')
-        ->name('verification.notice');
+    // Disable verify email
+    Route::get('verify-email', fn() => redirect()->route('admin.dashboard'))->name('verification.notice');
 
     Route::get('verify-email/{id}/{hash}', VerifyEmailController::class)
         ->middleware(['signed', 'throttle:6,1'])
         ->name('verification.verify');
 
-    Volt::route('confirm-password', 'pages.auth.confirm-password')
-        ->name('password.confirm');
+    // Disable confirm password
+    Route::get('confirm-password', fn() => redirect()->route('admin.dashboard'))->name('password.confirm');
+    Route::post('confirm-password', fn() => redirect()->route('admin.dashboard'));
 });

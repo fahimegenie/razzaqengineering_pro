@@ -110,8 +110,8 @@
                             <li><hr class="dropdown-divider"></li>
                             @foreach($navServices as $svc)
                                 <li>
-                                    <a class="dropdown-item {{ request()->is('service-detail/'.Str::slug($svc->os_name)) ? 'active' : '' }}" 
-                                       href="{{ url('service-detail/'.str_replace(' ','-',$svc->os_name)) }}">
+                                    <a class="dropdown-item {{ request()->is('services/'.Str::slug($svc->os_name)) ? 'active' : '' }}" 
+                                       href="{{ url('services/'.$svc->os_slug) }}">
                                         {{ $svc->os_name }}
                                     </a>
                                 </li>
@@ -136,7 +136,7 @@
                                         <li class="dropdown-header fw-bold bg-light py-2 small text-uppercase text-dark">{{ $cat->pc_name }}</li>
                                         @foreach($projs as $proj)
                                             <li>
-                                                <a class="dropdown-item ps-4" href="{{ route('project.detail', ['slug' => $proj->p_title] ) }}">
+                                                <a class="dropdown-item ps-4" @if(!empty($proj->p_slug)) href="{{ route('project.detail', ['slug' => $proj->p_slug] ) }}" @else href="#" @endif>
                                                     <i class="fas fa-angle-right me-2 small"></i> {{ Str::limit($proj->p_title, 30) }}
                                                 </a>
                                             </li>
@@ -151,14 +151,14 @@
                     <!-- Products Dropdown -->
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle fw-semibold {{ request()->is('products/*') ? 'active' : '' }}" href="#" data-bs-toggle="dropdown" aria-expanded="false">
-                            Products
+                            Products  
                         </a>
                         <ul class="dropdown-menu shadow border-0 rounded-3">
                             <li><a class="dropdown-item" href="{{ url('products') }}"><i class="fas fa-th-list me-2"></i> All Products</a></li>
                             <li><hr class="dropdown-divider"></li>
                             @foreach($navProducts as $pcat)
                                 <li>
-                                    <a class="dropdown-item" href="{{ route('product.detail', ['slug' => str_replace(' ','-',$pcat->pc_name)]) }}">
+                                    <a class="dropdown-item" href="{{ route('products.category', ['pc_slug' => $pcat->pc_slug]) }}">
                                         {{ $pcat->pc_name }}
                                     </a>
                                 </li>
@@ -242,7 +242,7 @@
                         <ul class="mobile-submenu list-unstyled">
                             <li><a href="{{ route('home.services') }}" class="mobile-submenu-link">All Services</a></li>
                             @foreach($navServices as $svc)
-                                <li><a href="{{ url('service-detail/'.str_replace(' ','-',$svc->os_name)) }}" class="mobile-submenu-link">{{ $svc->os_name }}</a></li>
+                                <li><a href="{{ url('services/'.$svc->os_slug) }}" class="mobile-submenu-link">{{ $svc->os_name }}</a></li>
                             @endforeach
                         </ul>
                     </div>
@@ -280,7 +280,7 @@
                         <ul class="mobile-submenu list-unstyled">
                             <li><a href="{{ url('products/p') }}" class="mobile-submenu-link">All Products</a></li>
                             @foreach($navProducts as $pcat)
-                                <li><a href="{{ url('products/'.str_replace(' ','-',$pcat->pc_name)) }}" class="mobile-submenu-link">{{ $pcat->pc_name }}</a></li>
+                                <li><a href="{{ url('products/'.$pcat->p_slug) }}" class="mobile-submenu-link">{{ $pcat->pc_name }}</a></li>
                             @endforeach
                         </ul>
                     </div>

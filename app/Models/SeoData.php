@@ -131,7 +131,7 @@ class SeoData extends Model
 
     public function scopeBySlug($query, $slug)
     {
-        return $query->where('seo_slug', $slug);
+        return $query->whereRaw('LOWER(seo_slug) = ?', [strtolower($slug)]);
     }
 
     // ============================================
@@ -144,17 +144,18 @@ class SeoData extends Model
     public static function getSeo(string $pageType, ?string $slug = null, ?string $citySlug = null): self
     {
         $query = self::where('is_active', 1)->where('seo_page_type', $pageType);
-        
+
         if ($slug) {
-            $query->where('seo_slug', $slug);
+            $query->whereRaw('LOWER(seo_slug) = ?', [strtolower($slug)]);
         }
-        
+
         $seo = $query->first();
-        
-        if (!$seo) {
+
+        // ✅ Generate dynamic SEO when nothing found in DB
+        if (empty($seo)) {
             $seo = self::generateDynamic($pageType, $slug, $citySlug);
         }
-        
+
         return $seo;
     }
     

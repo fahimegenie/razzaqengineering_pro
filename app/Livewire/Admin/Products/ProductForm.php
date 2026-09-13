@@ -3,75 +3,51 @@
 namespace App\Livewire\Admin\Products;
 
 use Livewire\Component;
-use App\Traits\HandlesUploads; // Trait apply kiya
+use App\Traits\HandlesUploads;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\Title;
-use Livewire\Attributes\Validate;
 use App\Models\Product;
 use App\Models\ProductCategory;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Storage;
 
 #[Layout('components.layouts.admin-layout')]
 #[Title('Product Form - Admin Panel')]
 class ProductForm extends Component
 {
-    use HandlesUploads; // HandlesUploads use kiya (WithFileUploads included)
+    use HandlesUploads;
 
     public $productId = null;
     public $isEditing = false;
     public $isSaving = false;
     
     public $p_image;
-    public $existing_image = null; // Main image ko track karne ke liye
+    public $existing_image = null;
     public $imagePreview;
     public $galleryImages = [];
     public $galleryPreviews = [];
     
-    #[Validate('required|string|max:255')]
     public $p_name = '';
-    
-    #[Validate('nullable|string|max:255')]
     public $p_slug = '';
-    
-    #[Validate('nullable|string')]
     public $p_description = '';
-    
-    #[Validate('nullable|string')]
     public $p_short_description = '';
-    
-    #[Validate('nullable|string|max:50')]
     public $p_price = '';
-    
-    #[Validate('nullable|string|max:100')]
+    public $price_to = '';
+    public $brand_name = '';
     public $p_contact = '';
-    
-    #[Validate('nullable|string|max:50')]
     public $pc_type = '';
-    
-    #[Validate('nullable|exists:product_category,id')]
     public $product_category_id = null;
-    
-    #[Validate('nullable|string')]
     public $p_specifications_input = '';
-    
     public $specifications = [];
     public $existingGallery = [];
-    
-    #[Validate('nullable|integer|min:0')]
     public $sort_order = 0;
-    
-    #[Validate('boolean')]
     public $in_stock = true;
-    
-    #[Validate('boolean')]
     public $is_active = true;
-    
-    #[Validate('boolean')]
     public $is_featured = false;
-    
     public $categories = [];
+    
+    // Price validation message
+    public $priceValidationMessage = '';
 
     public function mount($productId = null)
     {
@@ -86,7 +62,7 @@ class ProductForm extends Component
                 
                 $fillable = [
                     'p_name', 'p_slug', 'p_description', 'p_short_description',
-                    'p_price', 'p_contact', 'pc_type', 'product_category_id',
+                    'p_price', 'price_to', 'brand_name', 'p_contact', 'pc_type', 'product_category_id',
                     'sort_order', 'in_stock', 'is_active', 'is_featured',
                 ];
                 
@@ -99,7 +75,6 @@ class ProductForm extends Component
                 $this->specifications = $product->specifications_list;
                 $this->p_specifications_input = '';
                 
-                // Existing image loading safely
                 $this->existing_image = $product->p_image;
                 if ($this->existing_image) {
                     $this->imagePreview = $product->image_url;
@@ -107,13 +82,65 @@ class ProductForm extends Component
                     $this->imagePreview = $product->image_url;
                 }
 
-                // Existing Gallery loading safely
                 if ($product->p_gallery) {
                     $decoded = is_array($product->p_gallery) ? $product->p_gallery : json_decode($product->p_gallery, true);
                     $this->existingGallery = $decoded ?? [];
                 }
+                
+                // Validate price on mount
+                $this->validatePriceRange();
             }
         }
+    }
+
+    /**
+     * Validate price range - Price To must be >= Price From
+     */
+    public function validatePriceRange()
+    {
+        $this->priceValidationMessage = '';
+        
+        // If both are empty or only p_price is set
+        if (empty($this->p_price) && empty($this->price_to)) {
+            return;
+        }
+        
+        // If price_to is set but p_price is empty
+        if (empty($this->p_price) && !empty($this->price_to)) {
+            $this->priceValidationMessage = 'Price From must be set when Price To is specified.';
+            $this->addError('p_price', 'Price From is required when Price To is set.');
+            return;
+        }
+        
+        // If both are set, validate that price_to >= p_price
+        if (!empty($this->p_price) && !empty($this->price_to)) {
+            $from = (float) $this->p_price;
+            $to = (float) $this->price_to;
+            
+            if ($to < $from) {
+                $this->priceValidationMessage = "Price To ({$this->price_to}) must be greater than or equal to Price From ({$this->p_price}).";
+                $this->addError('price_to', 'Price To must be greater than or equal to Price From.');
+                return;
+            }
+        }
+        
+        $this->priceValidationMessage = '';
+    }
+
+    /**
+     * Listen to p_price updates
+     */
+    public function updatedPPrice()
+    {
+        $this->validatePriceRange();
+    }
+
+    /**
+     * Listen to price_to updates
+     */
+    public function updatedPriceTo()
+    {
+        $this->validatePriceRange();
     }
 
     public function updatedPName()
@@ -123,7 +150,10 @@ class ProductForm extends Component
         }
     }
 
-    public function generateSlug() { $this->p_slug = Str::slug($this->p_name); }
+    public function generateSlug() 
+    { 
+        $this->p_slug = Str::slug($this->p_name); 
+    }
 
     public function updatedPImage()
     {
@@ -146,7 +176,11 @@ class ProductForm extends Component
         }
     }
 
-    public function removeImage() { $this->p_image = null; $this->imagePreview = null; }
+    public function removeImage() 
+    { 
+        $this->p_image = null; 
+        $this->imagePreview = null; 
+    }
     
     public function removeGalleryImage($index)
     {
@@ -160,7 +194,6 @@ class ProductForm extends Component
     {
         $imageToDelete = $this->existingGallery[$index] ?? null;
         if ($imageToDelete) {
-            // Storage disk se physical image file ko clean karna
             $this->deleteFile($imageToDelete);
         }
         unset($this->existingGallery[$index]);
@@ -188,14 +221,30 @@ class ProductForm extends Component
 
     public function save()
     {
+        // First validate all fields
         $rules = [
             'p_name' => 'required|string|max:255',
+            'brand_name' => 'required|string|max:255',
             'product_category_id' => 'nullable|exists:product_category,id',
+            'p_price' => 'nullable|numeric|min:0',
+            'price_to' => 'nullable|numeric|min:0',
         ];
         
-        if ($this->p_image) $rules['p_image'] = 'image|mimes:jpeg,png,jpg,webp|max:5120';
+        if ($this->p_image) {
+            $rules['p_image'] = 'image|mimes:jpeg,png,jpg,webp|max:5120';
+        }
         
         $this->validate($rules);
+        
+        // Run price validation
+        $this->validatePriceRange();
+        
+        // If there's a price validation error, prevent saving
+        if ($this->priceValidationMessage) {
+            $this->addError('price_to', $this->priceValidationMessage);
+            return;
+        }
+        
         $this->isSaving = true;
         
         try {
@@ -203,7 +252,7 @@ class ProductForm extends Component
             
             $textFields = [
                 'p_name', 'p_slug', 'p_description', 'p_short_description',
-                'p_price', 'p_contact', 'pc_type', 'product_category_id',
+                'p_price', 'price_to', 'brand_name', 'p_contact', 'pc_type', 'product_category_id',
             ];
             
             foreach ($textFields as $field) {
@@ -218,12 +267,12 @@ class ProductForm extends Component
             $product->is_featured = (bool) $this->is_featured;
             $product->p_specifications = json_encode($this->specifications);
             
-            // Main Image (Trait handles uploading and replaces existing smoothly)
+            // Main Image
             if ($this->p_image) {
                 $product->p_image = $this->uploadFile($this->p_image, 'products', $this->existing_image);
             }
             
-            // Gallery Images (Dynamic uploading via Trait)
+            // Gallery Images
             $galleryData = array_values($this->existingGallery);
             if (count($this->galleryImages) > 0) {
                 foreach ($this->galleryImages as $image) {
@@ -237,7 +286,6 @@ class ProductForm extends Component
             
             $message = $this->isEditing ? 'Product updated successfully!' : 'Product created successfully!';
             $this->dispatch('toast', type: 'success', title: 'Success!', message: $message);
-            $this->dispatch($this->isEditing ? 'product-updated' : 'product-created');
             
             return redirect()->route('admin.products.index');
             

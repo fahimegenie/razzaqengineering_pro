@@ -1,3 +1,15 @@
+@php
+    // Safe handling if $com is an array or an object
+    $isComArr = is_array($com ?? null);
+    $comImage1 = $isComArr ? ($com['image1_url'] ?? '') : ($com->image1_url ?? '');
+    $comImage2 = $isComArr ? ($com['image2_url'] ?? '') : ($com->image2_url ?? '');
+    $comOcImage1 = $isComArr ? ($com['oc_image1'] ?? null) : ($com->oc_image1 ?? null);
+    $comOcImage2 = $isComArr ? ($com['oc_image2'] ?? null) : ($com->oc_image2 ?? null);
+    $comEstablishedYear = $isComArr ? ($com['established_year'] ?? null) : ($com->established_year ?? null);
+    $comOcTitle = $isComArr ? ($com['oc_title'] ?? '') : ($com->oc_title ?? '');
+    $comOcDescription = $isComArr ? ($com['oc_description'] ?? '') : ($com->oc_description ?? '');
+@endphp
+
 <!-- ============================================
      PROFESSIONAL ABOUT US SECTION
      Balanced & Compact Design
@@ -14,8 +26,8 @@
                     {{-- Main Large Image --}}
                     <div class="main-image-wrapper">
                         <div class="main-image-card">
-                            @if(!empty($com) && $com->oc_image1)
-                                <img src="{{ $com->image1_url }}" 
+                            @if(!empty($com) && $comOcImage1)
+                                <img src="{{ $comImage1 }}" 
                                      alt="Razzaq Engineering Services" 
                                      class="main-image" loading="lazy">
                             @else
@@ -27,8 +39,8 @@
                         
                         {{-- Floating Small Image --}}
                         <div class="floating-image-card">
-                            @if(!empty($com) && $com->oc_image2)
-                                <img src="{{ $com->image2_url }}" 
+                            @if(!empty($com) && $comOcImage2)
+                                <img src="{{ $comImage2 }}" 
                                      alt="Our Work Quality" loading="lazy">
                             @else
                                 <img src="{{ asset('assets/images/about2.jpg') }}" 
@@ -43,8 +55,8 @@
                             </div>
                             <div class="exp-info">
                                 <span class="exp-number"><span class="counter-num" data-target="15">
-                                    @if(!empty($com) && !empty($com->established_year))
-                                        {{ max(0, now()->year - $com->established_year) }}+
+                                    @if(!empty($com) && !empty($comEstablishedYear))
+                                        {{ max(0, now()->year - $comEstablishedYear) }}+
                                     @else
                                         24+
                                     @endif
@@ -66,8 +78,8 @@
                     
                     {{-- Title --}}
                     <h2 class="section-title-pro">
-                        @if(!empty($com))
-                            {{ $com->oc_title }}
+                        @if(!empty($com) && $comOcTitle)
+                            {{ $comOcTitle }}
                         @else
                             Pakistan's Trusted <span class="text-highlight">Engineering Services</span> Company
                         @endif
@@ -75,8 +87,8 @@
                     
                     {{-- Short Description --}}
                     <p class="section-desc-pro">
-                        @if(!empty($com))
-                            {!! Str::limit(strip_tags($com->oc_description), 250) !!}
+                        @if(!empty($com) && $comOcDescription)
+                            {!! Str::limit(strip_tags($comOcDescription), 250) !!}
                         @else
                             With over 15 years of industry leadership, we deliver professional RCC core cutting, diamond drilling, wall saw cutting, plumbing & fire fighting services across Pakistan.
                         @endif
@@ -139,34 +151,25 @@
 {{-- Professional CSS --}}
 @push('styles')
 <style>
-    /* ============================================
-       ABOUT SECTION - BALANCED DESIGN
-       ============================================ */
     .about-section-pro {
         padding: 80px 0;
         background: #ffffff;
         position: relative;
     }
-    
-    /* ============================================
-       IMAGE GALLERY
-       ============================================ */
     .image-gallery-pro {
         position: relative;
         padding-bottom: 10px;
     }
-    
     .main-image-wrapper {
         position: relative;
         display: inline-block;
+        width: 100%;
     }
-    
     .main-image-card {
         border-radius: 12px;
         overflow: hidden;
         box-shadow: 0 15px 50px rgba(0,0,0,0.1);
     }
-    
     .main-image {
         width: 100%;
         height: 420px;
@@ -174,12 +177,9 @@
         display: block;
         transition: transform 0.5s ease;
     }
-    
     .main-image-card:hover .main-image {
         transform: scale(1.03);
     }
-    
-    /* Floating Small Image */
     .floating-image-card {
         position: absolute;
         bottom: -25px;
@@ -192,14 +192,11 @@
         border: 4px solid #fff;
         z-index: 2;
     }
-    
     .floating-image-card img {
         width: 100%;
         height: 100%;
         object-fit: cover;
     }
-    
-    /* Experience Badge */
     .experience-box-pro {
         position: absolute;
         bottom: 10px;
@@ -213,7 +210,6 @@
         box-shadow: 0 10px 30px rgba(0,86,179,0.35);
         z-index: 3;
     }
-    
     .exp-icon-wrap {
         width: 42px;
         height: 42px;
@@ -226,38 +222,28 @@
         color: #ffc107;
         font-size: 18px;
     }
-    
     .exp-info {
         display: flex;
         flex-direction: column;
         line-height: 1.2;
     }
-    
     .exp-number {
         font-size: 1.6rem;
         font-weight: 800;
         color: #fff;
     }
-    
     .exp-number .counter-num {
         font-weight: 900;
     }
-    
     .exp-subtitle {
         font-size: 0.72rem;
         color: rgba(255,255,255,0.8);
         text-transform: uppercase;
         letter-spacing: 1px;
     }
-    
-    /* ============================================
-       CONTENT WRAPPER
-       ============================================ */
     .content-wrapper-pro {
         padding-left: 10px;
     }
-    
-    /* Section Label */
     .section-label-pro {
         display: inline-block;
         font-size: 0.72rem;
@@ -269,7 +255,6 @@
         position: relative;
         padding-left: 35px;
     }
-    
     .section-label-pro::before {
         content: '';
         position: absolute;
@@ -280,8 +265,6 @@
         height: 2px;
         background: #28a745;
     }
-    
-    /* Title */
     .section-title-pro {
         font-size: 2.2rem;
         font-weight: 800;
@@ -289,25 +272,18 @@
         line-height: 1.3;
         margin-bottom: 15px;
     }
-    
     .text-highlight {
         background: linear-gradient(135deg, #0056b3, #28a745);
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
         background-clip: text;
     }
-    
-    /* Description */
     .section-desc-pro {
         font-size: 0.95rem;
         color: #666;
         line-height: 1.75;
         margin-bottom: 20px;
     }
-    
-    /* ============================================
-       STATS ROW
-       ============================================ */
     .stats-row-pro {
         display: flex;
         align-items: center;
@@ -318,25 +294,21 @@
         margin-bottom: 20px;
         border: 1px solid #e9ecef;
     }
-    
     .stat-item-pro {
         flex: 1;
         text-align: center;
     }
-    
     .stat-number-pro {
         font-size: 1.8rem;
         font-weight: 800;
         color: #0a1628;
         line-height: 1;
     }
-    
     .stat-suffix {
         font-size: 1rem;
         font-weight: 700;
         color: #28a745;
     }
-    
     .stat-text-pro {
         display: block;
         font-size: 0.72rem;
@@ -346,23 +318,17 @@
         font-weight: 600;
         margin-top: 3px;
     }
-    
     .stat-divider {
         width: 1px;
         height: 35px;
         background: #dee2e6;
     }
-    
-    /* ============================================
-       FEATURE POINTS
-       ============================================ */
     .feature-points-pro {
         display: flex;
         flex-direction: column;
         gap: 8px;
         margin-bottom: 22px;
     }
-    
     .feature-point {
         display: flex;
         align-items: center;
@@ -371,23 +337,17 @@
         color: #555;
         font-weight: 500;
     }
-    
     .feature-point i {
         color: #28a745;
         font-size: 1.05rem;
         flex-shrink: 0;
     }
-    
-    /* ============================================
-       CTA BUTTONS
-       ============================================ */
     .cta-row-pro {
         display: flex;
         align-items: center;
         gap: 12px;
         flex-wrap: wrap;
     }
-    
     .btn-about-primary {
         display: inline-flex;
         align-items: center;
@@ -401,13 +361,11 @@
         transition: all 0.3s ease;
         box-shadow: 0 4px 18px rgba(0,86,179,0.25);
     }
-    
     .btn-about-primary:hover {
         transform: translateY(-2px);
         box-shadow: 0 8px 25px rgba(0,86,179,0.4);
         color: #fff;
     }
-    
     .btn-about-call {
         display: inline-flex;
         align-items: center;
@@ -421,73 +379,24 @@
         border: 2px solid #28a745;
         transition: all 0.3s ease;
     }
-    
     .btn-about-call:hover {
         background: #28a745;
         color: #fff;
         transform: translateY(-2px);
         box-shadow: 0 4px 18px rgba(40,167,69,0.25);
     }
-    
-    /* ============================================
-       RESPONSIVE
-       ============================================ */
-    @media (max-width: 1199.98px) {
-        .section-title-pro { font-size: 2rem; }
-        .main-image { height: 380px; }
-        .floating-image-card { width: 160px; height: 120px; right: -20px; }
-    }
-    
     @media (max-width: 991.98px) {
         .about-section-pro { padding: 60px 0; }
         .content-wrapper-pro { padding-left: 0; padding-top: 20px; }
         .main-image { height: 380px; }
-        .section-title-pro { font-size: 1.9rem; }
         .experience-box-pro { left: 0; }
     }
-    
     @media (max-width: 767.98px) {
         .about-section-pro { padding: 45px 0; }
         .main-image { height: 320px; }
         .floating-image-card { width: 140px; height: 105px; right: -10px; bottom: -20px; }
-        .experience-box-pro { padding: 10px 15px; left: 5px; bottom: 5px; }
-        .exp-number { font-size: 1.3rem; }
-        .section-title-pro { font-size: 1.6rem; }
-        .section-desc-pro { font-size: 0.9rem; }
-        .stats-row-pro { padding: 14px 10px; }
-        .stat-number-pro { font-size: 1.4rem; }
-        .stat-text-pro { font-size: 0.65rem; }
         .cta-row-pro { flex-direction: column; }
         .btn-about-primary, .btn-about-call { width: 100%; justify-content: center; }
-    }
-    
-    @media (max-width: 575.98px) {
-        .about-section-pro { padding: 35px 0; }
-        .main-image { height: 260px; }
-        .floating-image-card { width: 110px; height: 80px; right: -5px; bottom: -15px; border-width: 3px; }
-        .experience-box-pro { padding: 8px 12px; gap: 8px; border-radius: 8px; }
-        .exp-icon-wrap { width: 32px; height: 32px; min-width: 32px; font-size: 14px; }
-        .exp-number { font-size: 1.1rem; }
-        .exp-subtitle { font-size: 0.62rem; }
-        .section-title-pro { font-size: 1.35rem; }
-        .section-label-pro { font-size: 0.65rem; letter-spacing: 2px; padding-left: 28px; }
-        .section-label-pro::before { width: 20px; }
-        .section-desc-pro { font-size: 0.85rem; line-height: 1.6; }
-        .stats-row-pro { flex-wrap: wrap; gap: 10px; padding: 12px 8px; }
-        .stat-divider { display: none; }
-        .stat-item-pro { flex: unset; width: 30%; }
-        .stat-number-pro { font-size: 1.2rem; }
-        .feature-point { font-size: 0.8rem; gap: 8px; }
-        .feature-point i { font-size: 0.9rem; }
-    }
-    
-    @media (max-width: 400px) {
-        .main-image { height: 220px; }
-        .floating-image-card { width: 90px; height: 65px; }
-        .experience-box-pro { padding: 6px 10px; }
-        .exp-number { font-size: 1rem; }
-        .section-title-pro { font-size: 1.2rem; }
-        .stat-number-pro { font-size: 1.1rem; }
     }
 </style>
 @endpush

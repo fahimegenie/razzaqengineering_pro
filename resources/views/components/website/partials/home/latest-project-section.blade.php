@@ -12,31 +12,42 @@
         </div>
         
         {{-- Projects Slider --}}
-        @if($pro->count() > 0)
+        @if(count($pro) > 0)
             <div class="projects-slider-wrap" data-aos="fade-up">
                 <div class="owl-carousel owl-theme projects-owl" id="projectsOwl">
                     
                     @foreach($pro as $project)
+                        {{-- Note: Agar aap objects use kar rahe hain toh $project->id use karein, aur agar array hain toh $project['id'] use karein --}}
+                        @php
+                            $pId = is_array($project) ? $project['id'] : $project->id;
+                            $pImg = is_array($project) ? ($project['image_url'] ?? '') : $project->image_url;
+                            $pTitle = is_array($project) ? $project['p_title'] : $project->p_title;
+                            $pCat = is_array($project) ? ($project['p_category'] ?? '') : $project->p_category;
+                            $pCreatedAt = is_array($project) ? $project['p_created_at'] : $project->p_created_at;
+                            $pShortDesc = is_array($project) ? ($project['p_short_description'] ?? '') : $project->p_short_description;
+                            $pLocation = is_array($project) ? ($project['p_location'] ?? '') : $project->p_location;
+                        @endphp
+
                         <div class="item">
                             <div class="project-card">
                                 
                                 {{-- Image --}}
                                 <div class="project-card-img">
-                                    <img src="{{ $project->image_url }}" 
-                                         alt="{{ $project->p_title }}" 
+                                    <img src="{{ $pImg }}" 
+                                         alt="{{ $pTitle }}" 
                                          class="project-img"
                                          loading="lazy">
                                     
                                     {{-- Hover Overlay --}}
                                     <div class="project-card-overlay">
-                                        <a href="{{ url('project/'.$project->id) }}" class="overlay-link">
+                                        <a href="{{ url('project/'.$pId) }}" class="overlay-link">
                                             View Project <i class="fas fa-arrow-right ms-2"></i>
                                         </a>
                                     </div>
                                     
                                     {{-- Category --}}
-                                    @if(!empty($project->p_category))
-                                        <span class="project-tag">{{ $project->p_category }}</span>
+                                    @if(!empty($pCat))
+                                        <span class="project-tag">{{ $pCat }}</span>
                                     @endif
                                 </div>
                                 
@@ -44,16 +55,16 @@
                                 <div class="project-card-body">
                                     <div class="project-date">
                                         <i class="far fa-calendar-alt me-1"></i> 
-                                        {{ date("M Y", strtotime($project->p_created_at)) }}
+                                        {{ date("M Y", strtotime($pCreatedAt)) }}
                                     </div>
                                     <h4 class="project-name">
-                                        <a href="{{ url('project/'.$project->id) }}">{{ Str::limit($project->p_title, 40) }}</a>
+                                        <a href="{{ url('project/'.$pId) }}">{{ Str::limit($pTitle, 40) }}</a>
                                     </h4>
-                                    <p class="project-desc">{{ Str::limit($project->p_description, 90) }}</p>
+                                    <p class="project-desc">{!! Str::limit($pShortDesc, 90) !!}</p>
                                     
-                                    @if(!empty($project->p_location))
+                                    @if(!empty($pLocation))
                                         <div class="project-location">
-                                            <i class="fas fa-map-marker-alt"></i> {{ $project->p_location }}
+                                            <i class="fas fa-map-marker-alt"></i> {{ $pLocation }}
                                         </div>
                                     @endif
                                 </div>

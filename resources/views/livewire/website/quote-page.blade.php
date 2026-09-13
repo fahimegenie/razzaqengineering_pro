@@ -340,7 +340,7 @@
                         </div>
                         
                         <!-- Recent Projects -->
-                        @if($recentProjects->count())
+                        @if(count($recentProjects))
                             <div class="card border-0 shadow-lg rounded-4 p-4">
                                 <h5 class="fw-bold mb-3 text-dark"><i class="fas fa-folder-open text-primary me-2"></i> Recent Work</h5>
                                 <div class="row g-2">
@@ -348,7 +348,7 @@
                                         <div class="col-6">
                                             <a href="{{ url('project/'.$rp->id) }}" class="text-decoration-none">
                                                 <div class="position-relative rounded-3 overflow-hidden" style="height:80px;">
-                                                    <img src="{{ asset('p_image/'.$rp->p_image) }}" alt="{{ $rp->p_title }}" class="w-100 h-100" style="object-fit:cover;">
+                                                    <img src="{{ asset($rp->p_image) }}" alt="{{ $rp->p_title }}" class="w-100 h-100" style="object-fit:cover;">
                                                     <div class="position-absolute bottom-0 start-0 w-100 p-1" style="background:rgba(0,0,0,0.6);">
                                                         <small class="text-white d-block text-truncate" style="font-size:0.65rem;">{{ $rp->p_title }}</small>
                                                     </div>

@@ -23,15 +23,16 @@ class GalleryPage extends Component
     public $isLoading = true;
     public $errorMessage = '';
 
-    public $galleries = [];
     public $categories = [];
     public $seo = null;
     public $services = [];
     public $pc = [];
+    
     public $activeImage = null;
     public $activeImageIndex = 0;
     public $filteredImages = [];
     public $totalCount = 0;
+    public $totalGalleriesCount = 0;
 
     public function mount()
     {
@@ -39,14 +40,12 @@ class GalleryPage extends Component
             $this->isLoading = true;
 
             $this->initializeSEO('gallery');
-
             $this->seo = SeoData::where('seo_page_type', 'Gallery')->first();
             
-            // Load all galleries
-            $this->galleries = WorkGallery::active()->ordered()->get();
+            $galleries = WorkGallery::active()->ordered()->get();
+            $this->totalGalleriesCount = $galleries->count();
             
-            // Get unique categories
-            $this->categories = $this->galleries
+            $this->categories = $galleries
                 ->pluck('wg_type')
                 ->filter()
                 ->unique()
@@ -57,9 +56,7 @@ class GalleryPage extends Component
             $this->services = Service::active()->ordered()->get();
             $this->pc = ProductCategory::active()->select('pc_name')->get();
 
-            // Apply initial filter
             $this->applyFilter();
-
             $this->isLoading = false;
             
         } catch (\Exception $e) {
@@ -69,9 +66,6 @@ class GalleryPage extends Component
         }
     }
 
-    /**
-     * Filter images by category
-     */
     public function filterByCategory($category)
     {
         $this->selectedCategory = $category;
@@ -80,24 +74,20 @@ class GalleryPage extends Component
         $this->activeImage = null;
     }
 
-    /**
-     * Apply current filter
-     */
     private function applyFilter()
     {
+        $allGalleries = WorkGallery::active()->ordered()->get();
+        
         if ($this->selectedCategory === 'all') {
-            $this->filteredImages = $this->galleries;
+            $this->filteredImages = $allGalleries;
         } else {
-            $this->filteredImages = $this->galleries->filter(function ($item) {
+            $this->filteredImages = $allGalleries->filter(function ($item) {
                 return $item->wg_type === $this->selectedCategory;
             })->values();
         }
         $this->totalCount = count($this->filteredImages);
     }
 
-    /**
-     * Open lightbox
-     */
     public function openLightbox($imageIndex)
     {
         if (isset($this->filteredImages[$imageIndex])) {
@@ -106,17 +96,11 @@ class GalleryPage extends Component
         }
     }
 
-    /**
-     * Close lightbox
-     */
     public function closeLightbox()
     {
         $this->activeImage = null;
     }
 
-    /**
-     * Next image
-     */
     public function nextImage()
     {
         $total = $this->totalCount;
@@ -126,9 +110,6 @@ class GalleryPage extends Component
         }
     }
 
-    /**
-     * Previous image
-     */
     public function prevImage()
     {
         $total = $this->totalCount;

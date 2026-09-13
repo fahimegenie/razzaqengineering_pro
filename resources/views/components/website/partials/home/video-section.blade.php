@@ -81,8 +81,11 @@
                                 </div>
                                 <div class="vf-content">
                                     <h5>Critical Projects</h5>
-                                    <p>15+ years of complex project experience</p>
+                                    <p>24+ years of complex & Critical project experience</p>
                                 </div>
+                            
+                                
+                                
                             </div>
                         </div>
                         
@@ -144,11 +147,13 @@
                                 <span class="vs-label">Projects Done</span>
                             </div>
                             <div class="video-stat-card">
-                                <span class="vs-number">15+</span>
+                                <span class="vs-number">
+                                    {{ max(0, now()->year - 2002) }}+
+                                </span>
                                 <span class="vs-label">Years Exp.</span>
                             </div>
                             <div class="video-stat-card">
-                                <span class="vs-number">5</span>
+                                <span class="vs-number">10+</span>
                                 <span class="vs-label">Major Cities</span>
                             </div>
                         </div>

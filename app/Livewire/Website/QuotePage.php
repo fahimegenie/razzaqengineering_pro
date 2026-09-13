@@ -392,7 +392,7 @@ class QuotePage extends Component
         
         return view('livewire.website.quote-page', [
             'services' => $this->servicesList,
-            'seo' => $this->seoData,
+            'seo' => $seo,
             'pc' => $this->productCategories,
             'recentProjects' => $this->recentProjects,
             'cities' => $this->cities,

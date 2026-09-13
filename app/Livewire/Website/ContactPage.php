@@ -49,7 +49,7 @@ class ContactPage extends Component
     public $subject = '';
 
     #[Validate('required|string|min:10|max:5000', message: 'Please enter your message (min 10 characters).')]
-    public $message = '';
+    public $cm_message = '';
 
     #[Validate('nullable|string|max:255')]
     public $company = '';
@@ -109,7 +109,7 @@ class ContactPage extends Component
                 'cm_email' => $this->email,
                 'cm_phone' => $this->phone,
                 'cm_subject' => $this->subject,
-                'cm_message' => $this->message,
+                'cm_message' => $this->cm_message,
                 'cm_company' => $this->company,
                 'cm_city' => $this->city,
                 'cm_source' => 'website',

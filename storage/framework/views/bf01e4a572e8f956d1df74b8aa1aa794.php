@@ -3,7 +3,6 @@
     <!--begin::Sidebar Brand-->
     <div class="sidebar-brand">
         <a href="<?php echo e(route('admin.dashboard')); ?>" class="brand-link text-decoration-none">
-            <img src="<?php echo e(asset('admin_assets/assets/img/AdminLTELogo.png')); ?>" alt="Logo" class="brand-image opacity-75 shadow">
             <span class="brand-text fw-bold text-white">Admin Panel</span>
         </a>
     </div>

@@ -18,10 +18,11 @@ use Illuminate\Support\Str;
 class ProductsPage extends Component
 {
     use HasDynamicSEO;
-    
+
     public $search = '';
-    public $selectedCategory = 'all';
+    public $selectedCategory = 'all';          // holds pc_id or 'all'
     public $selectedCategoryName = 'All Products';
+    public $selectedCategorySlug = null;       // for URL sync
     public $isLoading = false;
     public $errorMessage = '';
 
@@ -29,7 +30,6 @@ class ProductsPage extends Component
     public $categories = [];
     public $seo = null;
     public $services = [];
-    public $pc = [];
     public $totalCount = 0;
 
     public $loadedCount = 8;
@@ -39,51 +39,54 @@ class ProductsPage extends Component
     public $showCategoryDropdown = false;
     public $categorySearch = '';
 
-    // URL category parameter
-    public $urlCategory = null;
+    // Bound URL param
+    public $pc_slug = null;
 
-    public function mount($pc_name = null)
+    public function mount($pc_slug = null)
     {
-        // try {
-            $this->isLoading = true;
+        $this->isLoading = true;
 
+        try {
             $this->initializeSEO('products');
+            $this->pc_slug = $pc_slug;
 
-            $this->urlCategory = $pc_name;
+            $this->seo        = SeoData::where('seo_page_type', 'product')->first();
+            $this->categories = ProductCategory::active()->ordered()->get();
+            $this->services   = Service::active()->ordered()->get();
 
-            $this->seo = SeoData::where('seo_page_type', 'product')->first();
-            $this->categories = ProductCategory::active()->get();
-            $this->services = Service::active()->ordered()->get();
-            $this->pc = ProductCategory::active()->select('pc_name')->get();
+            // Pre-select category from URL slug
+            if ($pc_slug) {
+                $matched = $this->categories->firstWhere('pc_slug', $pc_slug)
+                        ?? $this->categories->first(fn ($c) => Str::slug($c->pc_name) === $pc_slug);
 
-            // If URL has category, pre-select it
-            $matchedCategory = $this->categories->first(function ($cat) use ($pc_name) {
-                return Str::slug($cat->pc_name) === Str::slug($pc_name) ||
-                    stripos($cat->pc_name, str_replace('-', ' ', $pc_name)) !== false;
-            });
-            if ($matchedCategory) {
-                $this->selectedCategory = $matchedCategory->pc_id;
-                $this->selectedCategoryName = $matchedCategory->pc_name;
+                if ($matched) {
+                    $this->selectedCategory     = (string) $matched->id;
+                    $this->selectedCategoryName = $matched->pc_name;
+                    $this->selectedCategorySlug = $matched->pc_slug;
+                }
             }
 
+          
             $this->fetchProducts();
-            $this->isLoading = false;
+        } catch (\Exception $e) {
+            $this->errorMessage = 'Failed to load products.';
+            Log::error('ProductsPage error: ' . $e->getMessage());
+        }
 
-        // } catch (\Exception $e) {
-        //     $this->errorMessage = 'Failed to load products.';
-        //     $this->isLoading = false;
-        //     Log::error('ProductsPage error: ' . $e->getMessage());
-        // }
+        $this->isLoading = false;
     }
 
     // ============================================
-    // COMPUTED PROPERTIES
+    // COMPUTED
     // ============================================
-    
     public function getFilteredCategoriesProperty()
     {
-        if (empty($this->categorySearch)) return $this->categories;
-        return $this->categories->filter(fn($cat) => stripos($cat->pc_name, $this->categorySearch) !== false);
+        if (empty($this->categorySearch)) {
+            return $this->categories;
+        }
+        return $this->categories->filter(
+            fn ($cat) => stripos($cat->pc_name, $this->categorySearch) !== false
+        );
     }
 
     // ============================================
@@ -93,47 +96,71 @@ class ProductsPage extends Component
     {
         $query = Product::active();
 
+        // ----- Search -----
         if (!empty($this->search)) {
-            $query->where(function ($q) {
-                $q->where('p_name', 'like', '%' . $this->search . '%')
-                  ->orWhere('p_description', 'like', '%' . $this->search . '%')
-                  ->orWhere('p_short_description', 'like', '%' . $this->search . '%')
-                  ->orWhere('pc_type', 'like', '%' . $this->search . '%');
+            $term = $this->search;
+            $query->where(function ($q) use ($term) {
+                $q->where('p_name', 'like', "%{$term}%")
+                  ->orWhere('p_description', 'like', "%{$term}%")
+                  ->orWhere('p_short_description', 'like', "%{$term}%")
+                  ->orWhere('brand_name', 'like', "%{$term}%")
+                  ->orWhere('pc_type', 'like', "%{$term}%");
             });
         }
 
+        // ----- Category filter -----
         if ($this->selectedCategory !== 'all') {
-            $categoryName = ProductCategory::find($this->selectedCategory)->pc_name ?? '';
-            $query->where(function ($q) use ($categoryName) {
-                $q->where('pc_type', 'like', '%' . $categoryName . '%')
-                  ->orWhere('pc_type', $categoryName)
-                  ->orWhere('product_category_id', $this->selectedCategory);
+            $catId = $this->selectedCategory;
+
+            $category = ProductCategory::find($catId);
+            $catName  = $category->pc_name ?? null;
+
+            $query->where(function ($q) use ($catId, $catName) {
+                $q->where('product_category_id', $catId);
+
+                if ($catName) {
+                    $q->orWhere('pc_type', $catName)
+                      ->orWhere('pc_type', 'like', "%{$catName}%");
+                }
             });
         }
 
         $this->totalCount = $query->count();
-        $this->products = $query->take($this->loadedCount)->get();
+
+        $this->products = $query->ordered()
+                                ->take($this->loadedCount)
+                                ->get();
+
         $this->hasMore = $this->loadedCount < $this->totalCount;
     }
 
     // ============================================
     // ACTIONS
     // ============================================
-    
-    public function selectCategory($catId, $catName)
+    public function selectCategory($catId, $catName, $catSlug = null)
     {
-        $this->selectedCategory = (string) $catId;
+        $this->selectedCategory     = (string) $catId;
         $this->selectedCategoryName = $catName;
+        $this->selectedCategorySlug = $catSlug;
+
         $this->showCategoryDropdown = false;
-        $this->categorySearch = '';
-        $this->loadedCount = 8;
+        $this->categorySearch       = '';
+        $this->loadedCount          = 8;
+
+        // Sync URL
+        if ($catId === 'all' || $catSlug === null) {
+            $this->dispatch('url-changed', url: route('products'));
+        } else {
+            $this->dispatch('url-changed', url: route('products.category', ['pc_slug' => $catSlug]));
+        }
+
         $this->fetchProducts();
     }
 
     public function toggleCategoryDropdown()
     {
-        $this->showCategoryDropdown = !$this->showCategoryDropdown;
-        $this->categorySearch = '';
+        $this->showCategoryDropdown = ! $this->showCategoryDropdown;
+        $this->categorySearch       = '';
     }
 
     public function closeCategoryDropdown()
@@ -155,16 +182,21 @@ class ProductsPage extends Component
 
     public function clearFilters()
     {
-        $this->search = '';
-        $this->selectedCategory = 'all';
+        $this->search               = '';
+        $this->selectedCategory     = 'all';
         $this->selectedCategoryName = 'All Products';
-        $this->loadedCount = 8;
+        $this->selectedCategorySlug = null;
+        $this->loadedCount          = 8;
+
+        $this->dispatch('url-changed', url: route('products'));
+
         $this->fetchProducts();
     }
 
     public function render()
     {
         $seo = $this->getSeoData();
+
         return view('livewire.website.products-page', [
             'filteredCategories' => $this->filteredCategories,
         ])->layoutData(['seo' => $seo]);

@@ -12,31 +12,42 @@
         </div>
         
         
-        <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if($pro->count() > 0): ?>
+        <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if(count($pro) > 0): ?>
             <div class="projects-slider-wrap" data-aos="fade-up">
                 <div class="owl-carousel owl-theme projects-owl" id="projectsOwl">
                     
                     <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::openLoop(); ?><?php endif; ?><?php $__currentLoopData = $pro; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $project): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::startLoopIteration(); ?><?php endif; ?>
+                        
+                        <?php
+                            $pId = is_array($project) ? $project['id'] : $project->id;
+                            $pImg = is_array($project) ? ($project['image_url'] ?? '') : $project->image_url;
+                            $pTitle = is_array($project) ? $project['p_title'] : $project->p_title;
+                            $pCat = is_array($project) ? ($project['p_category'] ?? '') : $project->p_category;
+                            $pCreatedAt = is_array($project) ? $project['p_created_at'] : $project->p_created_at;
+                            $pShortDesc = is_array($project) ? ($project['p_short_description'] ?? '') : $project->p_short_description;
+                            $pLocation = is_array($project) ? ($project['p_location'] ?? '') : $project->p_location;
+                        ?>
+
                         <div class="item">
                             <div class="project-card">
                                 
                                 
                                 <div class="project-card-img">
-                                    <img src="<?php echo e($project->image_url); ?>" 
-                                         alt="<?php echo e($project->p_title); ?>" 
+                                    <img src="<?php echo e($pImg); ?>" 
+                                         alt="<?php echo e($pTitle); ?>" 
                                          class="project-img"
                                          loading="lazy">
                                     
                                     
                                     <div class="project-card-overlay">
-                                        <a href="<?php echo e(url('project/'.$project->id)); ?>" class="overlay-link">
+                                        <a href="<?php echo e(url('project/'.$pId)); ?>" class="overlay-link">
                                             View Project <i class="fas fa-arrow-right ms-2"></i>
                                         </a>
                                     </div>
                                     
                                     
-                                    <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if(!empty($project->p_category)): ?>
-                                        <span class="project-tag"><?php echo e($project->p_category); ?></span>
+                                    <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if(!empty($pCat)): ?>
+                                        <span class="project-tag"><?php echo e($pCat); ?></span>
                                     <?php endif; ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
                                 </div>
                                 
@@ -44,17 +55,17 @@
                                 <div class="project-card-body">
                                     <div class="project-date">
                                         <i class="far fa-calendar-alt me-1"></i> 
-                                        <?php echo e(date("M Y", strtotime($project->p_created_at))); ?>
+                                        <?php echo e(date("M Y", strtotime($pCreatedAt))); ?>
 
                                     </div>
                                     <h4 class="project-name">
-                                        <a href="<?php echo e(url('project/'.$project->id)); ?>"><?php echo e(Str::limit($project->p_title, 40)); ?></a>
+                                        <a href="<?php echo e(url('project/'.$pId)); ?>"><?php echo e(Str::limit($pTitle, 40)); ?></a>
                                     </h4>
-                                    <p class="project-desc"><?php echo e(Str::limit($project->p_description, 90)); ?></p>
+                                    <p class="project-desc"><?php echo Str::limit($pShortDesc, 90); ?></p>
                                     
-                                    <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if(!empty($project->p_location)): ?>
+                                    <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if(!empty($pLocation)): ?>
                                         <div class="project-location">
-                                            <i class="fas fa-map-marker-alt"></i> <?php echo e($project->p_location); ?>
+                                            <i class="fas fa-map-marker-alt"></i> <?php echo e($pLocation); ?>
 
                                         </div>
                                     <?php endif; ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>

@@ -99,7 +99,7 @@ class OurService extends Model
     public function getBannerUrlAttribute(): string
     {
         return $this->os_banner 
-            ? asset('storage/services/banners/' . $this->os_banner) 
+            ? asset($this->os_banner) 
             : $this->image_url;
     }
 

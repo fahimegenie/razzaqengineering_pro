@@ -1,6 +1,7 @@
-<!-- ============================================
+{{-- ============================================
      PROFESSIONAL TECHNOLOGY FLEET WITH SLIDER
-     ============================================ -->
+     Array & Collection Compatible
+     ============================================ --}}
 <section class="fleet-section-pro" id="fleetSection">
     <div class="container">
         
@@ -13,163 +14,97 @@
                     <p class="section-desc">We own and operate the latest Hilti and Tyrolit systems, ensuring speed and technical superiority on every job site.</p>
                 </div>
                 <div class="col-lg-4 text-lg-end">
-                    <a href="#" class="btn-fleet-specs">
-                        <i class="fas fa-download me-2"></i> Download Fleet Specs
+                    <a href="{{ route('public.fleet') }}" class="btn-fleet-specs">
+                        <i class="fas fa-download me-2"></i> View All Fleet
                     </a>
                 </div>
             </div>
         </div>
         
         {{-- Fleet Slider --}}
+        @php
+            $fleetData = !empty($fleetItems) ? $fleetItems : collect();
+            $isFleetArray = is_array($fleetData);
+            $fleetCount = $isFleetArray ? count($fleetData) : $fleetData->count();
+        @endphp
+        
+        @if($fleetCount > 0)
         <div class="fleet-slider-wrap mt-4" data-aos="fade-up">
             <div class="owl-carousel owl-theme fleet-owl" id="fleetOwl">
                 
-                {{-- Slide 1 --}}
-                <div class="item">
-                    <div class="fleet-card">
-                        <div class="fleet-card-img">
-                            <img src="https://images.unsplash.com/photo-1581092160562-40aa08e78837?w=600&h=400&fit=crop" 
-                                 alt="Hilti DD 250 Core Drill" class="fleet-img" loading="lazy">
-                            <div class="fleet-img-overlay">
-                                <a href="#" class="fleet-overlay-link">
-                                    <i class="fas fa-search-plus me-2"></i> View Details
-                                </a>
+                @foreach($fleetData as $item)
+                    @php
+                        // Extract data based on type
+                        $itemId = $isFleetArray ? ($item['id'] ?? '') : $item->id;
+                        $itemTitle = $isFleetArray ? ($item['title'] ?? 'Fleet Item') : $item->title;
+                        $itemSlug = $isFleetArray ? ($item['slug'] ?? '') : ($item->slug ?? '');
+                        $itemDesc = $isFleetArray ? ($item['description'] ?? '') : ($item->description ?? '');
+                        $itemImage = $isFleetArray ? ($item['image_url'] ?? ($item['image'] ?? asset('images/placeholder-fleet.jpg'))) : ($item->image_url ?? $item->image ?? asset('images/placeholder-fleet.jpg'));
+                        $itemCategory = $isFleetArray ? ($item['category']['name'] ?? ($item['category_name'] ?? '')) : ($item->category->name ?? '');
+                        $itemFeatures = $isFleetArray ? ($item['features'] ?? []) : ($item->features ?? []);
+                        
+                        // Ensure features is array
+                        if (!is_array($itemFeatures)) {
+                            $itemFeatures = json_decode($itemFeatures, true) ?? [];
+                        }
+                    @endphp
+                    
+                    <div class="item">
+                        <div class="fleet-card">
+                            <div class="fleet-card-img">
+                                <img src="{{ $itemImage }}" 
+                                     alt="{{ $itemTitle }}" 
+                                     class="fleet-img" 
+                                     loading="lazy"
+                                     onerror="this.src='{{ asset('images/placeholder-fleet.jpg') }}'">
+                                <div class="fleet-img-overlay">
+                                    @if($itemSlug)
+                                        <a href="{{ route('fleet.detail', ['slug' => $itemSlug]) }}" class="fleet-overlay-link">
+                                            <i class="fas fa-search-plus me-2"></i> View Details
+                                        </a>
+                                    @else
+                                        <a href="{{ route('public.fleet') }}" class="fleet-overlay-link">
+                                            <i class="fas fa-search-plus me-2"></i> View Details
+                                        </a>
+                                    @endif
+                                </div>
+                                @if($itemCategory)
+                                    <span class="fleet-category">{{ $itemCategory }}</span>
+                                @endif
                             </div>
-                            <span class="fleet-category">DRILLING SYSTEMS</span>
-                        </div>
-                        <div class="fleet-card-body">
-                            <h3 class="fleet-title">Hilti DD 250 Core Drill</h3>
-                            <p class="fleet-desc">High-performance heavy-duty coring for all types of reinforced concrete with precision accuracy.</p>
-                            <div class="fleet-features">
-                                <span class="fleet-feature"><i class="fas fa-circle"></i> Up to 500mm diameter</span>
-                                <span class="fleet-feature"><i class="fas fa-circle"></i> Water-cooled system</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                {{-- Slide 2 --}}
-                <div class="item">
-                    <div class="fleet-card">
-                        <div class="fleet-card-img">
-                            <img src="https://images.unsplash.com/photo-1504917595217-d4dc5ebe6122?w=600&h=400&fit=crop" 
-                                 alt="Tyrolit Wall Saw" class="fleet-img" loading="lazy">
-                            <div class="fleet-img-overlay">
-                                <a href="#" class="fleet-overlay-link">
-                                    <i class="fas fa-search-plus me-2"></i> View Details
-                                </a>
-                            </div>
-                            <span class="fleet-category">SAWING SYSTEMS</span>
-                        </div>
-                        <div class="fleet-card-body">
-                            <h3 class="fleet-title">Tyrolit High-Frequency Wall Saw</h3>
-                            <p class="fleet-desc">Precision cutting for door and window openings in thick concrete walls up to 730mm depth.</p>
-                            <div class="fleet-features">
-                                <span class="fleet-feature"><i class="fas fa-circle"></i> Vibration-free cutting</span>
-                                <span class="fleet-feature"><i class="fas fa-circle"></i> Track-mounted precision</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                {{-- Slide 3 --}}
-                <div class="item">
-                    <div class="fleet-card">
-                        <div class="fleet-card-img">
-                            <img src="https://images.unsplash.com/photo-1530124566582-a618bc2615dc?w=600&h=400&fit=crop" 
-                                 alt="Diamond Wire Saw" class="fleet-img" loading="lazy">
-                            <div class="fleet-img-overlay">
-                                <a href="#" class="fleet-overlay-link">
-                                    <i class="fas fa-search-plus me-2"></i> View Details
-                                </a>
-                            </div>
-                            <span class="fleet-category">HEAVY CUTTING</span>
-                        </div>
-                        <div class="fleet-card-body">
-                            <h3 class="fleet-title">Diamond Wire Saw Systems</h3>
-                            <p class="fleet-desc">Unlimited cutting depth for bridge foundations, dam structures and massive concrete removal.</p>
-                            <div class="fleet-features">
-                                <span class="fleet-feature"><i class="fas fa-circle"></i> Unlimited depth capacity</span>
-                                <span class="fleet-feature"><i class="fas fa-circle"></i> Remote operation capable</span>
+                            <div class="fleet-card-body">
+                                <h3 class="fleet-title">{{ $itemTitle }}</h3>
+                                <p class="fleet-desc">{!! Str::limit(strip_tags($itemDesc), 90, '...') !!}</p>
+                                <div class="fleet-features">
+                                    @if(!empty($itemFeatures))
+                                        @foreach(array_slice($itemFeatures, 0, 2) as $feature)
+                                            <span class="fleet-feature"><i class="fas fa-circle"></i> {{ $feature }}</span>
+                                        @endforeach
+                                    @else
+                                        <span class="fleet-feature"><i class="fas fa-circle"></i> Premium quality</span>
+                                        <span class="fleet-feature"><i class="fas fa-circle"></i> Professional grade</span>
+                                    @endif
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
-                
-                {{-- Slide 4 --}}
-                <div class="item">
-                    <div class="fleet-card">
-                        <div class="fleet-card-img">
-                            <img src="https://images.unsplash.com/photo-1565008447742-97f6f38c985c?w=600&h=400&fit=crop" 
-                                 alt="Hilti Diamond Coring" class="fleet-img" loading="lazy">
-                            <div class="fleet-img-overlay">
-                                <a href="#" class="fleet-overlay-link">
-                                    <i class="fas fa-search-plus me-2"></i> View Details
-                                </a>
-                            </div>
-                            <span class="fleet-category">CORE DRILLING</span>
-                        </div>
-                        <div class="fleet-card-body">
-                            <h3 class="fleet-title">Hilti DD 500 Diamond Coring</h3>
-                            <p class="fleet-desc">Ultra-deep coring system for heavy infrastructure projects with automatic feed control.</p>
-                            <div class="fleet-features">
-                                <span class="fleet-feature"><i class="fas fa-circle"></i> Up to 1000mm depth</span>
-                                <span class="fleet-feature"><i class="fas fa-circle"></i> Automatic feed system</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                {{-- Slide 5 --}}
-                <div class="item">
-                    <div class="fleet-card">
-                        <div class="fleet-card-img">
-                            <img src="https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=600&h=400&fit=crop" 
-                                 alt="Concrete Demolition Robot" class="fleet-img" loading="lazy">
-                            <div class="fleet-img-overlay">
-                                <a href="#" class="fleet-overlay-link">
-                                    <i class="fas fa-search-plus me-2"></i> View Details
-                                </a>
-                            </div>
-                            <span class="fleet-category">DEMOLITION</span>
-                        </div>
-                        <div class="fleet-card-body">
-                            <h3 class="fleet-title">Brokk Robotic Demolition</h3>
-                            <p class="fleet-desc">Remote-controlled precision demolition for confined spaces and hazardous environments.</p>
-                            <div class="fleet-features">
-                                <span class="fleet-feature"><i class="fas fa-circle"></i> Remote operation</span>
-                                <span class="fleet-feature"><i class="fas fa-circle"></i> Compact design</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                {{-- Slide 6 --}}
-                <div class="item">
-                    <div class="fleet-card">
-                        <div class="fleet-card-img">
-                            <img src="https://images.unsplash.com/photo-1624969862644-791f3dc98927?w=600&h=400&fit=crop" 
-                                 alt="Floor Saw Machine" class="fleet-img" loading="lazy">
-                            <div class="fleet-img-overlay">
-                                <a href="#" class="fleet-overlay-link">
-                                    <i class="fas fa-search-plus me-2"></i> View Details
-                                </a>
-                            </div>
-                            <span class="fleet-category">FLOOR SAWING</span>
-                        </div>
-                        <div class="fleet-card-body">
-                            <h3 class="fleet-title">Husqvarna FS 8400 Floor Saw</h3>
-                            <p class="fleet-desc">High-powered flat saw for road, bridge deck, and industrial floor cutting operations.</p>
-                            <div class="fleet-features">
-                                <span class="fleet-feature"><i class="fas fa-circle"></i> Up to 620mm depth</span>
-                                <span class="fleet-feature"><i class="fas fa-circle"></i> Self-propelled</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                @endforeach
                 
             </div>
         </div>
+        @else
+        {{-- Fallback if no fleet items --}}
+        <div class="text-center py-5" data-aos="fade-up">
+            <div class="empty-state-icon mb-3">
+                <i class="fas fa-tools fa-3x text-muted opacity-25"></i>
+            </div>
+            <h5 class="fw-bold text-dark">Fleet Information Coming Soon</h5>
+            <p class="text-muted">Our equipment fleet details will be available shortly.</p>
+            <a href="{{ route('home.contact') }}" class="btn btn-outline-success mt-2 rounded-pill px-4">
+                <i class="fas fa-envelope me-2"></i> Contact Us
+            </a>
+        </div>
+        @endif
         
         {{-- Bottom Trust Bar --}}
         <div class="fleet-trust-bar" data-aos="fade-up" data-aos-delay="200">
@@ -264,6 +199,10 @@
         padding: 0 8px;
     }
     
+    .fleet-owl .owl-nav.disabled {
+        display: none !important;
+    }
+    
     /* ============================================
        FLEET CARD
        ============================================ */
@@ -289,6 +228,7 @@
         position: relative;
         height: 240px;
         overflow: hidden;
+        background: #e9ecef;
     }
     
     .fleet-img {
@@ -342,6 +282,11 @@
         font-weight: 700;
         letter-spacing: 1.5px;
         z-index: 2;
+        text-transform: uppercase;
+        max-width: 80%;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
     }
     
     .fleet-card-body {
@@ -357,6 +302,7 @@
         color: #0a1628;
         margin-bottom: 8px;
         transition: color 0.3s ease;
+        line-height: 1.3;
     }
     
     .fleet-card:hover .fleet-title { color: #0056b3; }
@@ -383,6 +329,9 @@
         display: flex;
         align-items: center;
         gap: 6px;
+        background: #f8f9fa;
+        padding: 4px 10px;
+        border-radius: 20px;
     }
     
     .fleet-feature i {
@@ -393,6 +342,10 @@
     /* ============================================
        OWL NAV & DOTS
        ============================================ */
+    .fleet-owl {
+        position: relative;
+    }
+    
     .fleet-owl .owl-nav {
         position: absolute;
         top: 50%;
@@ -401,10 +354,13 @@
         left: 0;
         pointer-events: none;
         margin: 0;
+        display: flex;
+        justify-content: space-between;
+        padding: 0 10px;
+        z-index: 10;
     }
     
     .fleet-owl .owl-nav button {
-        position: absolute;
         width: 42px;
         height: 42px;
         background: #fff !important;
@@ -415,24 +371,45 @@
         transition: all 0.3s ease;
         pointer-events: auto;
         margin: 0;
+        border: none !important;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
     }
     
     .fleet-owl .owl-nav button:hover {
         background: #0056b3 !important;
         color: #fff !important;
+        box-shadow: 0 5px 20px rgba(0,86,179,0.3) !important;
     }
     
-    .fleet-owl .owl-prev { left: -21px; }
-    .fleet-owl .owl-next { right: -21px; }
+    .fleet-owl .owl-nav button.owl-prev {
+        margin-right: auto;
+    }
+    
+    .fleet-owl .owl-nav button.owl-next {
+        margin-left: auto;
+    }
     
     .fleet-owl .owl-dots {
         display: flex;
         justify-content: center;
-        gap: 6px;
+        gap: 8px;
         margin-top: 20px !important;
+        padding: 5px 0;
+    }
+    
+    .fleet-owl .owl-dot {
+        outline: none;
+        border: none;
+        background: transparent;
+        padding: 0;
+        cursor: pointer;
     }
     
     .fleet-owl .owl-dot span {
+        display: block;
         width: 8px;
         height: 8px;
         background: #d4d8dd !important;
@@ -445,6 +422,10 @@
         background: #0056b3 !important;
         width: 24px;
         border-radius: 10px;
+    }
+    
+    .fleet-owl .owl-dot:hover span {
+        background: #0056b3 !important;
     }
     
     /* ============================================
@@ -465,15 +446,38 @@
         font-weight: 500;
     }
     
+    .trust-text i {
+        font-size: 1rem;
+    }
+    
+    /* Empty State */
+    .empty-state-icon i {
+        opacity: 0.25;
+    }
+    
     /* ============================================
        RESPONSIVE
        ============================================ */
+    @media (max-width: 1199.98px) {
+        .fleet-owl .owl-nav {
+            padding: 0 5px;
+        }
+        .fleet-owl .owl-nav button {
+            width: 38px;
+            height: 38px;
+            font-size: 16px !important;
+        }
+    }
+    
     @media (max-width: 991.98px) {
         .fleet-section-pro { padding: 60px 0; }
         .section-heading { font-size: 1.8rem; }
         .fleet-card-img { height: 220px; }
-        .fleet-owl .owl-prev { left: -10px; }
-        .fleet-owl .owl-next { right: -10px; }
+        .fleet-owl .owl-nav button {
+            width: 36px;
+            height: 36px;
+            font-size: 14px !important;
+        }
     }
     
     @media (max-width: 767.98px) {
@@ -482,21 +486,72 @@
         .fleet-card-img { height: 200px; }
         .fleet-card-body { padding: 16px; }
         .fleet-title { font-size: 1rem; }
-        .fleet-trust-bar { text-align: center; padding: 15px; }
-        .trust-text { display: block; margin-bottom: 8px; }
-        .btn-fleet-specs { width: 100%; justify-content: center; margin-top: 10px; }
-        .fleet-owl .owl-nav button { width: 36px; height: 36px; font-size: 14px !important; }
+        .fleet-trust-bar { 
+            text-align: center; 
+            padding: 15px 20px; 
+        }
+        .trust-text { 
+            display: block; 
+            margin-bottom: 6px; 
+        }
+        .trust-text:last-child { margin-bottom: 0; }
+        .btn-fleet-specs { 
+            width: 100%; 
+            justify-content: center; 
+            margin-top: 10px; 
+        }
+        .fleet-owl .owl-nav {
+            padding: 0 2px;
+        }
+        .fleet-owl .owl-nav button {
+            width: 32px;
+            height: 32px;
+            font-size: 12px !important;
+        }
+        .fleet-category {
+            font-size: 0.6rem;
+            padding: 4px 10px;
+        }
     }
     
     @media (max-width: 575.98px) {
         .fleet-section-pro { padding: 35px 0; }
         .section-heading { font-size: 1.3rem; }
         .section-tag { font-size: 0.65rem; letter-spacing: 2px; }
-        .fleet-card-img { height: 200px; }
+        .section-desc { font-size: 0.85rem; }
+        .fleet-card-img { height: 180px; }
         .fleet-title { font-size: 0.95rem; }
         .fleet-desc { font-size: 0.82rem; }
-        .fleet-category { font-size: 0.62rem; padding: 4px 10px; }
-        .fleet-feature { font-size: 0.7rem; }
+        .fleet-category { font-size: 0.55rem; padding: 3px 8px; }
+        .fleet-feature { font-size: 0.7rem; padding: 3px 8px; }
+        .fleet-features { gap: 6px; }
+        .fleet-owl .owl-nav button {
+            width: 28px;
+            height: 28px;
+            font-size: 10px !important;
+        }
+        .fleet-trust-bar { padding: 12px 15px; }
+        .trust-text { font-size: 0.78rem; }
+        .btn-fleet-specs { 
+            padding: 10px 20px; 
+            font-size: 0.8rem; 
+        }
+        .fleet-owl .owl-dots { gap: 6px; }
+        .fleet-owl .owl-dot span { 
+            width: 6px; 
+            height: 6px; 
+        }
+        .fleet-owl .owl-dot.active span { 
+            width: 18px; 
+        }
+    }
+    
+    @media (max-width: 400px) {
+        .fleet-card-img { height: 160px; }
+        .fleet-card-body { padding: 12px; }
+        .fleet-title { font-size: 0.85rem; }
+        .fleet-desc { font-size: 0.75rem; }
+        .fleet-feature { font-size: 0.65rem; }
     }
 </style>
 @endpush
@@ -504,22 +559,79 @@
 {{-- Owl Script --}}
 @push('scripts')
 <script>
-    $(document).ready(function() {
-        $('#fleetOwl').owlCarousel({
+    // Initialize Owl Carousel
+    function initFleetOwl() {
+        if (typeof $.fn.owlCarousel === 'undefined') return;
+        
+        var owl = $('#fleetOwl');
+        var hasItems = owl.find('.item').length > 0;
+        
+        if (!hasItems) return;
+        
+        // Destroy if already initialized
+        if (owl.data('owl.carousel')) {
+            owl.trigger('destroy.owl.carousel');
+        }
+        
+        owl.owlCarousel({
             loop: true,
             margin: 20,
             nav: true,
             dots: true,
             autoplay: true,
-            autoplayTimeout: 4000,
+            autoplayTimeout: 4500,
             autoplayHoverPause: true,
-            smartSpeed: 500,
+            smartSpeed: 600,
             navText: ['<i class="fas fa-chevron-left"></i>', '<i class="fas fa-chevron-right"></i>'],
             responsive: {
-                0: { items: 1 },
-                600: { items: 2 },
-                1000: { items: 3 }
+                0: { 
+                    items: 1,
+                    margin: 15,
+                    nav: false
+                },
+                480: { 
+                    items: 1,
+                    margin: 15,
+                    nav: false
+                },
+                600: { 
+                    items: 2,
+                    margin: 18,
+                    nav: true
+                },
+                992: { 
+                    items: 2,
+                    margin: 20,
+                    nav: true
+                },
+                1200: { 
+                    items: 3,
+                    margin: 22,
+                    nav: true
+                }
             }
+        });
+    }
+    
+    // Initialize on page load
+    $(document).ready(function() {
+        setTimeout(initFleetOwl, 300);
+    });
+    
+    // Re-initialize on Livewire updates
+    if (typeof Livewire !== 'undefined') {
+        Livewire.hook('message.processed', function() {
+            setTimeout(initFleetOwl, 300);
+        });
+    }
+    
+    // Re-initialize on tab/content change
+    document.addEventListener('DOMContentLoaded', function() {
+        // For any tab switches
+        document.querySelectorAll('.tab-btn, .nav-link').forEach(function(el) {
+            el.addEventListener('click', function() {
+                setTimeout(initFleetOwl, 400);
+            });
         });
     });
 </script>

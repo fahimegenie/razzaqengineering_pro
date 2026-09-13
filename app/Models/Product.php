@@ -20,6 +20,8 @@ class Product extends Model
         'p_short_description',
         'p_image',
         'p_price',
+        'price_to',
+        'brand_name',
         'p_contact',
         'pc_type',
         'product_category_id',

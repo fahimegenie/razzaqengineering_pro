@@ -1,7 +1,7 @@
-<!-- ============================================
+{{-- ============================================
      PROFESSIONAL SERVICES SECTION
-     Modern Tab Design - All Scenarios Handled
-     ============================================ -->
+     Modern Tab Design - Array Compatible
+     ============================================ --}}
 <section class="services-section-pro" id="servicesSection">
     <div class="container">
         
@@ -47,31 +47,38 @@
             {{-- Tab Buttons - Horizontally Scrollable on Mobile --}}
             <div class="tab-nav-wrapper">
                 <div class="tab-nav-scroll" id="serviceTabs">
-                    @if(!empty($os) && count($os) > 0)
-                        @foreach($os as $key => $service)
+                    @php
+                        $osData = !empty($os) ? $os : [];
+                        $isArray = is_array($osData);
+                    @endphp
+                    
+                    @if(!empty($osData))
+                        @foreach($osData as $key => $service)
+                            @php
+                                $serviceId = $isArray ? ($service['id'] ?? $key) : $service->id;
+                                $serviceName = $isArray ? ($service['os_name'] ?? 'Service') : $service->os_name;
+                                $serviceIcon = $isArray ? ($service['os_icon'] ?? null) : $service->os_icon;
+                            @endphp
                             <button class="tab-btn {{ $key == 0 ? 'active' : '' }}" 
-                                    onclick="openServiceTab(event, 'service-{{ $service->id }}')"
-                                    data-tab="service-{{ $service->id }}"
+                                    onclick="openServiceTab(event, 'service-{{ $serviceId }}')"
+                                    data-tab="service-{{ $serviceId }}"
                                     {{ $key == 0 ? 'id=defaultServiceTab' : '' }}>
                                 <span class="tab-icon">
-                                    @if($service->os_icon)
-                                        <img src="{{ $service->icon_url }}" 
-                                             alt="{{ $service->os_name }}" 
-                                             width="28" height="28"
-                                             loading="lazy">
+                                    @if($serviceIcon)
+                                        <i class="bi {{ $serviceIcon }}"></i>
                                     @else
                                         <i class="fas fa-tools"></i>
                                     @endif
                                 </span>
-                                <span class="tab-text">{{ $service->os_name }}</span>
+                                <span class="tab-text">{{ $serviceName }}</span>
                             </button>
                         @endforeach
                     @else
                         @php $dummyServices = ['RCC Core Cutting', 'Diamond Drilling', 'Wall Saw Cutting', 'Plumbing Services', 'Fire Fighting', 'Water Proofing']; @endphp
                         @foreach($dummyServices as $key => $ds)
                             <button class="tab-btn {{ $key == 0 ? 'active' : '' }}" 
-                                    onclick="openServiceTab(event, 'service-{{ ($key + 1) }}')"
-                                    data-tab="service-{{ $key }}"
+                                    onclick="openServiceTab(event, 'service-dummy-{{ $key }}')"
+                                    data-tab="service-dummy-{{ $key }}"
                                     {{ $key == 0 ? 'id=defaultServiceTab' : '' }}>
                                 <span class="tab-icon"><i class="fas fa-tools"></i></span>
                                 <span class="tab-text">{{ $ds }}</span>
@@ -94,9 +101,28 @@
         {{-- Tab Content --}}
         <div class="tab-content-wrapper" data-aos="fade-up" data-aos-delay="100">
             
-            @if(!empty($sd) && count($sd) > 0)
-                @foreach($sd as $key => $detail)
-                    <div id="service-{{ $detail->os_id }}" 
+            @php
+                $sdData = !empty($sd) ? $sd : [];
+                $sdIsArray = is_array($sdData);
+            @endphp
+            
+            @if(!empty($sdData))
+                @foreach($sdData as $key => $detail)
+                    @php
+                        $detailId = $sdIsArray ? ($detail['os_id'] ?? ($detail['service_id'] ?? $key)) : ($detail->os_id ?? $detail->service_id ?? $key);
+                        $detailTitle = $sdIsArray ? ($detail['sd_title'] ?? ($detail['sd_name'] ?? 'Service Detail')) : ($detail->sd_title ?? $detail->sd_name ?? 'Service Detail');
+                        $detailDesc = $sdIsArray ? ($detail['sd_description'] ?? '') : ($detail->sd_description ?? '');
+                        $detailSlug = $sdIsArray ? ($detail['sd_slug'] ?? '') : ($detail->sd_slug ?? '');
+                        $detailT1 = $sdIsArray ? ($detail['sd_t1'] ?? null) : ($detail->sd_t1 ?? null);
+                        $detailT2 = $sdIsArray ? ($detail['sd_t2'] ?? null) : ($detail->sd_t2 ?? null);
+                        $detailT3 = $sdIsArray ? ($detail['sd_t3'] ?? null) : ($detail->sd_t3 ?? null);
+                        
+                        // Images
+                        $image1 = $sdIsArray ? ($detail['image1_url'] ?? ($detail['sd_image'] ?? asset('images/placeholder.jpg'))) : ($detail->image1_url ?? $detail->sd_image ?? asset('images/placeholder.jpg'));
+                        $image2 = $sdIsArray ? ($detail['image2_url'] ?? ($detail['sd_image2'] ?? asset('images/placeholder.jpg'))) : ($detail->image2_url ?? $detail->sd_image2 ?? asset('images/placeholder.jpg'));
+                    @endphp
+                    
+                    <div id="service-{{ $detailId }}" 
                          class="tab-panel {{ $key == 0 ? 'active' : '' }}" 
                          style="{{ $key == 0 ? 'display: block;' : 'display: none;' }}">
                         
@@ -107,16 +133,18 @@
                                 <div class="col-lg-6">
                                     <div class="service-images-grid">
                                         <div class="service-img-main">
-                                            <img src="{{ $detail->image1_url }}" 
-                                                 alt="{{ $detail->sd_title }}"
+                                            <img src="{{ $image1 }}" 
+                                                 alt="{{ $detailTitle }}"
                                                  class="service-img"
-                                                 loading="lazy">
+                                                 loading="lazy"
+                                                 onerror="this.src='{{ asset('images/placeholder.jpg') }}'">
                                         </div>
                                         <div class="service-img-secondary">
-                                            <img src="{{ $detail->image2_url }}" 
-                                                 alt="{{ $detail->sd_title }} - Detail"
+                                            <img src="{{ $image2 }}" 
+                                                 alt="{{ $detailTitle }} - Detail"
                                                  class="service-img"
-                                                 loading="lazy">
+                                                 loading="lazy"
+                                                 onerror="this.src='{{ asset('images/placeholder.jpg') }}'">
                                         </div>
                                     </div>
                                 </div>
@@ -125,37 +153,39 @@
                                 <div class="col-lg-6">
                                     <div class="service-content">
                                         <span class="service-badge">Service Details</span>
-                                        <h3 class="service-title">{{ $detail->sd_title }}</h3>
-                                        <p class="service-description">{{ Str::limit($detail->sd_description, 350) }}</p>
+                                        <h3 class="service-title">{{ $detailTitle }}</h3>
+                                        <p class="service-description">{!! Str::limit(strip_tags($detailDesc), 350) !!}</p>
                                         
                                         {{-- Features --}}
                                         <div class="service-features">
-                                            @if($detail->sd_t1)
+                                            @if($detailT1)
                                                 <div class="service-feature-item">
                                                     <i class="fas fa-check-circle"></i>
-                                                    <span>{{ $detail->sd_t1 }}</span>
+                                                    <span>{{ $detailT1 }}</span>
                                                 </div>
                                             @endif
-                                            @if($detail->sd_t2)
+                                            @if($detailT2)
                                                 <div class="service-feature-item">
                                                     <i class="fas fa-check-circle"></i>
-                                                    <span>{{ $detail->sd_t2 }}</span>
+                                                    <span>{{ $detailT2 }}</span>
                                                 </div>
                                             @endif
-                                            @if($detail->sd_t3)
+                                            @if($detailT3)
                                                 <div class="service-feature-item">
                                                     <i class="fas fa-check-circle"></i>
-                                                    <span>{{ $detail->sd_t3 }}</span>
+                                                    <span>{{ $detailT3 }}</span>
                                                 </div>
                                             @endif
                                         </div>
                                         
                                         {{-- CTA --}}
                                         <div class="service-cta">
-                                            <a href="{{ url('service-detail/'.str_replace(' ', '-', $detail->sd_title)) }}" 
-                                               class="btn-service-learn">
-                                                Learn More <i class="fas fa-arrow-right ms-2"></i>
-                                            </a>
+                                            @if($detailSlug)
+                                                <a href="{{ url('services/'.$detailSlug) }}" 
+                                                   class="btn-service-learn">
+                                                    Learn More <i class="fas fa-arrow-right ms-2"></i>
+                                                </a>
+                                            @endif
                                             <a href="{{ route('quote.index') }}" class="btn-service-quote-sm">
                                                 <i class="fas fa-paper-plane me-2"></i> Request Quote
                                             </a>
@@ -433,10 +463,6 @@
         color: #fff;
     }
     
-    .tab-btn.active .tab-icon img {
-        filter: brightness(0) invert(1);
-    }
-    
     .tab-text {
         font-size: 0.88rem;
     }
@@ -690,7 +716,6 @@
         
         .tab-btn { padding: 10px 14px; font-size: 0.78rem; gap: 6px; border-radius: 8px; }
         .tab-icon { width: 28px; height: 28px; font-size: 12px; border-radius: 6px; }
-        .tab-icon img { width: 20px !important; height: 20px !important; }
         
         .service-panel-inner { padding: 20px 15px; }
         .service-title { font-size: 1.2rem; }
@@ -715,7 +740,6 @@
         
         .tab-btn { padding: 8px 12px; font-size: 0.72rem; gap: 5px; border-radius: 6px; }
         .tab-icon { width: 24px; height: 24px; font-size: 11px; border-radius: 5px; }
-        .tab-icon img { width: 16px !important; height: 16px !important; }
         .tab-text { font-size: 0.72rem; }
         
         .service-panel-inner { padding: 15px 12px; }
@@ -742,49 +766,37 @@
 {{-- Tab Script --}}
 @push('scripts')
 <script>
-    // Service Tab Function
     function openServiceTab(evt, tabId) {
-        // Hide all panels
         document.querySelectorAll('.tab-panel').forEach(panel => {
             panel.classList.remove('active');
             panel.style.display = 'none';
         });
         
-        // Remove active from all buttons
         document.querySelectorAll('.tab-btn').forEach(btn => {
             btn.classList.remove('active');
         });
         
-        // Show selected panel
         const panel = document.getElementById(tabId);
         if (panel) {
             panel.classList.add('active');
             panel.style.display = 'block';
         }
         
-        // Activate clicked button
         if (evt && evt.currentTarget) {
             evt.currentTarget.classList.add('active');
         }
     }
     
-    // Initialize first tab
     document.addEventListener('DOMContentLoaded', function() {
         const defaultTab = document.getElementById('defaultServiceTab');
-        if (defaultTab) {
-            defaultTab.click();
-        }
+        if (defaultTab) defaultTab.click();
     });
     
-    // Scroll Tabs Function
     function scrollTabs(amount) {
         const container = document.getElementById('serviceTabs');
-        if (container) {
-            container.scrollBy({ left: amount, behavior: 'smooth' });
-        }
+        if (container) container.scrollBy({ left: amount, behavior: 'smooth' });
     }
     
-    // Show/hide scroll arrows based on scroll position
     document.addEventListener('DOMContentLoaded', function() {
         const container = document.getElementById('serviceTabs');
         const leftArrow = document.querySelector('.tab-scroll-left');
@@ -794,7 +806,6 @@
             function updateArrows() {
                 const canScrollLeft = container.scrollLeft > 0;
                 const canScrollRight = container.scrollLeft < (container.scrollWidth - container.clientWidth - 5);
-                
                 leftArrow.style.display = canScrollLeft ? 'flex' : 'none';
                 rightArrow.style.display = canScrollRight ? 'flex' : 'none';
             }

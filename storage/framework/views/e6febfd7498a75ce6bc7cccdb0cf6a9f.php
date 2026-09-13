@@ -1,7 +1,4 @@
-<!-- ============================================
-     PROFESSIONAL SERVICES SECTION
-     Modern Tab Design - All Scenarios Handled
-     ============================================ -->
+
 <section class="services-section-pro" id="servicesSection">
     <div class="container">
         
@@ -47,31 +44,38 @@
             
             <div class="tab-nav-wrapper">
                 <div class="tab-nav-scroll" id="serviceTabs">
-                    <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if(!empty($os) && count($os) > 0): ?>
-                        <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::openLoop(); ?><?php endif; ?><?php $__currentLoopData = $os; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $key => $service): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::startLoopIteration(); ?><?php endif; ?>
+                    <?php
+                        $osData = !empty($os) ? $os : [];
+                        $isArray = is_array($osData);
+                    ?>
+                    
+                    <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if(!empty($osData)): ?>
+                        <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::openLoop(); ?><?php endif; ?><?php $__currentLoopData = $osData; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $key => $service): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::startLoopIteration(); ?><?php endif; ?>
+                            <?php
+                                $serviceId = $isArray ? ($service['id'] ?? $key) : $service->id;
+                                $serviceName = $isArray ? ($service['os_name'] ?? 'Service') : $service->os_name;
+                                $serviceIcon = $isArray ? ($service['os_icon'] ?? null) : $service->os_icon;
+                            ?>
                             <button class="tab-btn <?php echo e($key == 0 ? 'active' : ''); ?>" 
-                                    onclick="openServiceTab(event, 'service-<?php echo e($service->id); ?>')"
-                                    data-tab="service-<?php echo e($service->id); ?>"
+                                    onclick="openServiceTab(event, 'service-<?php echo e($serviceId); ?>')"
+                                    data-tab="service-<?php echo e($serviceId); ?>"
                                     <?php echo e($key == 0 ? 'id=defaultServiceTab' : ''); ?>>
                                 <span class="tab-icon">
-                                    <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if($service->os_icon): ?>
-                                        <img src="<?php echo e($service->icon_url); ?>" 
-                                             alt="<?php echo e($service->os_name); ?>" 
-                                             width="28" height="28"
-                                             loading="lazy">
+                                    <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if($serviceIcon): ?>
+                                        <i class="bi <?php echo e($serviceIcon); ?>"></i>
                                     <?php else: ?>
                                         <i class="fas fa-tools"></i>
                                     <?php endif; ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
                                 </span>
-                                <span class="tab-text"><?php echo e($service->os_name); ?></span>
+                                <span class="tab-text"><?php echo e($serviceName); ?></span>
                             </button>
                         <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::endLoop(); ?><?php endif; ?><?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::closeLoop(); ?><?php endif; ?>
                     <?php else: ?>
                         <?php $dummyServices = ['RCC Core Cutting', 'Diamond Drilling', 'Wall Saw Cutting', 'Plumbing Services', 'Fire Fighting', 'Water Proofing']; ?>
                         <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::openLoop(); ?><?php endif; ?><?php $__currentLoopData = $dummyServices; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $key => $ds): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::startLoopIteration(); ?><?php endif; ?>
                             <button class="tab-btn <?php echo e($key == 0 ? 'active' : ''); ?>" 
-                                    onclick="openServiceTab(event, 'service-<?php echo e(($key + 1)); ?>')"
-                                    data-tab="service-<?php echo e($key); ?>"
+                                    onclick="openServiceTab(event, 'service-dummy-<?php echo e($key); ?>')"
+                                    data-tab="service-dummy-<?php echo e($key); ?>"
                                     <?php echo e($key == 0 ? 'id=defaultServiceTab' : ''); ?>>
                                 <span class="tab-icon"><i class="fas fa-tools"></i></span>
                                 <span class="tab-text"><?php echo e($ds); ?></span>
@@ -94,9 +98,28 @@
         
         <div class="tab-content-wrapper" data-aos="fade-up" data-aos-delay="100">
             
-            <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if(!empty($sd) && count($sd) > 0): ?>
-                <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::openLoop(); ?><?php endif; ?><?php $__currentLoopData = $sd; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $key => $detail): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::startLoopIteration(); ?><?php endif; ?>
-                    <div id="service-<?php echo e($detail->os_id); ?>" 
+            <?php
+                $sdData = !empty($sd) ? $sd : [];
+                $sdIsArray = is_array($sdData);
+            ?>
+            
+            <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if(!empty($sdData)): ?>
+                <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::openLoop(); ?><?php endif; ?><?php $__currentLoopData = $sdData; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $key => $detail): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::startLoopIteration(); ?><?php endif; ?>
+                    <?php
+                        $detailId = $sdIsArray ? ($detail['os_id'] ?? ($detail['service_id'] ?? $key)) : ($detail->os_id ?? $detail->service_id ?? $key);
+                        $detailTitle = $sdIsArray ? ($detail['sd_title'] ?? ($detail['sd_name'] ?? 'Service Detail')) : ($detail->sd_title ?? $detail->sd_name ?? 'Service Detail');
+                        $detailDesc = $sdIsArray ? ($detail['sd_description'] ?? '') : ($detail->sd_description ?? '');
+                        $detailSlug = $sdIsArray ? ($detail['sd_slug'] ?? '') : ($detail->sd_slug ?? '');
+                        $detailT1 = $sdIsArray ? ($detail['sd_t1'] ?? null) : ($detail->sd_t1 ?? null);
+                        $detailT2 = $sdIsArray ? ($detail['sd_t2'] ?? null) : ($detail->sd_t2 ?? null);
+                        $detailT3 = $sdIsArray ? ($detail['sd_t3'] ?? null) : ($detail->sd_t3 ?? null);
+                        
+                        // Images
+                        $image1 = $sdIsArray ? ($detail['image1_url'] ?? ($detail['sd_image'] ?? asset('images/placeholder.jpg'))) : ($detail->image1_url ?? $detail->sd_image ?? asset('images/placeholder.jpg'));
+                        $image2 = $sdIsArray ? ($detail['image2_url'] ?? ($detail['sd_image2'] ?? asset('images/placeholder.jpg'))) : ($detail->image2_url ?? $detail->sd_image2 ?? asset('images/placeholder.jpg'));
+                    ?>
+                    
+                    <div id="service-<?php echo e($detailId); ?>" 
                          class="tab-panel <?php echo e($key == 0 ? 'active' : ''); ?>" 
                          style="<?php echo e($key == 0 ? 'display: block;' : 'display: none;'); ?>">
                         
@@ -107,16 +130,18 @@
                                 <div class="col-lg-6">
                                     <div class="service-images-grid">
                                         <div class="service-img-main">
-                                            <img src="<?php echo e($detail->image1_url); ?>" 
-                                                 alt="<?php echo e($detail->sd_title); ?>"
+                                            <img src="<?php echo e($image1); ?>" 
+                                                 alt="<?php echo e($detailTitle); ?>"
                                                  class="service-img"
-                                                 loading="lazy">
+                                                 loading="lazy"
+                                                 onerror="this.src='<?php echo e(asset('images/placeholder.jpg')); ?>'">
                                         </div>
                                         <div class="service-img-secondary">
-                                            <img src="<?php echo e($detail->image2_url); ?>" 
-                                                 alt="<?php echo e($detail->sd_title); ?> - Detail"
+                                            <img src="<?php echo e($image2); ?>" 
+                                                 alt="<?php echo e($detailTitle); ?> - Detail"
                                                  class="service-img"
-                                                 loading="lazy">
+                                                 loading="lazy"
+                                                 onerror="this.src='<?php echo e(asset('images/placeholder.jpg')); ?>'">
                                         </div>
                                     </div>
                                 </div>
@@ -125,37 +150,39 @@
                                 <div class="col-lg-6">
                                     <div class="service-content">
                                         <span class="service-badge">Service Details</span>
-                                        <h3 class="service-title"><?php echo e($detail->sd_title); ?></h3>
-                                        <p class="service-description"><?php echo e(Str::limit($detail->sd_description, 350)); ?></p>
+                                        <h3 class="service-title"><?php echo e($detailTitle); ?></h3>
+                                        <p class="service-description"><?php echo Str::limit(strip_tags($detailDesc), 350); ?></p>
                                         
                                         
                                         <div class="service-features">
-                                            <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if($detail->sd_t1): ?>
+                                            <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if($detailT1): ?>
                                                 <div class="service-feature-item">
                                                     <i class="fas fa-check-circle"></i>
-                                                    <span><?php echo e($detail->sd_t1); ?></span>
+                                                    <span><?php echo e($detailT1); ?></span>
                                                 </div>
                                             <?php endif; ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
-                                            <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if($detail->sd_t2): ?>
+                                            <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if($detailT2): ?>
                                                 <div class="service-feature-item">
                                                     <i class="fas fa-check-circle"></i>
-                                                    <span><?php echo e($detail->sd_t2); ?></span>
+                                                    <span><?php echo e($detailT2); ?></span>
                                                 </div>
                                             <?php endif; ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
-                                            <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if($detail->sd_t3): ?>
+                                            <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if($detailT3): ?>
                                                 <div class="service-feature-item">
                                                     <i class="fas fa-check-circle"></i>
-                                                    <span><?php echo e($detail->sd_t3); ?></span>
+                                                    <span><?php echo e($detailT3); ?></span>
                                                 </div>
                                             <?php endif; ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
                                         </div>
                                         
                                         
                                         <div class="service-cta">
-                                            <a href="<?php echo e(url('service-detail/'.str_replace(' ', '-', $detail->sd_title))); ?>" 
-                                               class="btn-service-learn">
-                                                Learn More <i class="fas fa-arrow-right ms-2"></i>
-                                            </a>
+                                            <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if($detailSlug): ?>
+                                                <a href="<?php echo e(url('services/'.$detailSlug)); ?>" 
+                                                   class="btn-service-learn">
+                                                    Learn More <i class="fas fa-arrow-right ms-2"></i>
+                                                </a>
+                                            <?php endif; ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
                                             <a href="<?php echo e(route('quote.index')); ?>" class="btn-service-quote-sm">
                                                 <i class="fas fa-paper-plane me-2"></i> Request Quote
                                             </a>
@@ -433,10 +460,6 @@
         color: #fff;
     }
     
-    .tab-btn.active .tab-icon img {
-        filter: brightness(0) invert(1);
-    }
-    
     .tab-text {
         font-size: 0.88rem;
     }
@@ -690,7 +713,6 @@
         
         .tab-btn { padding: 10px 14px; font-size: 0.78rem; gap: 6px; border-radius: 8px; }
         .tab-icon { width: 28px; height: 28px; font-size: 12px; border-radius: 6px; }
-        .tab-icon img { width: 20px !important; height: 20px !important; }
         
         .service-panel-inner { padding: 20px 15px; }
         .service-title { font-size: 1.2rem; }
@@ -715,7 +737,6 @@
         
         .tab-btn { padding: 8px 12px; font-size: 0.72rem; gap: 5px; border-radius: 6px; }
         .tab-icon { width: 24px; height: 24px; font-size: 11px; border-radius: 5px; }
-        .tab-icon img { width: 16px !important; height: 16px !important; }
         .tab-text { font-size: 0.72rem; }
         
         .service-panel-inner { padding: 15px 12px; }
@@ -742,49 +763,37 @@
 
 <?php $__env->startPush('scripts'); ?>
 <script>
-    // Service Tab Function
     function openServiceTab(evt, tabId) {
-        // Hide all panels
         document.querySelectorAll('.tab-panel').forEach(panel => {
             panel.classList.remove('active');
             panel.style.display = 'none';
         });
         
-        // Remove active from all buttons
         document.querySelectorAll('.tab-btn').forEach(btn => {
             btn.classList.remove('active');
         });
         
-        // Show selected panel
         const panel = document.getElementById(tabId);
         if (panel) {
             panel.classList.add('active');
             panel.style.display = 'block';
         }
         
-        // Activate clicked button
         if (evt && evt.currentTarget) {
             evt.currentTarget.classList.add('active');
         }
     }
     
-    // Initialize first tab
     document.addEventListener('DOMContentLoaded', function() {
         const defaultTab = document.getElementById('defaultServiceTab');
-        if (defaultTab) {
-            defaultTab.click();
-        }
+        if (defaultTab) defaultTab.click();
     });
     
-    // Scroll Tabs Function
     function scrollTabs(amount) {
         const container = document.getElementById('serviceTabs');
-        if (container) {
-            container.scrollBy({ left: amount, behavior: 'smooth' });
-        }
+        if (container) container.scrollBy({ left: amount, behavior: 'smooth' });
     }
     
-    // Show/hide scroll arrows based on scroll position
     document.addEventListener('DOMContentLoaded', function() {
         const container = document.getElementById('serviceTabs');
         const leftArrow = document.querySelector('.tab-scroll-left');
@@ -794,7 +803,6 @@
             function updateArrows() {
                 const canScrollLeft = container.scrollLeft > 0;
                 const canScrollRight = container.scrollLeft < (container.scrollWidth - container.clientWidth - 5);
-                
                 leftArrow.style.display = canScrollLeft ? 'flex' : 'none';
                 rightArrow.style.display = canScrollRight ? 'flex' : 'none';
             }

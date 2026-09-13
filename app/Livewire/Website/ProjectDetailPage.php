@@ -32,46 +32,19 @@ class ProjectDetailPage extends Component
 
     public function mount($slug = null)
     {
-        // try {
+        try {
             $this->isLoading = true;
-
-            $this->initializeSEO('project_detail');
-
+            $this->initializeSEO('project_detail', $slug);
             $this->projectSlug = $slug;
 
             if ($slug) {
-                // Convert slug back to possible title format
-                $titleFromSlug = str_replace('-', ' ', $slug);
-                
-                // Find project by multiple conditions
                 $this->project = Project::with('category')
-                    ->whereRaw("
-                                LOWER(
-                                    REPLACE(
-                                        REPLACE(
-                                            REPLACE(
-                                                REPLACE(p_title, '(', '_'),
-                                            ')', '_'),
-                                        '?', '_'),
-                                    ' ', '-')
-                                ) = ?
-                            ", [
-                                strtolower($slug)
-                            ])
+                    ->where('p_slug', $slug)
+                    ->orWhere('id', $slug)
                     ->first();
 
-
-                // Agar abhi bhi nahi mila to numeric ID check karo
-                if (!$this->project && is_numeric($slug)) {
-                    $this->project = Project::where('p_id', (int) $slug)
-                        ->with('category')
-                        ->first();
-                }
-
-                // Final fallback - fuzzy search
                 if (!$this->project) {
                     $this->project = Project::where('p_title', 'like', '%' . str_replace('-', ' ', $slug) . '%')
-                        ->orWhere('p_slug', 'like', '%' . $slug . '%')
                         ->with('category')
                         ->first();
                 }
@@ -82,7 +55,6 @@ class ProjectDetailPage extends Component
                     return;
                 }
 
-                // Rest of the code...
                 if ($this->project->p_gallery) {
                     $this->galleryImages = is_array($this->project->p_gallery) 
                         ? $this->project->p_gallery 
@@ -93,7 +65,7 @@ class ProjectDetailPage extends Component
                     ->where('id', '!=', $this->project->id)
                     ->where(function ($q) {
                         $q->where('pc_id', $this->project->pc_id)
-                        ->orWhere('p_location', 'like', '%' . ($this->project->p_location ?? '') . '%');
+                          ->orWhere('p_location', 'like', '%' . ($this->project->p_location ?? '') . '%');
                     })
                     ->ordered()
                     ->limit(4)
@@ -101,41 +73,32 @@ class ProjectDetailPage extends Component
 
                 $this->projectCategories = ProjectCategory::active()->ordered()->get();
                 $this->services = Service::active()->ordered()->get();
-                $this->seo = SeoData::where('seo_page_type', 'Project - ' . $this->project->p_title)->first();
                 $this->pc = ProductCategory::active()->select('pc_name')->get();
 
             } else {
-                $this->errorMessage = 'No project specified. Please select a project to view.';
+                $this->errorMessage = 'No project specified.';
             }
 
             $this->isLoading = false;
 
-        // } catch (\Exception $e) {
-        //     $this->errorMessage = 'Failed to load project details. Please try again.';
-        //     $this->isLoading = false;
-        //     Log::error('ProjectDetail error: ' . $e->getMessage());
-        // }
+        } catch (\Exception $e) {
+            $this->errorMessage = 'Failed to load project details.';
+            $this->isLoading = false;
+            Log::error('ProjectDetail error: ' . $e->getMessage());
+        }
     }
 
-    /**
-     * Open gallery modal
-     */
     public function openGallery($imageIndex)
     {
         $this->activeGalleryImage = $imageIndex;
+        $this->dispatch('gallery-opened');
     }
 
-    /**
-     * Close gallery modal
-     */
     public function closeGallery()
     {
         $this->activeGalleryImage = null;
     }
 
-    /**
-     * Next gallery image
-     */
     public function nextGalleryImage()
     {
         if ($this->activeGalleryImage !== null && count($this->galleryImages) > 0) {
@@ -143,9 +106,6 @@ class ProjectDetailPage extends Component
         }
     }
 
-    /**
-     * Previous gallery image
-     */
     public function prevGalleryImage()
     {
         if ($this->activeGalleryImage !== null && count($this->galleryImages) > 0) {

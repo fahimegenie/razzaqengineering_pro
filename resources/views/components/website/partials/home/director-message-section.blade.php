@@ -16,19 +16,8 @@
                 <div class="col-lg-5 d-none d-lg-block" data-aos="fade-right" data-aos-duration="1200">
                     <div class="director-image-wrapper">
                         <div class="director-image-frame">
-                            @php
-                                // Dynamic image with fallback
-                                $directorImg = asset('assets/images/plumber-man.png');
-                                if (!empty($com)) {
-                                    if (!empty($com->ceo_image) && file_exists(public_path('slider_image/'.$com->ceo_image))) {
-                                        $directorImg = asset('slider_image/'.$com->ceo_image);
-                                    } elseif (!empty($com->oc_image3) && file_exists(public_path('slider_image/'.$com->oc_image3))) {
-                                        $directorImg = asset('slider_image/'.$com->oc_image3);
-                                    }
-                                }
-                            @endphp
                             <img src="{{ asset('assets/images/pexels-rezwan-1216589.jpg') }}" 
-                                 alt="Director - Razzaq Engineering Services" 
+                                 alt="Director - {{ !empty($com) && !empty($com->ceo_name) ? $com->ceo_name : 'Razzaq Engineering Services' }}" 
                                  class="director-image"
                                  loading="lazy">
                         </div>
@@ -61,7 +50,7 @@
                 
                 {{-- Right: Message Content --}}
                 <div class="col-lg-7" data-aos="fade-left" data-aos-duration="1200">
-                    <div class="director-content-wrapper">
+                    <div class="director-content-wrapper" x-data="{ expanded: false }">
                         
                         {{-- Small Label --}}
                         <span class="director-label">A MESSAGE FROM</span>
@@ -78,18 +67,42 @@
                             </svg>
                         </div>
                         
-                        {{-- Message --}}
+                        {{-- Message with Alpine.js Toggle --}}
                         <blockquote class="director-message">
-                            @if(!empty($com) && !empty($com->ceo_message))
-                                <p>{{ $com->ceo_message }}</p>
-                            @else
-                                <p>
-                                    As the Director of <strong>Razzaq Engineering Services</strong>, my commitment is to ensure the ultimate level of customer satisfaction by providing unrivaled leadership in the Pakistan engineering and construction industry. We offer our clients total peace of mind through specialized services—from precision <strong>RCC core cutting</strong> and vibration-free <strong>wall sawing</strong> to professional <strong>plumbing</strong> and <strong>firefighting</strong> solutions.
+                            <div x-show="!expanded" x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0 transform -translate-y-2" x-transition:enter-end="opacity-100 transform translate-y-0">
+                                <p class="message-preview">
+                                    @if(!empty($com) && !empty($com->ceo_message))
+                                        {{ Str::words($com->ceo_message, 50, '...') }}
+                                    @else
+                                        As the Director of <strong>Razzaq Engineering Services</strong>, my commitment is to ensure the ultimate level of customer satisfaction by providing unrivaled leadership in the Pakistan engineering and construction industry. We offer our clients total peace of mind...
+                                    @endif
                                 </p>
-                                <p>
-                                    Our mission is built on quality customer service and a dedication to empowering a motivated team. By recognizing the value of every employee's contribution, we ensure that Razzaq Engineering delivers the highest standard of workmanship and technical expertise on every project, nationwide.
-                                </p>
-                            @endif
+                            </div>
+                            
+                            <div x-show="expanded" x-transition:enter="transition ease-out duration-500" x-transition:enter-start="opacity-0 transform translate-y-4" x-transition:enter-end="opacity-100 transform translate-y-0" x-transition:leave="transition ease-in duration-300" x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0">
+                                @if(!empty($com) && !empty($com->ceo_message))
+                                    @foreach(explode("\n\n", $com->ceo_message) as $paragraph)
+                                        <p>{{ $paragraph }}</p>
+                                    @endforeach
+                                @else
+                                    <p>
+                                        As the Director of <strong>Razzaq Engineering Services</strong>, my commitment is to ensure the ultimate level of customer satisfaction by providing unrivaled leadership in the Pakistan engineering and construction industry. We offer our clients total peace of mind through specialized services—from precision <strong>RCC core cutting</strong> and vibration-free <strong>wall sawing</strong> to professional <strong>plumbing</strong> and <strong>firefighting</strong> solutions.
+                                    </p>
+                                    <p>
+                                        Our mission is built on quality customer service and a dedication to empowering a motivated team. By recognizing the value of every employee's contribution, we ensure that Razzaq Engineering delivers the highest standard of workmanship and technical expertise on every project, nationwide.
+                                    </p>
+                                @endif
+                            </div>
+                            
+                            {{-- Read More / Show Less Button --}}
+                            <button @click="expanded = !expanded" 
+                                    class="btn-read-more"
+                                    :class="{ 'expanded': expanded }">
+                                <span x-text="expanded ? 'Show Less' : 'Read More'"></span>
+                                <svg class="read-more-icon" :class="{ 'rotated': expanded }" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <polyline points="6 9 12 15 18 9"></polyline>
+                                </svg>
+                            </button>
                         </blockquote>
                         
                         {{-- Signature & Info --}}
@@ -136,12 +149,12 @@
     </div>
 </section>
 
-{{-- Keep EXACT SAME CSS as original --}}
+{{-- Styles with Read More Button --}}
 @push('styles')
 <style>
     /* ============================================
        DIRECTOR MESSAGE - PROFESSIONAL DESIGN
-       (Same CSS - No Changes)
+       (Enhanced with Read More Button)
        ============================================ */
     .director-message-pro {
         padding: 80px 0;
@@ -218,6 +231,12 @@
         text-align: center;
         box-shadow: 0 10px 30px rgba(0,86,179,0.35);
         z-index: 2;
+        animation: float 3s ease-in-out infinite;
+    }
+    
+    @keyframes float {
+        0%, 100% { transform: translateY(0px); }
+        50% { transform: translateY(-10px); }
     }
     
     .exp-years {
@@ -316,6 +335,7 @@
         border-left: none;
         padding: 0;
         margin: 0 0 25px 0;
+        position: relative;
     }
     
     .director-message p {
@@ -327,6 +347,53 @@
     
     .director-message p:last-child {
         margin-bottom: 0;
+    }
+    
+    .message-preview {
+        position: relative;
+    }
+    
+    /* Read More Button Styles */
+    .btn-read-more {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        background: linear-gradient(135deg, #28a745, #1e7e34);
+        color: #fff;
+        border: none;
+        padding: 10px 24px;
+        border-radius: 50px;
+        font-size: 0.9rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        margin-top: 15px;
+        box-shadow: 0 4px 15px rgba(40,167,69,0.25);
+    }
+    
+    .btn-read-more:hover {
+        background: linear-gradient(135deg, #1e7e34, #28a745);
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(40,167,69,0.35);
+    }
+    
+    .btn-read-more.expanded {
+        background: linear-gradient(135deg, #6c757d, #495057);
+        box-shadow: 0 4px 15px rgba(108,117,125,0.25);
+    }
+    
+    .btn-read-more.expanded:hover {
+        background: linear-gradient(135deg, #495057, #6c757d);
+        box-shadow: 0 8px 25px rgba(108,117,125,0.35);
+    }
+    
+    .read-more-icon {
+        transition: transform 0.3s ease;
+        stroke: currentColor;
+    }
+    
+    .read-more-icon.rotated {
+        transform: rotate(180deg);
     }
     
     .director-footer {
@@ -423,6 +490,7 @@
         .director-footer { justify-content: center; }
         .director-cta { justify-content: center; }
         .director-message p { text-align: left; }
+        .btn-read-more { margin-left: auto; margin-right: auto; }
     }
     
     @media (max-width: 767.98px) {

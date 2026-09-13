@@ -44,9 +44,29 @@
                     </div>
                     <div class="card-body d-flex flex-column">
                         <h6 class="fw-bold">{{ Str::limit($product->p_name, 30) }}</h6>
-                        @if($product->category)<small class="text-muted">{{ $product->category->pc_name }}</small>@endif
+                        
+                        <!-- Brand Name -->
+                        @if($product->brand_name)
+                        <small class="text-muted"><i class="bi bi-tag"></i> {{ $product->brand_name }}</small>
+                        @endif
+                        
+                        @if($product->category)
+                        <small class="text-muted">{{ $product->category->pc_name }}</small>
+                        @endif
+                        
                         <p class="text-muted small flex-grow-1">{{ Str::limit(strip_tags($product->p_short_description), 60) }}</p>
-                        @if($product->p_price)<h6 class="text-primary mb-2">{{ $product->formatted_price }}</h6>@endif
+                        
+                        <!-- Price Range Display -->
+                        <div class="mb-2">
+                            @if($product->p_price && $product->price_to)
+                                <h6 class="text-primary mb-0">{{ $product->formatted_price }} - {{ $product->formatted_price_to }}</h6>
+                                <small class="text-muted">Price Range</small>
+                            @elseif($product->p_price)
+                                <h6 class="text-primary mb-0">{{ $product->formatted_price }}</h6>
+                                <small class="text-muted">Price</small>
+                            @endif
+                        </div>
+                        
                         <div class="btn-group w-100 btn-group-sm">
                             <button class="btn btn-info" wire:click="viewProductDetails({{ $product->id }})"><i class="bi bi-eye"></i></button>
                             <a href="{{ route('admin.products.edit', $product->id) }}" class="btn btn-primary"><i class="bi bi-pencil"></i></a>
@@ -64,14 +84,86 @@
     </div>
 
     @if($showViewModal && $viewProduct)
-    <div class="modal fade show d-block" style="background:rgba(0,0,0,0.5);z-index:1055;"><div class="modal-dialog modal-lg"><div class="modal-content"><div class="modal-header bg-primary text-white"><h5 class="modal-title"><i class="bi bi-eye"></i> Product Details</h5><button class="btn-close btn-close-white" wire:click="closeModals"></button></div><div class="modal-body"><div class="row"><div class="col-md-5"><img src="{{ $viewProduct->image_url }}" class="img-fluid rounded"></div><div class="col-md-7"><h4>{{ $viewProduct->p_name }}</h4><p>Category: {{ $viewProduct->category->pc_name ?? 'N/A' }}</p><p>Price: {{ $viewProduct->formatted_price }}</p><p>Stock: {!! $viewProduct->stock_badge !!}</p><p>Status: <span class="badge bg-{{ $viewProduct->is_active ? 'success' : 'danger' }}">{{ $viewProduct->is_active ? 'Active' : 'Inactive' }}</span></p></div></div></div><div class="modal-footer"><button class="btn btn-secondary" wire:click="closeModals">Close</button><a href="{{ route('admin.products.edit', $viewProduct->id) }}" class="btn btn-primary"><i class="bi bi-pencil"></i> Edit</a></div></div></div></div><div class="modal-backdrop fade show"></div>
+    <div class="modal fade show d-block" style="background:rgba(0,0,0,0.5);z-index:1055;">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header bg-primary text-white">
+                    <h5 class="modal-title"><i class="bi bi-eye"></i> Product Details</h5>
+                    <button class="btn-close btn-close-white" wire:click="closeModals"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-5">
+                            <img src="{{ $viewProduct->image_url }}" class="img-fluid rounded">
+                        </div>
+                        <div class="col-md-7">
+                            <h4>{{ $viewProduct->p_name }}</h4>
+                            
+                            <!-- Brand Name in Modal -->
+                            @if($viewProduct->brand_name)
+                            <p><strong>Brand:</strong> {{ $viewProduct->brand_name }}</p>
+                            @endif
+                            
+                            <p><strong>Category:</strong> {{ $viewProduct->category->pc_name ?? 'N/A' }}</p>
+                            
+                            <!-- Price Range in Modal -->
+                            <p><strong>Price:</strong> 
+                                @if($viewProduct->p_price && $viewProduct->price_to)
+                                    {{ $viewProduct->formatted_price }} - {{ $viewProduct->formatted_price_to }}
+                                @elseif($viewProduct->p_price)
+                                    {{ $viewProduct->formatted_price }}
+                                @else
+                                    N/A
+                                @endif
+                            </p>
+                            
+                            <p><strong>Stock:</strong> {!! $viewProduct->stock_badge !!}</p>
+                            <p><strong>Status:</strong> <span class="badge bg-{{ $viewProduct->is_active ? 'success' : 'danger' }}">{{ $viewProduct->is_active ? 'Active' : 'Inactive' }}</span></p>
+                            
+                            @if($viewProduct->p_short_description)
+                            <p><strong>Description:</strong><br>{{ $viewProduct->p_short_description }}</p>
+                            @endif
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" wire:click="closeModals">Close</button>
+                    <a href="{{ route('admin.products.edit', $viewProduct->id) }}" class="btn btn-primary"><i class="bi bi-pencil"></i> Edit</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal-backdrop fade show"></div>
     @endif
 
     @if($showDeleteModal)
-    <div class="modal fade show d-block" style="background:rgba(0,0,0,0.5);z-index:1055;"><div class="modal-dialog modal-dialog-centered"><div class="modal-content"><div class="modal-header bg-danger text-white"><h5 class="modal-title"><i class="bi bi-exclamation-triangle"></i> Confirm Delete</h5><button class="btn-close btn-close-white" wire:click="closeModals"></button></div><div class="modal-body text-center py-4"><i class="bi bi-trash display-3 text-danger mb-3 d-block"></i><h5>Delete this product?</h5></div><div class="modal-footer justify-content-center"><button class="btn btn-secondary" wire:click="closeModals">Cancel</button><button class="btn btn-danger" wire:click="deleteProduct"><i class="bi bi-trash"></i> Delete</button></div></div></div></div><div class="modal-backdrop fade show"></div>
+    <div class="modal fade show d-block" style="background:rgba(0,0,0,0.5);z-index:1055;">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header bg-danger text-white">
+                    <h5 class="modal-title"><i class="bi bi-exclamation-triangle"></i> Confirm Delete</h5>
+                    <button class="btn-close btn-close-white" wire:click="closeModals"></button>
+                </div>
+                <div class="modal-body text-center py-4">
+                    <i class="bi bi-trash display-3 text-danger mb-3 d-block"></i>
+                    <h5>Delete this product?</h5>
+                    <p class="text-muted">Are you sure you want to delete "{{ $viewProduct->p_name ?? 'this product' }}"?</p>
+                </div>
+                <div class="modal-footer justify-content-center">
+                    <button class="btn btn-secondary" wire:click="closeModals">Cancel</button>
+                    <button class="btn btn-danger" wire:click="deleteProduct"><i class="bi bi-trash"></i> Delete</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal-backdrop fade show"></div>
     @endif
 </div>
 
 @push('styles')
-<style>.product-card{transition:all .3s ease}.product-card:hover{transform:translateY(-5px);box-shadow:0 10px 30px rgba(0,0,0,.15)!important}.form-switch .form-check-input{width:3em;height:1.5em;cursor:pointer}</style>
+<style>
+    .product-card{transition:all .3s ease}
+    .product-card:hover{transform:translateY(-5px);box-shadow:0 10px 30px rgba(0,0,0,.15)!important}
+    .form-switch .form-check-input{width:3em;height:1.5em;cursor:pointer}
+</style>
 @endpush

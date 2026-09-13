@@ -17,10 +17,10 @@
                         @php
                             $ctaImg = asset('assets/images/plumber-man.png');
                             if (!empty($com)) {
-                                if (!empty($com->ceo_image) && file_exists(public_path('slider_image/'.$com->ceo_image))) {
-                                    $ctaImg = asset('slider_image/'.$com->ceo_image);
-                                } elseif (!empty($com->oc_image3) && file_exists(public_path('slider_image/'.$com->oc_image3))) {
-                                    $ctaImg = asset('slider_image/'.$com->oc_image3);
+                                if (!empty($com->ceo_image) && file_exists(public_path($com->ceo_image))) {
+                                    $ctaImg = asset($com->ceo_image);
+                                } elseif (!empty($com->oc_image3) && file_exists(public_path($com->oc_image3))) {
+                                    $ctaImg = asset($com->oc_image3);
                                 }
                             }
                         @endphp
@@ -60,7 +60,10 @@
                                 <i class="fas fa-circle"></i> Wall Saw Cutting
                             </span>
                             <span class="cta-service-tag">
-                                <i class="fas fa-circle"></i> Emergency Plumbing
+                                <i class="fas fa-circle"></i> Emergency Cutting Services
+                            </span>
+                            <span class="cta-service-tag">
+                                <i class="fas fa-circle"></i> Follow 100% Safety Measures at site 
                             </span>
                         </div>
                         

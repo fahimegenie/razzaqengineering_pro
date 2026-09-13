@@ -31,23 +31,35 @@
                                            wire:model.live="p_name" placeholder="Enter product name...">
                                     @error('p_name')<div class="invalid-feedback">{{ $message }}</div>@enderror
                                 </div>
+                                <div class="col-12">
+                                    <label class="form-label required">Brand Name</label>
+                                    <input type="text" class="form-control form-control-lg @error('brand_name') is-invalid @enderror" 
+                                           wire:model.live="brand_name" placeholder="Enter brand name...">
+                                    @error('brand_name')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                                </div>
                                 <div class="col-md-8">
                                     <label class="form-label">Slug</label>
                                     <div class="input-group">
-                                        <input type="text" class="form-control" wire:model="p_slug" placeholder="product-slug">
+                                        <input type="text" class="form-control @error('p_slug') is-invalid @enderror" 
+                                               wire:model="p_slug" placeholder="product-slug">
                                         <button type="button" class="btn btn-outline-secondary" wire:click="generateSlug">
                                             <i class="bi bi-arrow-repeat"></i> Generate
                                         </button>
+                                        @error('p_slug')<div class="invalid-feedback">{{ $message }}</div>@enderror
                                     </div>
                                 </div>
                                 <div class="col-md-4">
                                     <label class="form-label">Product Type</label>
-                                    <input type="text" class="form-control" wire:model="pc_type" placeholder="e.g., Physical, Digital">
+                                    <input type="text" class="form-control @error('pc_type') is-invalid @enderror" 
+                                           wire:model="pc_type" placeholder="e.g., Physical, Digital">
+                                    @error('pc_type')<div class="invalid-feedback">{{ $message }}</div>@enderror
                                 </div>
                                 <div class="col-12">
                                     <label class="form-label">Short Description</label>
-                                    <textarea class="form-control" rows="2" wire:model="p_short_description" 
+                                    <textarea class="form-control @error('p_short_description') is-invalid @enderror" 
+                                              rows="2" wire:model="p_short_description" 
                                               placeholder="Brief summary (displayed in product cards)..."></textarea>
+                                    @error('p_short_description')<div class="invalid-feedback">{{ $message }}</div>@enderror
                                 </div>
                             </div>
                         </div>
@@ -117,6 +129,7 @@
                                 <label class="form-label fw-semibold">Product Description</label>
                                 <textarea id="productDescription"></textarea>
                             </div>
+                            @error('p_description')<div class="invalid-feedback">{{ $message }}</div>@enderror
                         </div>
                     </div>
 
@@ -178,27 +191,63 @@
                         <div class="card-body">
                             <div class="mb-3">
                                 <label class="form-label">Category</label>
-                                <select class="form-select" wire:model="product_category_id">
+                                <select class="form-select @error('product_category_id') is-invalid @enderror" 
+                                        wire:model="product_category_id">
                                     <option value="">-- Select Category --</option>
                                     @foreach($categories as $cat)
                                         <option value="{{ $cat->id }}">{{ $cat->pc_name }}</option>
                                     @endforeach
                                 </select>
+                                @error('product_category_id')<div class="invalid-feedback">{{ $message }}</div>@enderror
                             </div>
+                            
+                            {{-- Price From --}}
                             <div class="mb-3">
-                                <label class="form-label">Price</label>
+                                <label class="form-label required">Price From</label>
                                 <div class="input-group">
                                     <span class="input-group-text">PKR</span>
-                                    <input type="text" class="form-control" wire:model="p_price" placeholder="5000">
+                                    <input type="number" step="0.01" min="0" 
+                                           class="form-control @error('p_price') is-invalid @enderror" 
+                                           wire:model.live="p_price" placeholder="5000">
+                                    @error('p_price')<div class="invalid-feedback">{{ $message }}</div>@enderror
                                 </div>
                             </div>
+                            
+                            {{-- Price To --}}
+                            <div class="mb-3">
+                                <label class="form-label">Price To</label>
+                                <div class="input-group">
+                                    <span class="input-group-text">PKR</span>
+                                    <input type="number" step="0.01" min="0" 
+                                           class="form-control @error('price_to') is-invalid @enderror" 
+                                           wire:model.live="price_to" placeholder="5000">
+                                    @error('price_to')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                                </div>
+                                @if($priceValidationMessage)
+                                    <div class="text-danger small mt-1">
+                                        <i class="bi bi-exclamation-triangle me-1"></i> {{ $priceValidationMessage }}
+                                    </div>
+                                @endif
+                                @if($price_to && $p_price && $price_to < $p_price)
+                                    <div class="text-danger small mt-1">
+                                        <i class="bi bi-exclamation-triangle me-1"></i> 
+                                        Price To ({{ number_format((float)$price_to) }}) must be greater than or equal to Price From ({{ number_format((float)$p_price) }})
+                                    </div>
+                                @endif
+                                <small class="text-muted">Leave empty if same as "Price From"</small>
+                            </div>
+                            
                             <div class="mb-3">
                                 <label class="form-label">Contact / WhatsApp</label>
-                                <input type="text" class="form-control" wire:model="p_contact" placeholder="+92 300 1234567">
+                                <input type="text" class="form-control @error('p_contact') is-invalid @enderror" 
+                                       wire:model="p_contact" placeholder="+92 300 1234567">
+                                @error('p_contact')<div class="invalid-feedback">{{ $message }}</div>@enderror
                             </div>
                             <div class="mb-3">
                                 <label class="form-label">Sort Order</label>
-                                <input type="number" class="form-control" wire:model="sort_order" min="0" placeholder="0">
+                                <input type="number" class="form-control @error('sort_order') is-invalid @enderror" 
+                                       wire:model="sort_order" min="0" placeholder="0">
+                                @error('sort_order')<div class="invalid-feedback">{{ $message }}</div>@enderror
                             </div>
                             
                             <hr>
@@ -233,7 +282,9 @@
                                     <i class="bi bi-image display-4 text-muted"></i>
                                 </div>
                             @endif
-                            <input type="file" class="form-control" wire:model="p_image" accept="image/*">
+                            <input type="file" class="form-control @error('p_image') is-invalid @enderror" 
+                                   wire:model="p_image" accept="image/*">
+                            @error('p_image')<div class="invalid-feedback">{{ $message }}</div>@enderror
                             @if($imagePreview)
                                 <button type="button" class="btn btn-danger btn-sm mt-2 w-100" wire:click="removeImage">
                                     <i class="bi bi-trash"></i> Remove Image
@@ -277,7 +328,9 @@
                                 </div>
                             @endif
                             
-                            <input type="file" class="form-control" wire:model="galleryImages" accept="image/*" multiple>
+                            <input type="file" class="form-control @error('galleryImages.*') is-invalid @enderror" 
+                                   wire:model="galleryImages" accept="image/*" multiple>
+                            @error('galleryImages.*')<div class="invalid-feedback">{{ $message }}</div>@enderror
                             <small class="text-muted">You can select multiple images</small>
                         </div>
                     </div>
@@ -310,5 +363,6 @@
     .ck-editor__editable { min-height: 400px; }
     .ck.ck-editor__main > .ck-editor__editable { min-height: 400px; }
     [x-cloak] { display: none !important; }
+    .required::after { content: '*'; color: #dc3545; margin-left: 4px; }
 </style>
 @endpush

@@ -139,14 +139,14 @@
 <?php endif; ?>
 <?php if (isset($component)) { $__componentOriginale2f7fae1cb4d5bf69fff9c2cdbc377d0 = $component; } ?>
 <?php if (isset($attributes)) { $__attributesOriginale2f7fae1cb4d5bf69fff9c2cdbc377d0 = $attributes; } ?>
-<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'components.website.partials.home.video-section','data' => []] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
+<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'components.website.partials.home.video-section','data' => ['com' => $com]] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
 <?php $component->withName('website.partials.home.video-section'); ?>
 <?php if ($component->shouldRender()): ?>
 <?php $__env->startComponent($component->resolveView(), $component->data()); ?>
 <?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
 <?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
 <?php endif; ?>
-<?php $component->withAttributes([]); ?>
+<?php $component->withAttributes(['com' => \Illuminate\View\Compilers\BladeCompiler::sanitizeComponentAttribute($com)]); ?>
 <?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::processComponentKey($component); ?>
 
 <?php echo $__env->renderComponent(); ?>
@@ -183,14 +183,14 @@
 <?php endif; ?>
 <?php if (isset($component)) { $__componentOriginalfa58b48e2bd2e520a29f680387679722 = $component; } ?>
 <?php if (isset($attributes)) { $__attributesOriginalfa58b48e2bd2e520a29f680387679722 = $attributes; } ?>
-<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'components.website.partials.home.advanced-technology-fleet-section','data' => []] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
+<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'components.website.partials.home.advanced-technology-fleet-section','data' => ['fleetItems' => $fleetItems]] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
 <?php $component->withName('website.partials.home.advanced-technology-fleet-section'); ?>
 <?php if ($component->shouldRender()): ?>
 <?php $__env->startComponent($component->resolveView(), $component->data()); ?>
 <?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
 <?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
 <?php endif; ?>
-<?php $component->withAttributes([]); ?>
+<?php $component->withAttributes(['fleetItems' => \Illuminate\View\Compilers\BladeCompiler::sanitizeComponentAttribute($fleetItems)]); ?>
 <?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::processComponentKey($component); ?>
 
 <?php echo $__env->renderComponent(); ?>

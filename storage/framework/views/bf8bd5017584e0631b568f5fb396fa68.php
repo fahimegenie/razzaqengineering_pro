@@ -73,13 +73,13 @@
                 <div class="feature-card-pro">
                     <div class="feature-icon-wrapper">
                         <div class="feature-icon-circle">
-                            <i class="fas fa-tags"></i>
+                            <i class="bi-shield-check"></i>
                         </div>
                         <div class="feature-number">04</div>
                     </div>
                     <div class="feature-content">
-                        <h4 class="feature-title">Special Offers</h4>
-                        <p class="feature-text">Exclusive deals and competitive packages tailored for our valued clients.</p>
+                        <h4 class="feature-title">Safety First</h4>
+                        <p class="feature-text">Strict safety standards, trained professionals, and proper protective equipment on every & critical project.</p>
                     </div>
                     <div class="feature-hover-line"></div>
                 </div>

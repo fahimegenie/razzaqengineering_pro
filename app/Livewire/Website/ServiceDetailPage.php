@@ -5,7 +5,7 @@ namespace App\Livewire\Website;
 use Livewire\Component;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\Title;
-use App\Models\Service;
+use App\Models\OurService;
 use App\Models\ServiceDetail;
 use App\Models\ServiceAdvantage;
 use App\Models\SeoData;
@@ -13,7 +13,6 @@ use App\Models\ProductCategory;
 use App\Models\PdfFile;
 use App\Traits\HasDynamicSEO;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Str;
 
 #[Layout('components.layouts.app-layout', ['seo' => []])]
 class ServiceDetailPage extends Component
@@ -21,82 +20,96 @@ class ServiceDetailPage extends Component
     use HasDynamicSEO;
     
     public $serviceName = null;
-    public $activeTab = null; // Yeh Hamesha Service Model ki ID hold karega
+    public $activeServiceId = null;
+    public $activeDetailId = null;
     
-    // Properties ko template mein direct pass karenge taake state hydration maintain rahe
     public $isLoading = false;
     public $errorMessage = '';
 
-    public function mount($name = null)
+    public function mount($slug = null)
     {
         try {
-            $this->serviceName = $name;
+            $this->serviceName = $slug;
+            $this->initializeSEO('service_detail', $slug);
 
-            $this->initializeSEO('service_detail');
+            $service = OurService::where('os_slug', $slug)->first();
+
+            if (!empty($service)) {
+                $this->activeServiceId = $service->id;
+            }
+            $services = OurService::active()->ordered()->get();
             
-            // 1. Load active services
-            $services = Service::active()->ordered()->get();
-            
-            if ($name) {
-                $matchedService = $services->first(function ($s) use ($name) {
-                    return Str::slug($s->os_name) === Str::slug($name);
-                });
-                
-                if ($matchedService) {
-                    $this->activeTab = $matchedService->id;
-                }
+            if ($services->isEmpty()) {
+                $this->errorMessage = 'No services available at the moment.';
+                return;
             }
             
-            if (!$this->activeTab && $services->isNotEmpty()) {
-                $this->activeTab = $services->first()->id;
+          
+            
+            if (!$this->activeServiceId) {
+                $this->activeServiceId = $services->first()->id;
             }
+            
+            $this->loadServiceDetail();
             
         } catch (\Exception $e) {
-            $this->errorMessage = 'Failed to initialize service details.';
-            Log::error('ServiceDetail Mount error: ' . $e->getMessage());
+            $this->errorMessage = 'Failed to load service details. Please try again.';
+            Log::error('ServiceDetailPage Mount Error: ' . $e->getMessage(), [
+                'service_name' => $slug,
+                'trace' => $e->getTraceAsString()
+            ]);
         }
     }
 
     public function switchTab($serviceId)
     {
-        $this->activeTab = $serviceId;
-        // URL ko query string ya path se clean rakhne ke liye sirf state update kafi hai
+        try {
+            $this->activeServiceId = $serviceId;
+            $this->loadServiceDetail();
+            $this->dispatch('tab-switched');
+        } catch (\Exception $e) {
+            Log::error('Tab Switch Error: ' . $e->getMessage());
+        }
     }
 
-    /**
-     * Computed properties ke zariye dynamic data fetch karna hydration ko perfect banata hai
-     */
+    protected function loadServiceDetail()
+    {
+        if (!$this->activeServiceId) return;
+        
+        $detail = ServiceDetail::where('os_id', $this->activeServiceId)
+            ->ordered()
+            ->first();
+        
+        $this->activeDetailId = $detail ? $detail->id : null;
+    }
+
     #[Title('Service Details - Razzaq Engineering Services')]
     public function render()
     {
-        $services = Service::active()->ordered()->get();
+        $services = OurService::active()->ordered()->get();
+        $currentService = OurService::find($this->activeServiceId);
+        $currentDetail = ServiceDetail::find($this->activeDetailId);
         
-        // Dhyaan dein: service_id ya os_id foreign key check karein (Aapki DB field ke mutabiq name adjust kar sakte hain)
-        $currentDetail = ServiceDetail::where('id', $this->activeTab)
-            ->orWhere('os_id', $this->activeTab) 
-            ->first();
-
-        // Agar directly match na ho to fallback check lagayein
-        if (!$currentDetail && $this->activeTab) {
-            $currentDetail = ServiceDetail::where('id', $this->activeTab)->first();
-        }
-
-        $currentAdvantages = [];
+        $currentAdvantages = collect();
         if ($currentDetail) {
             $currentAdvantages = ServiceAdvantage::where('sa_st_id', $currentDetail->id)
-                ->orderBy('sort_order')
+                ->ordered()
                 ->get();
         }
-
+        
         $seo = $this->getSeoData();
+        $pageSeo = SeoData::where('seo_page_type', 'service_detail')->first();
+        $pdfFile = PdfFile::active()->first();
+        $productCategories = ProductCategory::active()->select('pc_name')->get();
         
         return view('livewire.website.service-detail-page', [
-            'services' => $services,
-            'currentDetail' => $currentDetail,
-            'currentAdvantages' => $currentAdvantages,
-            'pdffile' => PdfFile::active()->first(),
-            'seo' => SeoData::where('seo_page_type', $this->serviceName ?? 'Service_detail')->first(),
-            'pc' => ProductCategory::active()->select('pc_name')->get(),
+            'services'           => $services,
+            'currentService'     => $currentService,
+            'currentDetail'      => $currentDetail,
+            'currentAdvantages'  => $currentAdvantages,
+            'pdfFile'            => $pdfFile,
+            'pageSeo'            => $pageSeo,
+            'productCategories'  => $productCategories,
         ])->layoutData(['seo' => $seo]);
     }
 }

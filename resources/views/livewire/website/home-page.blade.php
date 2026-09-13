@@ -12,9 +12,9 @@
 <x-website.partials.home.industries-we-service-section/>
 <x-website.partials.home.why-choose-us />
 <x-website.partials.home.director-message-section :com="$com"/>
-<x-website.partials.home.video-section />
+<x-website.partials.home.video-section :com="$com" />
 <x-website.partials.home.call-us-section  :com="$com"/>
-<x-website.partials.home.advanced-technology-fleet-section />
+<x-website.partials.home.advanced-technology-fleet-section :fleetItems="$fleetItems"/>
 <x-website.partials.home.latest-project-section :pro="$pro"/>
 <x-website.partials.home.our-core-values-section />
 <x-website.partials.home.service-across-pakistan-section />
